@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/BlueThoothLE.iml" filepath="$PROJECT_DIR$/BlueThoothLE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HoloColorPicker/HoloColorPicker.iml" filepath="$PROJECT_DIR$/HoloColorPicker/HoloColorPicker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/btlehomelight/btlehomelight.iml" filepath="$PROJECT_DIR$/btlehomelight/btlehomelight.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libary/libary.iml" filepath="$PROJECT_DIR$/libary/libary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/testcolorpicker/testcolorpicker.iml" filepath="$PROJECT_DIR$/testcolorpicker/testcolorpicker.iml" />
+    </modules>
+  </component>
+</project>

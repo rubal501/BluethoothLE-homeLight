@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Atmel Studio Solution File, Format Version 11.00
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "BlueToothLE", "BlueToothLE\BlueToothLE.cppproj", "{2A037BB2-3006-43D8-872D-4F7AB525C2EC}"
+EndProject
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "clearEEPROM", "clearEEPROM\clearEEPROM.cppproj", "{2911BD93-DDD1-44F8-AF52-E8A61BF8A932}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		default|AVR = default|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2A037BB2-3006-43D8-872D-4F7AB525C2EC}.Debug|AVR.ActiveCfg = Debug|AVR
+		{2A037BB2-3006-43D8-872D-4F7AB525C2EC}.Debug|AVR.Build.0 = Debug|AVR
+		{2A037BB2-3006-43D8-872D-4F7AB525C2EC}.default|AVR.ActiveCfg = default|AVR
+		{2A037BB2-3006-43D8-872D-4F7AB525C2EC}.default|AVR.Build.0 = default|AVR
+		{2911BD93-DDD1-44F8-AF52-E8A61BF8A932}.Debug|AVR.ActiveCfg = Debug|AVR
+		{2911BD93-DDD1-44F8-AF52-E8A61BF8A932}.Debug|AVR.Build.0 = Debug|AVR
+		{2911BD93-DDD1-44F8-AF52-E8A61BF8A932}.default|AVR.ActiveCfg = default|AVR
+		{2911BD93-DDD1-44F8-AF52-E8A61BF8A932}.default|AVR.Build.0 = default|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
