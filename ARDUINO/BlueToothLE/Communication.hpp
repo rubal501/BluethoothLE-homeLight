@@ -33,7 +33,7 @@ public:
   long findCommSpeed( SoftwareSerial& comm );
   byte readMessageIfAvavible( SoftwareSerial& comm, String& btKdoStr );
   boolean isModulConnected(void);
-  void sendRGBW( SoftwareSerial& comm, byte *rgbw );
+  void sendRGBW( SoftwareSerial& comm, byte* rgbw );
   void sendModuleName( SoftwareSerial& comm, String& mName );
   void sendModuleType( SoftwareSerial& comm, const String& moduleType );
 protected:

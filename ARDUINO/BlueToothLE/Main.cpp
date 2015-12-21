@@ -1,11 +1,4 @@
-/*
- Receives from the hardware serial, sends to software serial.
- Receives from software serial, sends to hardware serial.
- The circuit:
- * RX is digital pin 10 (connect to TX of other device)
- * TX is digital pin 11 (connect to RX of other device)
- Note:
- */
+
 #include <Arduino.h>
 #include "SoftwareSerial.hpp"
 #include "config.hpp"
@@ -36,6 +29,7 @@ String btInputString="";
 unsigned long saveTime = 0L;
 const unsigned long SAVEDELAY = 2000L;
 boolean isOnline = false;
+boolean isLightsOFF = false;
 
 //#############################################################################
 // SETUP
@@ -54,14 +48,19 @@ void setup()
   // Interruptsteuerung des Empfanges AN
   mySerial.listen();
 #ifdef DEBUG
-  //delay(200);
   Serial.println("BT Testprogramm!");
   Serial.println( "Lese Konfiguration...");
+ #else
+   Serial.println("MODULSTART");
 #endif
   theConfig.loadConfig();
   //
   // PWM Ports vorbereiten
   //
+  pinMode(PWM_RED, OUTPUT);
+  pinMode(PWM_GREEN, OUTPUT);
+  pinMode(PWM_BLUE, OUTPUT);
+  pinMode(PWM_WHITE, OUTPUT);
   analogWrite( PWM_RED, theConfig.getRed() );
   analogWrite( PWM_GREEN, theConfig.getGreen() );
   analogWrite( PWM_BLUE, theConfig.getBlue() );
@@ -81,21 +80,8 @@ void setup()
   //
   pinMode( RESET_PIN, OUTPUT );
   digitalWrite( RESET_PIN, HIGH );
-  /*
-#ifdef DEBUG
-Serial.println( "BT Modul resetten..." );
-#endif
-  delay(200);
-  digitalWrite( RESET_PIN, LOW );
-  delay(100);
-  digitalWrite( RESET_PIN, HIGH );
-  delay(2000);
-#ifdef DEBUG
-Serial.println( "BT Modul resetten...OK" );
-#endif
-    */
-#ifdef DEBUG
   delay(300);
+#ifdef DEBUG
   Serial.print("ROT: ");
   Serial.println( theConfig.getRed(), HEX );
   Serial.print("GRUEN: ");
@@ -140,8 +126,8 @@ Serial.println( "BT Modul resetten...OK" );
   //
   // Version erfragen
   //
+#ifdef DEBUG
   myComm->sendCommand( mySerial, "AT+VERS?" );
-#ifdef DEBUG  
   myComm->sendCommand( mySerial, "AT+BAUD?" );
   myComm->sendCommand( mySerial, "AT+NAME?" );
 #endif
@@ -151,9 +137,11 @@ Serial.println( "BT Modul resetten...OK" );
   myComm->sendCommand( mySerial, "AT+MODE0" );
 #ifdef DEBUG  
   Serial.println("");
+#endif
   Serial.println("BEREIT!");
+#ifdef DEBUG
   Serial.println("==========================");
-#endif  
+#endif
 }
 
 //#############################################################################
@@ -181,19 +169,19 @@ void loop()
       // Frage nach dem Modultyp 0x00 
       case C_ASKTYP:
         myComm->sendModuleType(mySerial, moduleType);
-#ifdef DEBUG
+        #ifdef DEBUG
         Serial.println("Sende Module Typ an Master..." );
         Serial.println( moduleType );
-#endif
+        #endif
         break;
       
       // Frage nach dem Modulnamen 0x01
       case C_ASKNAME:
         paramString = theConfig.getModuleName();
         myComm->sendModuleName( mySerial, paramString );
-#ifdef DEBUG
+        #ifdef DEBUG
         Serial.println("Sende Module Name an Master..." );
-#endif        
+        #endif        
         break;
         
       // Frage nach RGBW im Modul 0x02
@@ -210,21 +198,48 @@ void loop()
       
       // Gib die Farbe an die LED aus 0x03
       case C_SETCOLOR:
-        analogWrite(PWM_RED, kdo[1]);
-        analogWrite(PWM_GREEN, kdo[2]);
-        analogWrite(PWM_BLUE, kdo[3]);
-        analogWrite(PWM_WHITE, kdo[4]);
+        isLightsOFF = false;
         theConfig.setRed( kdo[1] );
         theConfig.setGreen( kdo[2] );
         theConfig.setBlue( kdo[3] );
         theConfig.setWhite( kdo[4] );
-#ifdef DEBUG
+        analogWrite(PWM_RED, kdo[1]);
+        analogWrite(PWM_GREEN, kdo[2]);
+        analogWrite(PWM_BLUE, kdo[3]);
+        analogWrite(PWM_WHITE, kdo[4]);
+        #ifdef DEBUG
         Serial.println("SET COLOR emfpangen..." );
-#endif        
+        #endif        
         // in frühestens 2 Sekunden sichern
         saveTime = millis() + SAVEDELAY;
         break;
-          
+
+      // der AN/AUS Schalter 
+      case C_ONOFF:
+        if( isLightsOFF )
+        {
+          #ifdef DEBUG
+          Serial.println("LEDs ON..." );
+          #endif
+          // Die Dinger an machen
+          analogWrite( PWM_RED, theConfig.getRed() );
+          analogWrite( PWM_GREEN, theConfig.getGreen() );
+          analogWrite( PWM_BLUE, theConfig.getBlue() );
+          analogWrite( PWM_WHITE, theConfig.getWhite() );
+        }
+        else
+        {
+          #ifdef DEBUG
+          Serial.println("LEDs OFF..." );
+          #endif
+          analogWrite( PWM_RED, 0 );
+          analogWrite( PWM_GREEN, 0 );
+          analogWrite( PWM_BLUE, 0 );
+          analogWrite( PWM_WHITE, 0 );
+        }
+        isLightsOFF = !isLightsOFF;
+        break;
+        
       default:
         //nix verstehen meister!
         Serial.println("NIX VERSTEHEN..." );

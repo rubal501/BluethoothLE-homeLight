@@ -44,6 +44,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,16 +53,20 @@ import java.util.Locale;
 import de.dmarcini.bt.homelight.interrfaces.IBtEventHandler;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.service.BluetoothLowEnergyService;
+import de.dmarcini.bt.homelight.utils.BTReaderThread;
 import de.dmarcini.bt.homelight.utils.BluetoothConfig;
+import de.dmarcini.bt.homelight.utils.CircularByteBuffer;
 import de.dmarcini.bt.homelight.utils.HM10GattAttributes;
 import de.dmarcini.bt.homelight.utils.ProjectConst;
 import de.dmarcini.bt.homelight.utils.SelectPagesAdapter;
 
 public class HomeLightMainActivity extends AppCompatActivity implements IMainAppServices, ViewPager.OnPageChangeListener
 {
-  private static final String          TAG          = HomeLightMainActivity.class.getSimpleName();
-  final                IntentFilter    intentFilter = new IntentFilter();
-  private              BluetoothConfig btConfig     = new BluetoothConfig();
+  private static final String             TAG          = HomeLightMainActivity.class.getSimpleName();
+  final                IntentFilter       intentFilter = new IntentFilter();
+  private final        CircularByteBuffer ringBuffer   = new CircularByteBuffer(1024);
+  private              BluetoothConfig    btConfig     = new BluetoothConfig();
+  private BTReaderThread     readerThread;
   private SelectPagesAdapter mSectionsPagerAdapter;
   private ViewPager          mViewPager;
   //
@@ -122,6 +127,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         //
         // BT Gerät wurde getrennt
         btConfig.setConnected(false);
+        ringBuffer.clear();
         handler.onBTDisconnected();
         invalidateOptionsMenu();
       }
@@ -139,9 +145,58 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         // verbundenes BT Gerät hat Daten empfangen
         // Datenblöcke werden bis 20 Byte am Stück übertragen (BT 4.0)
         // Daten in den Ringpuffer, leider kommen die Daten nicht immer am Stück
-        // TODO: Ringpuffer einbauen, nebenläufig machen...
-        handler.onBTDataAvaiable(intent.getStringExtra(BluetoothLowEnergyService.EXTRA_DATA));
+        //
+        try
+        {
+          //
+          // Daten in den Ringpufer schicken, um die Verarbeitung
+          // kümmert sich der ReaderThread
+          //
+          ringBuffer.getOutputStream().write(intent.getStringExtra(BluetoothLowEnergyService.EXTRA_DATA).getBytes());
+          // Thread bescheid geben, da war doch was...
+          synchronized( ringBuffer )
+          {
+            //
+            // beende die Wartezeit des ReaderThreads, es sind ja Daten gekommen!
+            //
+            ringBuffer.notifyAll();
+          }
+        }
+        catch( IOException ex )
+        {
+          Log.e(TAG, "IOException while read from BT decice..." + ex.getLocalizedMessage());
+        }
       }
+    }
+  };
+
+  /**
+   * Ein Interface für eine Funktion, welche das fertige Kommando empfängt
+   */
+  public interface CommandReciver
+  {
+    /**
+     * Empfange das Kommando vom entfernten Gerät
+     *
+     * @param cmd Kommandostring ohne STX/ETX
+     */
+    void reciveCommand(String cmd);
+  }
+
+  /**
+   * Implementiere den Callback mit dem Interface zum Empfang der Kommandosequenz
+   * und Weiterleitung an den Empfänger...
+   */
+  private final CommandReciver CReciver = new CommandReciver()
+  {
+    @Override
+    public void reciveCommand(String cmd)
+    {
+      //
+      // finde das aktuelle Fragment und sende die Nachricht
+      //
+      IBtEventHandler handler = ( IBtEventHandler ) (( SelectPagesAdapter ) (mViewPager.getAdapter())).getItem(mViewPager.getCurrentItem());
+      handler.onBTDataAvaiable(cmd);
     }
   };
 
@@ -201,13 +256,14 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     // Vorerst nur der Platzhalter für ein Spielerchen später
     //
-    FloatingActionButton fab = ( FloatingActionButton ) findViewById(R.id.fab);
+    FloatingActionButton fab = ( FloatingActionButton ) findViewById(R.id.fabOnOff);
     fab.setOnClickListener(new View.OnClickListener()
     {
       @Override
       public void onClick(View view)
       {
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        setModulOnOff();
+        //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
       }
     });
     //
@@ -215,6 +271,12 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     Intent gattServiceIntent = new Intent(this, BluetoothLowEnergyService.class);
     bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+    //
+    // der Reader-Thread wird hier in der haupt-Activity gestartet
+    //
+    readerThread = new BTReaderThread(ringBuffer, CReciver);
+    Thread rThread = new Thread(readerThread, "reader_thread");
+    rThread.start();
     Log.v(TAG, "erzeuge Application...OK");
   }
 
@@ -224,6 +286,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     super.onDestroy();
     unbindService(mServiceConnection);
     btConfig.setBluetoothService(null);
+    readerThread.doStop();
   }
 
   @Override
@@ -416,15 +479,32 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   }
 
   @Override
-  public void setModulRGBW( short[] rgbw )
+  public void setModulRGBW(short[] rgbw)
   {
     String kommandoString;
     //
     if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
     {
       // Kommando zusammenbauen
-      kommandoString = String.format(Locale.ENGLISH, "%s%02X:02X:02X:02X:02X%s", ProjectConst.STX, ProjectConst.C_SETCOLOR, rgbw[0], rgbw[1], rgbw[2], rgbw[3], ProjectConst.ETX);
+      kommandoString = String.format(Locale.ENGLISH, "%s%02X:%02X:%02X:%02X:%02X%s", ProjectConst.STX, ProjectConst.C_SETCOLOR, rgbw[ 0 ], rgbw[ 1 ], rgbw[ 2 ], rgbw[ 3 ], ProjectConst.ETX);
       Log.d(TAG, "send ask for type =" + kommandoString);
+      byte[] tx = kommandoString.getBytes();
+      btConfig.getCharacteristicTX().setValue(tx);
+      btConfig.getBluetoothService().writeCharacteristic(btConfig.getCharacteristicTX());
+      btConfig.getBluetoothService().setCharacteristicNotification(btConfig.getCharacteristicRX(), true);
+    }
+  }
+
+  @Override
+  public void setModulOnOff()
+  {
+    String kommandoString;
+    //
+    if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
+    {
+      // Kommando zusammenbauen
+      kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ONOFF, ProjectConst.ETX);
+      Log.d(TAG, "send light on/off =" + kommandoString);
       byte[] tx = kommandoString.getBytes();
       btConfig.getCharacteristicTX().setValue(tx);
       btConfig.getBluetoothService().writeCharacteristic(btConfig.getCharacteristicTX());

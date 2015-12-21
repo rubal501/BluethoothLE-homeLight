@@ -73,6 +73,8 @@ public class ProjectConst
   //
   public static final String STX                   = new String(new byte[]{0x02});
   public static final String ETX                   = new String(new byte[]{0x03});
+  public static final byte   BSTX                  = 0x02;
+  public static final byte   BETX                  = 0x03;
   //
   // Kommandos für Arduino
   // ACHTUNG: Version mit Scetch vergleichen!
@@ -82,10 +84,17 @@ public class ProjectConst
   public static final byte   C_ASKNAME             = 0x01;
   public static final byte   C_ASKRGB              = 0x02;
   public static final byte   C_SETCOLOR            = 0x03;
+  public static final byte   C_ONOFF               = 0x04;
+  //
+  // Länge der Kommandoketten
+  //
+  public static final int    C_ASKRGB_LEN          = 5;
+  //
+  // Zeit bis zum Senden neuer RGBW Werte, wenn der User kontinuierlich schiebt
+  //
+  public static final long   TIMEDIFF_TO_SEND      = 200L;
   //
   // Suchpattern für Kommando
   //
-  public static final String KOMANDPATTERN         = STX + "\\d{2}(\\:.*)?" + ETX;
-  public static final String REPLACEPATTERN        = STX + "\\|" + ETX;
-  //public static final Pattern KOMANDPATTERN          = Pattern.compile(STX + "\\d{2}(\\:.*)?" + ETX);
+  public static final String KOMANDPATTERN         = "\\d{2}(\\:.*)?";
 }

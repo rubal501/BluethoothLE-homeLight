@@ -29,18 +29,18 @@ String Communication::sendCommand( SoftwareSerial& comm, String cmd, bool echo )
   unsigned long waitfor;
   String retval;
   
-#ifdef DEBUG
+  #ifdef DEBUG
   Serial.print("Sende <");
   Serial.print( cmd );
   Serial.println(">...");
-#endif
+  #endif
   delay(25);
   comm.print(cmd);
   comm.flush();
-  delay(25);
-#ifdef DEBUG
+  delay(35);
+  #ifdef DEBUG
   Serial.println("Sende CMD...OK");
-#endif  
+  #endif  
   waitfor = millis() + 500L;
   if( echo )
   {
@@ -54,25 +54,27 @@ String Communication::sendCommand( SoftwareSerial& comm, String cmd, bool echo )
       {
         int ch = comm.read();
         retval += char(ch);
-#ifdef DEBUG
+        #ifdef DEBUG
         Serial.write( ch );
-#endif        
+        #endif        
       }
-#ifdef DEBUG
       else
       {
+        #ifdef DEBUG
         Serial.write(comm.read());
+        #else
+        comm.read();
+        #endif
       }
-#endif
     }
     else
     {
       delay(20);
     }
   }
-#ifdef DEBUG
+  #ifdef DEBUG
   Serial.println("");
-#endif
+  #endif
   if( echo )
   {
     return( retval );
@@ -186,7 +188,9 @@ byte Communication::readMessageIfAvavible( SoftwareSerial& comm, String& btKdoSt
   {
     // Das _Zeichen lesen
     inChar = comm.read() & 0x00ff;
+    #ifdef DEBUG
     Serial.write(inChar);
+    #endif
     // wenn die Zeichenkette zu lang ist:
     if( btKdoStr.length() > 24 )
     {
@@ -264,9 +268,7 @@ boolean Communication::isModulConnected(void)
 void Communication::sendToMaster( SoftwareSerial& comm, String& toSend )
 {
   comm.write( Communication::STX );
-  comm.flush();
   comm.print( toSend );
-  comm.flush();
   comm.write( Communication::ETX );
   comm.flush();   
 }
@@ -279,7 +281,7 @@ char Communication::nibbleToHex(byte ch)
   return("0123456789ABCDEF"[0x0F & (unsigned char)ch]);
 }
 
-void Communication::sendRGBW( SoftwareSerial& comm, byte *rgbw )
+void Communication::sendRGBW( SoftwareSerial& comm, byte* rgbw )
 {
   String cmd;
   
@@ -288,12 +290,13 @@ void Communication::sendRGBW( SoftwareSerial& comm, byte *rgbw )
   for( int i=0; i<4; i++ )
   {
     cmd += ':';
-    cmd += nibbleToHex( rgbw[i] >> 4 );
-    cmd += nibbleToHex( rgbw[i] );
+    cmd += nibbleToHex( *rgbw >> 4 );
+    cmd += nibbleToHex( *rgbw );
     rgbw++;
   }
   sendToMaster( comm, cmd );  
 }
+
 
 //#############################################################################
 // Sende den Modulnamen 

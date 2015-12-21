@@ -11,7 +11,7 @@
 
 
 //
-// PWM Ausgänge für LED Ansteuerung
+// PWM Ausgänge für LED Ansteuerung                                                             
 //
 #define PWM_RED             5
 #define PWM_GREEN           6

@@ -29,6 +29,7 @@
 #define C_ASKNAME       0x01                          // Frage nach dem Modulnamen
 #define C_ASKRGB        0x02                          // Frage nach RGBW im Modul
 #define C_SETCOLOR      0x03                          // Vom Meister Farbe
+#define C_ONOFF         0x04                          // AUS, oder wenn alles auf 0 ist EIN
 
 
 class CommandParser

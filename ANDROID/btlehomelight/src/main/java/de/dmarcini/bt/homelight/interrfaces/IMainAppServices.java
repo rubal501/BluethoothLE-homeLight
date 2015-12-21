@@ -56,4 +56,9 @@ public interface IMainAppServices
    * @param rgbw Array für RGBW
    */
   void setModulRGBW( short[] rgbw );
+
+  /**
+   * Schalte die LED AUS/AN
+   */
+  void setModulOnOff();
 }

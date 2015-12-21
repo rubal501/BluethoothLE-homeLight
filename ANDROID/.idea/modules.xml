@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BlueThoothLE.iml" filepath="$PROJECT_DIR$/BlueThoothLE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ANDROID.iml" filepath="$PROJECT_DIR$/ANDROID.iml" />
       <module fileurl="file://$PROJECT_DIR$/HoloColorPicker/HoloColorPicker.iml" filepath="$PROJECT_DIR$/HoloColorPicker/HoloColorPicker.iml" />
       <module fileurl="file://$PROJECT_DIR$/btlehomelight/btlehomelight.iml" filepath="$PROJECT_DIR$/btlehomelight/btlehomelight.iml" />
       <module fileurl="file://$PROJECT_DIR$/libary/libary.iml" filepath="$PROJECT_DIR$/libary/libary.iml" />
