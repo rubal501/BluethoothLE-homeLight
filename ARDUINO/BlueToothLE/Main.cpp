@@ -6,6 +6,8 @@
 #include "CommandParser.hpp"
 #include "Communication.hpp"
 #include "EEPROMConfig.hpp"
+#include "SysConfig.hpp"
+
 //
 // der Modultyp
 //
@@ -36,7 +38,10 @@ boolean isLightsOFF = false;
 //#############################################################################
 void setup() 
 {
-  long currSpeed;
+  //
+  // Die Sachen, die schnell gehen sollen zuerst...
+  //
+  SysConfig::SystemPreInit( theConfig );
   //
   // Serielle USB Verbindung öffnen
   //
@@ -45,103 +50,24 @@ void setup()
   {
     ; // wait for serial port to connect. Needed for native USB port only
   }
-  // Interruptsteuerung des Empfanges AN
-  mySerial.listen();
-#ifdef DEBUG
+  #ifdef DEBUG
   Serial.println("BT Testprogramm!");
   Serial.println( "Lese Konfiguration...");
- #else
-   Serial.println("MODULSTART");
-#endif
-  theConfig.loadConfig();
+  #else
+  Serial.println("MODULSTART");
+  #endif
   //
-  // PWM Ports vorbereiten
+  // Konfiguriere das in einer ausgelagerten Sequenz
   //
-  pinMode(PWM_RED, OUTPUT);
-  pinMode(PWM_GREEN, OUTPUT);
-  pinMode(PWM_BLUE, OUTPUT);
-  pinMode(PWM_WHITE, OUTPUT);
-  analogWrite( PWM_RED, theConfig.getRed() );
-  analogWrite( PWM_GREEN, theConfig.getGreen() );
-  analogWrite( PWM_BLUE, theConfig.getBlue() );
-  analogWrite( PWM_WHITE, theConfig.getWhite() );
+  SysConfig::SystemInit( mySerial, *myComm, theConfig );
   //
-  // Ports für Software Serial Serial setzen
-  //
-  pinMode( TXPIN, OUTPUT );
-  pinMode( RXPIN, INPUT );
-  //
-  // Port für ONLINE Check des BT Moduls
-  //
-  pinMode( ONLINE_PIN, INPUT ); 
-  digitalWrite(ONLINE_PIN, HIGH ); 
-  //
-  // der RESET-PIN (HIGH ist alles in ordnung)
-  //
-  pinMode( RESET_PIN, OUTPUT );
-  digitalWrite( RESET_PIN, HIGH );
-  delay(300);
-#ifdef DEBUG
-  Serial.print("ROT: ");
-  Serial.println( theConfig.getRed(), HEX );
-  Serial.print("GRUEN: ");
-  Serial.println( theConfig.getGreen(), HEX );
-  Serial.print("BLAU: ");
-  Serial.println( theConfig.getBlue(), HEX );
-  Serial.print("WEISS: ");
-  Serial.println( theConfig.getWhite(), HEX );
-#endif
-  //
-  // Verbindungsgeschwindigkeit checken,
-  // langsdam rantasten...
-  // gibt es 0 zurück, PANIK, 
-  // TODO: noch was machen
-  currSpeed = myComm->findCommSpeed( mySerial );
-  //*
-  if( currSpeed != 19200 )
-  {
-    Serial.println( "Setze neue Geschwindigkeit auf 19200..." );
-    myComm->sendCommand( mySerial, "AT+BAUD1" );
-    mySerial.begin( 19200L );
-    delay(250);
-    myComm->sendCommand( mySerial, "AT" );
-    Serial.println( "Setze neue Geschwindigkeit auf 19200...OK" );
-  }
-  //*/
-  //myComm->findCommSpeed( mySerial, DESTBAUDRATE_VAL );
-  //
-  // RESET
-  //
-  myComm->sendCommand( mySerial, "AT+RESET" );
-  delay( 1500 );
-  //
-  // Statusport-LED ohne blinken
-  //
-  myComm->sendCommand( mySerial, "AT+PIO11" );
-  //
-  // Modulname setzen
-  //
-  String mName = "AT+NAME" + theConfig.getModuleName();
-  myComm->sendCommand( mySerial, mName );
-  //
-  // Version erfragen
-  //
-#ifdef DEBUG
-  myComm->sendCommand( mySerial, "AT+VERS?" );
-  myComm->sendCommand( mySerial, "AT+BAUD?" );
-  myComm->sendCommand( mySerial, "AT+NAME?" );
-#endif
-  //
-  // AT Mode festlegen
-  //
-  myComm->sendCommand( mySerial, "AT+MODE0" );
-#ifdef DEBUG  
+  #ifdef DEBUG  
   Serial.println("");
-#endif
+  #endif
   Serial.println("BEREIT!");
-#ifdef DEBUG
+  #ifdef DEBUG
   Serial.println("==========================");
-#endif
+  #endif
 }
 
 //#############################################################################

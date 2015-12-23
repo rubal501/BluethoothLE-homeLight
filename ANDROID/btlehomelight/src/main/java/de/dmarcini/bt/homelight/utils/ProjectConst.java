@@ -92,7 +92,7 @@ public class ProjectConst
   //
   // Zeit bis zum Senden neuer RGBW Werte, wenn der User kontinuierlich schiebt
   //
-  public static final long   TIMEDIFF_TO_SEND      = 200L;
+  public static final long   TIMEDIFF_TO_SEND      = 100L;
   //
   // Suchpattern für Kommando
   //

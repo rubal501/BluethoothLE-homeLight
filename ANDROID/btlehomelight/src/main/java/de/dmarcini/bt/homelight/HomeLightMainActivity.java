@@ -37,7 +37,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -98,13 +97,16 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       handler.onServiceDisconnected();
     }
   };
-  //
-  //** Handles various events fired by the Service.
-  // ACTION_GATT_CONNECTED: connected to a GATT server.
-  // ACTION_GATT_DISCONNECTED: disconnected from a GATT server.
-  // ACTION_GATT_SERVICES_DISCOVERED: discovered GATT services.
-  // ACTION_DATA_AVAILABLE: received data from the device.  This can be a result of read
-  //                        or notification operations.
+
+  /**
+   * Der Broadcast Reciver für BT EReignisse
+   *
+   * ACTION_GATT_CONNECTED: connected to a GATT server.
+   * ACTION_GATT_DISCONNECTED: disconnected from a GATT server.
+   * ACTION_GATT_SERVICES_DISCOVERED: discovered GATT services.
+   * ACTION_DATA_AVAILABLE: received data from the device.
+   * This can be a result of read or notification operations.
+   */
   private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver()
   {
     @Override
@@ -119,15 +121,39 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         // BT Gerät wurde verbunden
         //
         btConfig.setConnected(true);
+        //
+        // der Reader-Thread wird hier in der haupt-Activity gestartet
+        // sicherstellen, dass er gestoppt ist, wenn noch vorhanden!
+        //
+        if( readerThread != null )
+        {
+          readerThread.doStop();
+          readerThread = null;
+        }
+        readerThread = new BTReaderThread(ringBuffer, CReciver);
+        Thread rThread = new Thread(readerThread, "reader_thread");
+        rThread.start();
+        //
         handler.onBTConnected();
+        askModulForRGBW();
         invalidateOptionsMenu();
       }
       else if( BluetoothLowEnergyService.ACTION_GATT_DISCONNECTED.equals(action) )
       {
         //
         // BT Gerät wurde getrennt
+        //
         btConfig.setConnected(false);
-        ringBuffer.clear();
+        //
+        // den Reader Thread beenden
+        //
+        readerThread.doStop();
+        synchronized( ringBuffer )
+        {
+          ringBuffer.notifyAll();
+        }
+        readerThread = null;
+        //
         handler.onBTDisconnected();
         invalidateOptionsMenu();
       }
@@ -271,12 +297,6 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     Intent gattServiceIntent = new Intent(this, BluetoothLowEnergyService.class);
     bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-    //
-    // der Reader-Thread wird hier in der haupt-Activity gestartet
-    //
-    readerThread = new BTReaderThread(ringBuffer, CReciver);
-    Thread rThread = new Thread(readerThread, "reader_thread");
-    rThread.start();
     Log.v(TAG, "erzeuge Application...OK");
   }
 
@@ -432,16 +452,10 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   {
     String kommandoString;
     //
-    if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
-    {
-      // Kommando zusammenbauen
-      kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKTYP, ProjectConst.ETX);
-      Log.d(TAG, "send ask for type =" + kommandoString);
-      byte[] tx = kommandoString.getBytes();
-      btConfig.getCharacteristicTX().setValue(tx);
-      btConfig.getBluetoothService().writeCharacteristic(btConfig.getCharacteristicTX());
-      btConfig.getBluetoothService().setCharacteristicNotification(btConfig.getCharacteristicRX(), true);
-    }
+    // Kommando zusammenbauen
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKTYP, ProjectConst.ETX);
+    Log.d(TAG, "send ask for type =" + kommandoString);
+    sendKdoToModule(kommandoString);
   }
 
   @Override
@@ -449,16 +463,10 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   {
     String kommandoString;
     //
-    if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
-    {
-      // Kommando zusammenbauen
-      kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKNAME, ProjectConst.ETX);
-      Log.d(TAG, "send ask for name =" + kommandoString);
-      byte[] tx = kommandoString.getBytes();
-      btConfig.getCharacteristicTX().setValue(tx);
-      btConfig.getBluetoothService().writeCharacteristic(btConfig.getCharacteristicTX());
-      btConfig.getBluetoothService().setCharacteristicNotification(btConfig.getCharacteristicRX(), true);
-    }
+    // Kommando zusammenbauen
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKNAME, ProjectConst.ETX);
+    Log.d(TAG, "send ask for name =" + kommandoString);
+    sendKdoToModule(kommandoString);
   }
 
   @Override
@@ -466,16 +474,10 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   {
     String kommandoString;
     //
-    if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
-    {
-      // Kommando zusammenbauen
-      kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKRGB, ProjectConst.ETX);
-      Log.d(TAG, "send ask for rgbw =" + kommandoString);
-      byte[] tx = kommandoString.getBytes();
-      btConfig.getCharacteristicTX().setValue(tx);
-      btConfig.getBluetoothService().writeCharacteristic(btConfig.getCharacteristicTX());
-      btConfig.getBluetoothService().setCharacteristicNotification(btConfig.getCharacteristicRX(), true);
-    }
+    // Kommando zusammenbauen
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKRGB, ProjectConst.ETX);
+    Log.d(TAG, "send ask for rgbw =" + kommandoString);
+    sendKdoToModule(kommandoString);
   }
 
   @Override
@@ -483,16 +485,10 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   {
     String kommandoString;
     //
-    if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
-    {
-      // Kommando zusammenbauen
-      kommandoString = String.format(Locale.ENGLISH, "%s%02X:%02X:%02X:%02X:%02X%s", ProjectConst.STX, ProjectConst.C_SETCOLOR, rgbw[ 0 ], rgbw[ 1 ], rgbw[ 2 ], rgbw[ 3 ], ProjectConst.ETX);
-      Log.d(TAG, "send ask for type =" + kommandoString);
-      byte[] tx = kommandoString.getBytes();
-      btConfig.getCharacteristicTX().setValue(tx);
-      btConfig.getBluetoothService().writeCharacteristic(btConfig.getCharacteristicTX());
-      btConfig.getBluetoothService().setCharacteristicNotification(btConfig.getCharacteristicRX(), true);
-    }
+    // Kommando zusammenbauen
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X:%02X:%02X:%02X:%02X%s", ProjectConst.STX, ProjectConst.C_SETCOLOR, rgbw[ 0 ], rgbw[ 1 ], rgbw[ 2 ], rgbw[ 3 ], ProjectConst.ETX);
+    Log.d(TAG, "send ask for type =" + kommandoString);
+    sendKdoToModule(kommandoString);
   }
 
   @Override
@@ -500,15 +496,30 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   {
     String kommandoString;
     //
+    // Kommando zusammenbauen
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ONOFF, ProjectConst.ETX);
+    Log.d(TAG, "send light on/off =" + kommandoString);
+    sendKdoToModule(kommandoString);
+  }
+
+  /**
+   * Sende den Kommandostring (incl ETX und STX) zum Modul, wenn Verbunden
+   *
+   * @param kdo String mit ETC udn STX
+   */
+  private void sendKdoToModule(final String kdo)
+  {
     if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
     {
-      // Kommando zusammenbauen
-      kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ONOFF, ProjectConst.ETX);
-      Log.d(TAG, "send light on/off =" + kommandoString);
-      byte[] tx = kommandoString.getBytes();
+      byte[] tx = kdo.getBytes();
       btConfig.getCharacteristicTX().setValue(tx);
       btConfig.getBluetoothService().writeCharacteristic(btConfig.getCharacteristicTX());
       btConfig.getBluetoothService().setCharacteristicNotification(btConfig.getCharacteristicRX(), true);
+      Log.d(TAG, "send OK");
+    }
+    else
+    {
+      Log.w(TAG, "send NOT OK, not connected?");
     }
   }
 

@@ -136,6 +136,9 @@ public class DirectControlFragment extends Fragment implements IBtEventHandler, 
     seekBlue.setOnSeekBarChangeListener(this);
     seekWhite.setOnSeekBarChangeListener(this);
     //
+    // nicht verbunden einstellen
+    //
+    onServiceDisconnected();
     Log.v(TAG, "onCreateView...OK");
     return (rootView);
   }
@@ -199,12 +202,14 @@ public class DirectControlFragment extends Fragment implements IBtEventHandler, 
   public void onBTConnected()
   {
     Log.v(TAG, "BT Device connected!");
+    onServiceConnected();
   }
 
   @Override
   public void onBTDisconnected()
   {
     Log.v(TAG, "BT Device disconnected!");
+    onServiceDisconnected();
   }
 
   @Override
@@ -323,12 +328,24 @@ public class DirectControlFragment extends Fragment implements IBtEventHandler, 
   public void onServiceConnected()
   {
     Log.v(TAG, "BT Service connected");
+    seekRed.setEnabled(true);
+    seekGreen.setEnabled(true);
+    seekBlue.setEnabled(true);
+    seekWhite.setEnabled(true);
   }
 
   @Override
   public void onServiceDisconnected()
   {
     Log.v(TAG, "BT Service disconnected");
+    seekRed.setEnabled(false);
+    seekGreen.setEnabled(false);
+    seekBlue.setEnabled(false);
+    seekWhite.setEnabled(false);
+    seekRed.setProgress(0);
+    seekGreen.setProgress(0);
+    seekBlue.setProgress(0);
+    seekWhite.setProgress(0);
   }
 
   @Override
@@ -342,11 +359,13 @@ public class DirectControlFragment extends Fragment implements IBtEventHandler, 
       // mach eine Abfrage vom Modul und dann geht es weiter
       //
       Log.v(TAG, "BT Device is connected and ready....");
+      onServiceConnected();
       mainService.askModulForRGBW();
     }
     else if( btConfig.isConnected() )
     {
       Log.v(TAG, "BT Device is connected....");
+      onServiceConnected();
       if( btConfig.getModuleType() == null )
       {
         // Frage das Modul nach dem Typ, wenn noch nicht geschehen
@@ -412,6 +431,5 @@ public class DirectControlFragment extends Fragment implements IBtEventHandler, 
     // Mal wieder zum Contoller senden!
     //
     mainService.setModulRGBW( rgbw );
-
   }
 }

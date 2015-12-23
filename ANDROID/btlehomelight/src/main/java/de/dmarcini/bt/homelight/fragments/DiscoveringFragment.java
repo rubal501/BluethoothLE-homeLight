@@ -160,6 +160,7 @@ public class DiscoveringFragment extends Fragment implements IBtEventHandler, Ad
     if( btConfig.isConnected() )
     {
       scanButton.setText(getResources().getString(R.string.discovering_disconnect));
+      mBTLEDeviceListAdapter.clear();
       scanProgress.setVisibility(View.INVISIBLE);
     }
     else

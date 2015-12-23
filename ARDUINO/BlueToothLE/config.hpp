@@ -11,12 +11,12 @@
 
 
 //
-// PWM Ausgänge für LED Ansteuerung                                                             
+// PWM Ausgänge für LED Ansteuerung gesteuert durch Timer0 und Timer1                                                            
 //
 #define PWM_RED             5
 #define PWM_GREEN           6
-#define PWM_BLUE            10
-#define PWM_WHITE           11
+#define PWM_BLUE            9
+#define PWM_WHITE           10
 //
 // Software UART Ports
 //

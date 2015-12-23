@@ -68,7 +68,7 @@ public class BTReaderThread implements Runnable
         // solange ENDE gefunden wurde
         // oder nicht CANCEL gerufen
         //
-        while( (end > -1) && (isRunning) )
+        while( (end > -1) && isRunning && ( ringBuffer != null ) )
         {
           try
           {
@@ -128,6 +128,15 @@ public class BTReaderThread implements Runnable
               end = ringBuffer.indexOf(ProjectConst.BETX);
             }
           }
+          catch( NullPointerException ex )
+          {
+            if( ringBuffer != null )
+            {
+              Log.e(TAG, "Null Pointer Exception");
+            }
+            isRunning = false;
+            break;
+          }
           catch( BufferOverflowException ex )
           {
             Log.e(TAG, "BUFFER OVERFLOW in ringbuffer!");
@@ -167,5 +176,10 @@ public class BTReaderThread implements Runnable
   {
     isRunning = false;
     ringBuffer.clear();
+    //
+    // hier riskiere ich eine nullpointer exception
+    // die fange ich oben ein.....
+    //
+    ringBuffer = null;
   }
 }
