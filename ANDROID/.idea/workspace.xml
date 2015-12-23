@@ -13,15 +13,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f63e8067-b20f-4aba-a47d-412ebba147ff" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btlehomelight/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/btlehomelight/src/main/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/utils/BTReaderThread.java" afterPath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/utils/BTReaderThread.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ARDUINO/BlueToothLE/BlueToothLE.cppproj" afterPath="$PROJECT_DIR$/../ARDUINO/BlueToothLE/BlueToothLE.cppproj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/fragments/DirectControlFragment.java" afterPath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/fragments/DirectControlFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/fragments/DiscoveringFragment.java" afterPath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/fragments/DiscoveringFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/HomeLightMainActivity.java" afterPath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/HomeLightMainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ARDUINO/BlueToothLE/Main.cpp" afterPath="$PROJECT_DIR$/../ARDUINO/BlueToothLE/Main.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/utils/ProjectConst.java" afterPath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/utils/ProjectConst.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ARDUINO/BlueToothLE/config.hpp" afterPath="$PROJECT_DIR$/../ARDUINO/BlueToothLE/config.hpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ANDROID.iws" />
@@ -74,8 +65,8 @@
       <file leaf-file-name="DiscoveringFragment.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/fragments/DiscoveringFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3329283">
-              <caret line="157" column="15" selection-start-line="157" selection-start-column="15" selection-end-line="157" selection-end-column="15" />
+            <state vertical-scroll-proportion="0.72660995">
+              <caret line="175" column="51" selection-start-line="175" selection-start-column="51" selection-end-line="175" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -3789,6 +3780,13 @@
       <option name="number" value="Default" />
       <updated>1450713890399</updated>
     </task>
+    <task id="LOCAL-00001" summary="Kleine Verbesserungen wenn das Gerät offline geht">
+      <created>1450901903115</created>
+      <option name="number" value="00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1450901903115</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TodoView">
@@ -3811,7 +3809,7 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Monitor" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="true" weight="0.32902467" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" x="2746" y="68" width="1521" height="975" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="true" weight="0.32902467" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" x="2746" y="68" width="1521" height="975" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -3845,6 +3843,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Kleine Verbesserungen wenn das Gerät offline geht" />
+    <option name="LAST_COMMIT_MESSAGE" value="Kleine Verbesserungen wenn das Gerät offline geht" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -4198,8 +4200,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/fragments/DiscoveringFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3329283">
-          <caret line="157" column="15" selection-start-line="157" selection-start-column="15" selection-end-line="157" selection-end-column="15" />
+        <state vertical-scroll-proportion="0.72660995">
+          <caret line="175" column="51" selection-start-line="175" selection-start-column="51" selection-end-line="175" selection-end-column="51" />
           <folding />
         </state>
       </provider>
