@@ -26,6 +26,7 @@ package de.dmarcini.bt.homelight.fragments;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattService;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -157,10 +158,13 @@ public class DiscoveringFragment extends Fragment implements IBtEventHandler, Ad
    */
   private void prepareHeader()
   {
-    if( btConfig.isConnected() )
+    if( (btConfig != null) && (btConfig.isConnected()) )
     {
       scanButton.setText(getResources().getString(R.string.discovering_disconnect));
-      mBTLEDeviceListAdapter.clear();
+      if( mBTLEDeviceListAdapter != null )
+      {
+        mBTLEDeviceListAdapter.clear();
+      }
       scanProgress.setVisibility(View.INVISIBLE);
     }
     else
@@ -360,4 +364,23 @@ public class DiscoveringFragment extends Fragment implements IBtEventHandler, Ad
       }
     }
   }
+
+  @Override
+  public void onConfigurationChanged(Configuration newConfig)
+  {
+    super.onConfigurationChanged( newConfig );
+    if( newConfig.orientation == Configuration.ORIENTATION_PORTRAIT )
+    {
+      Log.i(TAG, "new orientation is PORTRAIT");
+    }
+    else if( newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE )
+    {
+      Log.i(TAG, "new orientation is LANDSCAPE");
+    }
+    else
+    {
+      Log.i(TAG, "new orientation is UNKNOWN");
+    }
+  }
+
 }

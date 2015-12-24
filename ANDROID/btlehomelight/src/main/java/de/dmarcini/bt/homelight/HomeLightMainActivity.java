@@ -34,6 +34,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
@@ -99,7 +100,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   };
 
   /**
-   * Der Broadcast Reciver für BT EReignisse
+   * Der Broadcast Reciver für BT Ereignisse
    *
    * ACTION_GATT_CONNECTED: connected to a GATT server.
    * ACTION_GATT_DISCONNECTED: disconnected from a GATT server.
@@ -306,7 +307,10 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     super.onDestroy();
     unbindService(mServiceConnection);
     btConfig.setBluetoothService(null);
-    readerThread.doStop();
+    if( readerThread != null )
+    {
+      readerThread.doStop();
+    }
   }
 
   @Override
@@ -544,5 +548,23 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   public void onPageScrollStateChanged(int state)
   {
     Log.d(TAG, String.format(Locale.ENGLISH, "page scroll state %02d", state));
+  }
+
+  @Override
+  public void onConfigurationChanged(Configuration newConfig)
+  {
+    super.onConfigurationChanged( newConfig );
+    if( newConfig.orientation == Configuration.ORIENTATION_PORTRAIT )
+    {
+      Log.i(TAG, "new orientation is PORTRAIT");
+    }
+    else if( newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE )
+    {
+      Log.i(TAG, "new orientation is LANDSCAPE");
+    }
+    else
+    {
+      Log.w(TAG, "new orientation is UNKNOWN");
+    }
   }
 }
