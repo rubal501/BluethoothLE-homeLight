@@ -54,9 +54,7 @@ public class CmdQueueThread implements Runnable
     {
       if( !cmdBuffer.isEmpty() )
       {
-        String msg = cmdBuffer.remove(0);
-        Log.i(TAG, "CMD deliver: " + msg);
-        cReciver.reciveCommand(msg /*cmdBuffer.remove(0)*/);
+        cReciver.reciveCommand(cmdBuffer.remove(0));
       }
       else
       {
