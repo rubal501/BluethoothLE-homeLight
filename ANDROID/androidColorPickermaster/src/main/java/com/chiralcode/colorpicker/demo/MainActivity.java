@@ -1,21 +1,21 @@
-package de.dmarcini.test.colorpicker;
+package com.chiralcode.colorpicker.demo;
 
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.util.Locale;
+import com.chiralcode.colorpicker.ColorPicker;
+import com.chiralcode.colorpicker.R;
 
-
-public class MainActivity extends Activity implements ColorPicker.OnColorChangedListener, ColorPicker.OnColorSelectedListener
+public class MainActivity extends Activity
 {
-  private static final String TAG = MainActivity.class.getSimpleName();
+
   private ColorPicker colorPicker;
+  private Button      button;
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -24,9 +24,7 @@ public class MainActivity extends Activity implements ColorPicker.OnColorChanged
     setContentView(R.layout.act_picker);
 
     colorPicker = ( ColorPicker ) findViewById(R.id.colorPicker);
-    colorPicker.setOnColorChangedListener( this );
-    colorPicker.setOnColorSelectedListener(this);
-/*
+
     button = ( Button ) findViewById(R.id.button);
     button.setOnClickListener(new OnClickListener()
     {
@@ -42,18 +40,7 @@ public class MainActivity extends Activity implements ColorPicker.OnColorChanged
 
       }
     });
-*/
+
   }
 
-  @Override
-  public void onColorChanged(int color)
-  {
-    Log.i(TAG, String.format(Locale.ENGLISH, "color changed to %08X", color ));
-  }
-
-  @Override
-  public void onColorSelected(int color)
-  {
-    Log.i(TAG, String.format(Locale.ENGLISH, "color SELECTED to %08X", color ));
-  }
 }
