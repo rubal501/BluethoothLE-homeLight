@@ -26,7 +26,6 @@ package de.dmarcini.bt.homelight.fragments;
 import android.bluetooth.BluetoothGattService;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,32 +33,58 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
 import com.larswerkman.holocolorpicker.ColorPicker;
-import com.larswerkman.holocolorpicker.SVBar;
+import com.larswerkman.holocolorpicker.OpacityBar;
+import com.larswerkman.holocolorpicker.SaturationBar;
+import com.larswerkman.holocolorpicker.ValueBar;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
-import de.dmarcini.bt.homelight.interrfaces.IBtEventHandler;
 import de.dmarcini.bt.homelight.R;
+import de.dmarcini.bt.homelight.interrfaces.IBtEventHandler;
+import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothConfig;
 import de.dmarcini.bt.homelight.utils.ProjectConst;
 
 
 /**
  * Created by dmarc on 22.08.2015.
+ * TODO: ValueBar für RGB-Helligkeit, Verknüpfung so lassen
+ * TODO: SatuationBar für WHITE Helligkeit
  */
-public class ColorSelectFragment extends Fragment implements IBtEventHandler, ColorPicker.OnColorChangedListener
+public class ColorSelectFragment extends AppFragment implements IBtEventHandler, ColorPicker.OnColorChangedListener, OpacityBar.OnOpacityChangedListener/*, SaturationBar.OnSaturationChangedListener*/
 {
-  private static final String TAG = ColorSelectFragment.class.getSimpleName();
-  private ColorPicker   picker;
-  private SVBar         svBar;
-  private BluetoothConfig btConfig;
+  private static final String  TAG  = ColorSelectFragment.class.getSimpleName();
+  private final        short[] rgbw = new short[ ProjectConst.C_ASKRGB_LEN - 1 ];
+  private long             timeToSend;
+  private ColorPicker      picker;
+  private ValueBar         vBar;
+  private OpacityBar oBar;
+  private BluetoothConfig  btConfig;
+  private IMainAppServices mainService;
 
   public ColorSelectFragment()
   {
+    Bundle args;
+    int    pos;
+
+    try
+    {
+      args = getArguments();
+      if( args != null )
+      {
+        pos = args.getInt(ProjectConst.ARG_SECTION_NUMBER, 0);
+        Log.v(TAG, String.format(Locale.ENGLISH, "Konstructor: id is %04d", pos));
+      }
+    }
+    catch( NullPointerException ex )
+    {
+      Log.e(TAG, "Konstructor: " + ex.getLocalizedMessage());
+    }
   }
 
   /**
@@ -85,27 +110,123 @@ public class ColorSelectFragment extends Fragment implements IBtEventHandler, Co
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
   {
+    int resId;
+    //
     Log.v(TAG, "onCreateView...");
-    //getResources().getConfiguration().orientation
-    View rootView = inflater.inflate(R.layout.fragment_colors_wheel, container, false);
-    picker = ( ColorPicker ) rootView.findViewById(R.id.picker);
-    svBar = ( SVBar ) rootView.findViewById(R.id.svbar);
-    picker.addSVBar(svBar);
-    //To get the color
-    //picker.getColor();
-    picker.setOldCenterColor(picker.getColor());
-    //To set the old selected color u can do it like this
-    picker.setOldCenterColor(picker.getColor());
-    // adds listener to the colorpicker which is implemented
-    //in the activity
-    picker.setOnColorChangedListener(this);
-    //to turn of showing the old color
-    picker.setShowOldCenterColor(false);
+    //
+    if( getActivity() instanceof IMainAppServices )
+    {
+      mainService = ( IMainAppServices ) getActivity();
+    }
+    else
+    {
+      Log.e(TAG, "Application is not type of IMainAppServices");
+      mainService = null;
+    }
 
+    if( getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE )
+    {
+      Log.v(TAG, "Orientation => LANDSCAPE...");
+      resId = R.layout.fragment_colors_wheel_land;
+    }
+    else
+    {
+      Log.v(TAG, "Orientation => PORTRAIT...");
+      resId = R.layout.fragment_colors_wheel_port;
+    }
+    View rootView = inflater.inflate(resId, container, false);
+    picker = ( ColorPicker ) rootView.findViewById(R.id.picker);
+    vBar = ( ValueBar ) rootView.findViewById(R.id.vbar);
+    oBar = (OpacityBar) rootView.findViewById(R.id.obar);
+    picker.addValueBar(vBar);
+    //
+    // Farbe setzen (Voreinstellung)
+    //
+    picker.setColor(0xFFFFFF);
+    oBar.setColor(0xFFFFFFFF);
+    picker.setOldCenterColor(picker.getColor());
+    //
+    // Change Listener setzen
+    //
+    picker.setOnColorChangedListener(this);
+    oBar.setOnOpacityChangedListener( this );
+    //
+    // "alte" Farbe nicht setzen/anzeigen
+    //
+    picker.setShowOldCenterColor(false);
+    setColorPropertysFromConfig();
     setHasOptionsMenu(true);
     Log.v(TAG, "onCreateView...OK");
     return (rootView);
   }
+
+  private void changeLayoutOrientation(int orientation)
+  {
+    int          resId;
+    LinearLayout rootView;
+    LinearLayout tempView;
+
+    if( orientation == Configuration.ORIENTATION_LANDSCAPE )
+    {
+      Log.v(TAG, "changeLayoutOrientation => LANDSCAPE...");
+      resId = R.layout.fragment_colors_wheel_land;
+    }
+    else
+    {
+      Log.v(TAG, "changeLayoutOrientation => PORTRAIT...");
+      resId = R.layout.fragment_colors_wheel_port;
+    }
+    //
+    rootView = ( LinearLayout ) getActivity().findViewById(R.id.colorWeelLayout);
+    //
+    // remote Views...
+    //
+    rootView.removeAllViews();
+    // Orientierung ändern
+    rootView.setOrientation(orientation);
+    // neue Resource laden (wegen der Dimensionen, ist dort leicher definierbar
+    tempView = ( LinearLayout ) getActivity().getLayoutInflater().inflate(resId, ( ViewGroup ) rootView.getParent(), false);
+    picker = ( ColorPicker ) tempView.findViewById(R.id.picker);
+    vBar = ( ValueBar ) rootView.findViewById(R.id.vbar);
+    oBar = (OpacityBar) rootView.findViewById(R.id.obar);
+    //
+    // Vies in das Layout einfügen
+    //
+    tempView.removeAllViews();
+    rootView.addView(picker);
+    //
+    // Farbe setzen (Voreinstellung)
+    //
+    picker.setColor(0xFFFFFF);
+    oBar.setColor(0xFFFFFFFF);
+    picker.setOldCenterColor(picker.getColor());
+    //
+    // Change Listener setzen
+    //
+    picker.setOnColorChangedListener(this);
+    oBar.setOnOpacityChangedListener( this );
+
+    //
+    // "alte" Farbe nicht setzen/anzeigen
+    //
+    picker.setShowOldCenterColor(false);
+    setColorPropertysFromConfig();
+    setHasOptionsMenu(true);
+
+    Log.v(TAG, "changeLayoutOrientation...OK");
+  }
+
+  private void setColorPropertysFromConfig()
+  {
+    if( btConfig != null && btConfig.isConnected() )
+    {
+      picker.setEnabled(true);
+      vBar.setEnabled(true);
+    }
+    picker.setEnabled(false);
+    vBar.setEnabled(false);
+  }
+
 
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -143,18 +264,40 @@ public class ColorSelectFragment extends Fragment implements IBtEventHandler, Co
   public void onColorChanged(int color)
   {
     Log.i(TAG, String.format(Locale.ENGLISH, "color changed to %08X", color));
+    rgbw[ 0 ] = ( short ) ((color >> 16) & 0xff);
+    rgbw[ 1 ] = ( short ) ((color >> 8) & 0xff);
+    rgbw[ 2 ] = ( short ) (color & 0xff);
+    //rgbw[3] = nicht verändert;
+    //
+    if( timeToSend < System.currentTimeMillis() && mainService != null )
+    {
+      //
+      // Mal wieder zum Contoller senden!
+      //
+      mainService.setModulRGBW(rgbw);
+      //
+      // Neue Deadline setzen
+      //
+      timeToSend = System.currentTimeMillis() + ProjectConst.TIMEDIFF_TO_SEND;
+    }
   }
 
   @Override
   public void onBTConnected()
   {
-
+    //
+    // GUI für verbundenes Gerät einrichten
+    //
+    setColorPropertysFromConfig();
   }
 
   @Override
   public void onBTDisconnected()
   {
-
+    //
+    // GUI für getrenntes Gerät einrichten
+    //
+    setColorPropertysFromConfig();
   }
 
   @Override
@@ -166,7 +309,89 @@ public class ColorSelectFragment extends Fragment implements IBtEventHandler, Co
   @Override
   public void onBTDataAvaiable(String data)
   {
+    {
+      String[] param;
+      int cmdNum;
 
+      if( Pattern.matches(ProjectConst.KOMANDPATTERN, data) )
+      {
+        //
+        // Kommando empfangen
+        //
+        param = data.split(":");
+        if( param.length > 0 )
+        {
+          //
+          // Hier mal das Kommando finden und umrechnen
+          //
+          try
+          {
+            cmdNum = Integer.parseInt(param[ 0 ], 16);
+          }
+          catch( NumberFormatException ex )
+          {
+            cmdNum = ProjectConst.C_UNKNOWN;
+          }
+          //
+          // Jetzt Kommando auswerten
+          //
+          switch( cmdNum )
+          {
+            //
+            // Unbekanntes Kommando
+            //
+            case ProjectConst.C_UNKNOWN:
+            default:
+              Log.e(TAG, "unknown command recived! Ignored.");
+              break;
+
+            //
+            // Frage nach dem Typ / Antwort
+            //
+            case ProjectConst.C_ASKTYP:
+              Log.v(TAG, "Modul type recived! <" + data + ">");
+              break;
+
+            //
+            // Frage nach dem Modulname / Antwort
+            //
+            case ProjectConst.C_ASKNAME:
+              Log.v(TAG, "Modul name recived! <" + data + ">");
+              break;
+
+            //
+            // Frage nach RGBW
+            //
+            case ProjectConst.C_ASKRGB:
+              Log.v(TAG, "RGBW from module recived! <" + data + ">");
+              final String[] pm = param;
+              //
+              // Das läßt sich nur von diesem Thread aus machen, daher dieses
+              //
+              picker.post(new Runnable()
+              {
+                public void run()
+                {
+                  setColorWheel(pm);
+                }
+              });
+              break;
+
+            //
+            // Sende COLOR
+            //
+            case ProjectConst.C_SETCOLOR:
+              Log.v(TAG, "SET RGBW to module (should not done)  <" + data + ">");
+              break;
+          }
+        }
+        else
+        {
+          Log.e(TAG, "wrong command string recived! Ignored.");
+        }
+      }
+
+    }
   }
 
   @Override
@@ -184,25 +409,104 @@ public class ColorSelectFragment extends Fragment implements IBtEventHandler, Co
   @Override
   public void onPageSelected()
   {
-    Log.v(TAG,"Page COLORSELECT (Weehl) was selected");
+    Log.v(TAG, "Page COLORSELECT (Weehl) was selected");
+    if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
+    {
+      //
+      // Alles ist so wie es soll
+      // mach eine Abfrage vom Modul und dann geht es weiter
+      //
+      Log.v(TAG, "BT Device is connected and ready....");
+      onServiceConnected();
+      mainService.askModulForRGBW();
+    }
+    else if( btConfig.isConnected() )
+    {
+      Log.v(TAG, "BT Device is connected....");
+      onServiceConnected();
+      if( btConfig.getModuleType() == null )
+      {
+        // Frage das Modul nach dem Typ, wenn noch nicht geschehen
+        // sollte nach dem connect passieren
+        mainService.askModulForType();
+      }
+    }
   }
 
   @Override
   public void onConfigurationChanged(Configuration newConfig)
   {
     super.onConfigurationChanged(newConfig);
-
-    // Checks the orientation of the screen
-    if( newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE )
+    if( newConfig.orientation == Configuration.ORIENTATION_PORTRAIT )
     {
-      Log.v(TAG, "onConfigurationChanged: landscape...");
-      Toast.makeText(getActivity(), "landscape", Toast.LENGTH_SHORT).show();
+      Log.i(TAG, "new orientation is PORTRAIT");
     }
-    else if( newConfig.orientation == Configuration.ORIENTATION_PORTRAIT )
+    else if( newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE )
     {
-      Log.v(TAG, "onConfigurationChanged: portrait...");
-      Toast.makeText(getActivity(), "portrait", Toast.LENGTH_SHORT).show();
+      Log.i(TAG, "new orientation is LANDSCAPE");
     }
+    else
+    {
+      Log.w(TAG, "new orientation is UNKNOWN");
+    }
+    changeLayoutOrientation(newConfig.orientation);
+    setShouldNewCreated(true);
+    (( IMainAppServices ) getActivity()).switchToFragment(ProjectConst.PAGE_COLOR_CIRCLE);
   }
 
+
+  private void setColorWheel(String[] param)
+  {
+    int color = 0;
+    //
+    if( param.length < ProjectConst.C_ASKRGB_LEN )
+    {
+      Log.w(TAG, "setColorWheel() -> param array to short! IGNORED!");
+      return;
+    }
+    //
+    // der erste Parameter ist das Kommando, den ignoriere ich mal
+    //
+    for( int i = 1; i < ProjectConst.C_ASKRGB_LEN; i++ )
+    {
+      try
+      {
+        rgbw[ i - 1 ] = Short.parseShort(param[ i ], 16);
+      }
+      catch( NumberFormatException ex )
+      {
+        Log.w(TAG, "setColorWheel: <" + param[ i ] + "> is not an valid number! Set to 0!");
+        rgbw[ i - 1 ] = 0;
+      }
+    }
+    //
+    // hier sollten die Parameter gesetzt sein
+    //
+    Log.i(TAG, "set color wheel...");
+    color = ((rgbw[ 0 ] << 16) | (rgbw[ 1 ] << 8) | (rgbw[ 2 ]));
+    picker.setColor(color);
+    oBar.setOpacity(rgbw[ 3 ]);
+  }
+
+
+  @Override
+  public void onOpacityChanged(int opacity)
+  {
+    rgbw[ 3 ] = ( short ) (opacity);
+    Log.i(TAG, String.format(Locale.ENGLISH, "white changed to %08X %02X", opacity, rgbw[ 3 ]));
+    //
+    if( (timeToSend < System.currentTimeMillis() || rgbw[ 3 ] == 0 ) && mainService != null )
+    {
+      //
+      // Mal wieder zum Contoller senden!
+      //
+      mainService.setModulRGBW(rgbw);
+      //
+      // Neue Deadline setzen
+      //
+      timeToSend = System.currentTimeMillis() + ProjectConst.TIMEDIFF_TO_SEND;
+    }
+
+    oBar.setOpacity(opacity);
+  }
 }

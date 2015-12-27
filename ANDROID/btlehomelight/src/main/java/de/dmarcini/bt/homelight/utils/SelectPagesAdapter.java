@@ -34,6 +34,7 @@ import android.util.Log;
 import java.util.Locale;
 
 import de.dmarcini.bt.homelight.R;
+import de.dmarcini.bt.homelight.fragments.AppFragment;
 import de.dmarcini.bt.homelight.fragments.ColorSelectFragment;
 import de.dmarcini.bt.homelight.fragments.DirectControlFragment;
 import de.dmarcini.bt.homelight.fragments.DiscoveringFragment;
@@ -67,10 +68,22 @@ public class SelectPagesAdapter extends FragmentPagerAdapter
       if( fragmentsArray[position] != null )
       {
         //
-        // ich habe das Fragment schon => gib dessen Referenz zurück
+        // ich habe das Fragment schon
         //
-        Log.v(TAG, "getItem() => recycle Fragment Object");
-        return(fragmentsArray[position]);
+        if( fragmentsArray[position] instanceof AppFragment )
+        {
+          if( !((AppFragment)fragmentsArray[position]).isShouldNewCreated() )
+          {
+            Log.v(TAG, "getItem() => recycle Fragment Object");
+            return (fragmentsArray[ position ]);
+          }
+          fragmentsArray[ position ] = null;
+        }
+        else
+        {
+          Log.v(TAG, "getItem() => recycle Fragment Object");
+          return (fragmentsArray[ position ]);
+        }
       }
     }
     catch( IndexOutOfBoundsException ex )

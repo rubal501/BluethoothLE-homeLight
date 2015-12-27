@@ -58,7 +58,7 @@ import de.dmarcini.bt.homelight.utils.ProjectConst;
 /**
  * Created by dmarc on 22.08.2015.
  */
-public class DiscoveringFragment extends Fragment implements IBtEventHandler, AdapterView.OnItemClickListener, View.OnClickListener
+public class DiscoveringFragment extends  AppFragment implements IBtEventHandler, AdapterView.OnItemClickListener, View.OnClickListener
 {
   private static final String TAG = DiscoveringFragment.class.getSimpleName();
   private BluetoothConfig btConfig;
@@ -89,6 +89,22 @@ public class DiscoveringFragment extends Fragment implements IBtEventHandler, Ad
 
   public DiscoveringFragment()
   {
+    Bundle args;
+    int    pos;
+
+    try
+    {
+      args = getArguments();
+      if( args != null )
+      {
+        pos = args.getInt(ProjectConst.ARG_SECTION_NUMBER, 0);
+        Log.v(TAG, String.format(Locale.ENGLISH, "Konstructor: id is %04d", pos));
+      }
+    }
+    catch( NullPointerException ex )
+    {
+      Log.e(TAG, "Konstructor: " + ex.getLocalizedMessage());
+    }
   }
 
   /**

@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Vector;
 
 import de.dmarcini.bt.homelight.interrfaces.IBtEventHandler;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
@@ -56,6 +57,7 @@ import de.dmarcini.bt.homelight.service.BluetoothLowEnergyService;
 import de.dmarcini.bt.homelight.utils.BTReaderThread;
 import de.dmarcini.bt.homelight.utils.BluetoothConfig;
 import de.dmarcini.bt.homelight.utils.CircularByteBuffer;
+import de.dmarcini.bt.homelight.utils.CmdQueueThread;
 import de.dmarcini.bt.homelight.utils.HM10GattAttributes;
 import de.dmarcini.bt.homelight.utils.ProjectConst;
 import de.dmarcini.bt.homelight.utils.SelectPagesAdapter;
@@ -66,13 +68,15 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   final                IntentFilter       intentFilter = new IntentFilter();
   private final        CircularByteBuffer ringBuffer   = new CircularByteBuffer(1024);
   private              BluetoothConfig    btConfig     = new BluetoothConfig();
+  private final        Vector<String>     recCmdQueue  = new Vector<>();
   private BTReaderThread     readerThread;
+  private CmdQueueThread     cmdTread;
   private SelectPagesAdapter mSectionsPagerAdapter;
   private ViewPager          mViewPager;
   //
   // verwaltung des Lebenszyklus des Servicves
   //
-  private final ServiceConnection mServiceConnection  = new ServiceConnection()
+  private final ServiceConnection mServiceConnection = new ServiceConnection()
   {
 
     @Override
@@ -101,7 +105,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
 
   /**
    * Der Broadcast Reciver für BT Ereignisse
-   *
+   * <p/>
    * ACTION_GATT_CONNECTED: connected to a GATT server.
    * ACTION_GATT_DISCONNECTED: disconnected from a GATT server.
    * ACTION_GATT_SERVICES_DISCOVERED: discovered GATT services.
@@ -131,12 +135,19 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
           readerThread.doStop();
           readerThread = null;
         }
-        readerThread = new BTReaderThread(ringBuffer, CReciver);
+        recCmdQueue.clear();
+        readerThread = new BTReaderThread(ringBuffer, recCmdQueue);
         Thread rThread = new Thread(readerThread, "reader_thread");
         rThread.start();
         //
-        handler.onBTConnected();
-        askModulForRGBW();
+        // on connected erst weitergeben, wenn auch die RX und TX Kanäle vorhanden sind
+        // sonst passiert das erst beim Discovering
+        //
+        if( btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
+        {
+          handler.onBTConnected();
+          askModulForRGBW();
+        }
         invalidateOptionsMenu();
       }
       else if( BluetoothLowEnergyService.ACTION_GATT_DISCONNECTED.equals(action) )
@@ -154,6 +165,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
           ringBuffer.notifyAll();
         }
         readerThread = null;
+        recCmdQueue.clear();
         //
         handler.onBTDisconnected();
         invalidateOptionsMenu();
@@ -165,6 +177,15 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         //
         reconGattServices(btConfig.getBluetoothService().getSupportedGattServices());
         handler.onBTServicesRecived(btConfig.getBluetoothService().getSupportedGattServices());
+        //
+        // sind alle Voraussetzungen erfüllt, um ordentlich zu kommunizieren?
+        //
+        if( btConfig.isConnected() &&  btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
+        {
+          handler.onBTConnected();
+          askModulForType();
+          askModulForRGBW();
+        }
       }
       else if( BluetoothLowEnergyService.ACTION_DATA_AVAILABLE.equals(action) )
       {
@@ -279,7 +300,12 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     mViewPager = ( ViewPager ) findViewById(R.id.container);
     mViewPager.setAdapter(mSectionsPagerAdapter);
     mViewPager.addOnPageChangeListener(this);
-
+    //
+    // Kommando-Queue Tread aktivieren
+    //
+    cmdTread = new CmdQueueThread(recCmdQueue, CReciver);
+    Thread tr = new Thread(cmdTread, "cmd_queue_thread");
+    tr.start();
     //
     // Vorerst nur der Platzhalter für ein Spielerchen später
     //
@@ -310,6 +336,10 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     if( readerThread != null )
     {
       readerThread.doStop();
+    }
+    if( cmdTread != null )
+    {
+      cmdTread.doStop();
     }
   }
 
@@ -491,7 +521,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     // Kommando zusammenbauen
     kommandoString = String.format(Locale.ENGLISH, "%s%02X:%02X:%02X:%02X:%02X%s", ProjectConst.STX, ProjectConst.C_SETCOLOR, rgbw[ 0 ], rgbw[ 1 ], rgbw[ 2 ], rgbw[ 3 ], ProjectConst.ETX);
-    Log.d(TAG, "send ask for type =" + kommandoString);
+    Log.d(TAG, "send set RGBW =" + kommandoString);
     sendKdoToModule(kommandoString);
   }
 
@@ -553,7 +583,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   @Override
   public void onConfigurationChanged(Configuration newConfig)
   {
-    super.onConfigurationChanged( newConfig );
+    super.onConfigurationChanged(newConfig);
     if( newConfig.orientation == Configuration.ORIENTATION_PORTRAIT )
     {
       Log.i(TAG, "new orientation is PORTRAIT");

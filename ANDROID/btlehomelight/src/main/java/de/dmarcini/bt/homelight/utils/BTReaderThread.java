@@ -5,6 +5,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
+import java.util.Vector;
 
 import de.dmarcini.bt.homelight.HomeLightMainActivity;
 import de.dmarcini.bt.homelight.exceptions.BufferOverflowException;
@@ -16,8 +17,9 @@ public class BTReaderThread implements Runnable
 {
   private final String TAG = BTReaderThread.class.getSimpleName();
   private CircularByteBuffer                   ringBuffer;
-  private HomeLightMainActivity.CommandReciver cReciver;
+  //private HomeLightMainActivity.CommandReciver cReciver;
   private volatile boolean isRunning = true;
+  private Vector<String> cmdBuffer;
   public final     Object  syncObj   = new Object();
 
   /**
@@ -32,12 +34,12 @@ public class BTReaderThread implements Runnable
    * Konstruktor für den Reader-Thread
    *
    * @param ringBuffer Der Puffer für empfangene Daten
-   * @param cReciver   Callback für erkanntes Kommando
+   * @param cmdBuffer Das extraierte Kommando
    */
-  public BTReaderThread(CircularByteBuffer ringBuffer, HomeLightMainActivity.CommandReciver cReciver)
+  public BTReaderThread(CircularByteBuffer ringBuffer, Vector<String> cmdBuffer)
   {
     this.ringBuffer = ringBuffer;
-    this.cReciver = cReciver;
+    this.cmdBuffer = cmdBuffer;
   }
 
 
@@ -112,7 +114,13 @@ public class BTReaderThread implements Runnable
                 //
                 // Kommando gefunden => Sende an die App / das Fragment
                 //
-                cReciver.reciveCommand(readMessage);
+                cmdBuffer.add(readMessage);
+                synchronized( cmdBuffer )
+                {
+                  cmdBuffer.notifyAll();
+                }
+                //Log.v(TAG, "message delivered to queue!");
+                //cReciver.reciveCommand(readMessage);
                 start = ringBuffer.indexOf(ProjectConst.BSTX);
                 end = ringBuffer.indexOf(ProjectConst.BETX);
               }

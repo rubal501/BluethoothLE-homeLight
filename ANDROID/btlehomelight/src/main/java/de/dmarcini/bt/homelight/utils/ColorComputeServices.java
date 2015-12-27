@@ -20,8 +20,18 @@ class cRGBW
   }
 }
 
+
 public class ColorComputeServices
 {
+
+  /**
+   * Berechne aus RGB die korrigierte RGBW Version
+   *
+   * @param red Rot 0..255
+   * @param green Grün 0..255
+   * @param blue Blau 0..255
+   * @return der Korrigierte RGBW Farbwert
+   */
   public static cRGBW convertRGB2RGBW(int red, int green, int blue)
   {
     cRGBW  computedColors;

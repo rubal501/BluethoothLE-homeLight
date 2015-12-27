@@ -48,7 +48,7 @@ public class ProjectConst
   //
   // Stops scanning after 10 seconds.
   //
-  public static final long   SCAN_PERIOD           = 10000;
+  public static final long   SCAN_PERIOD           = 4000;
   //
   // Intend Merkmal (Ordnungsnummer)
   //

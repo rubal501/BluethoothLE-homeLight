@@ -25,6 +25,7 @@ package de.dmarcini.bt.homelight.fragments;
 
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -36,6 +37,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Date;
 import java.util.List;
@@ -52,7 +54,7 @@ import de.dmarcini.bt.homelight.utils.ProjectConst;
 /**
  * Created by dmarc on 22.08.2015.
  */
-public class DirectControlFragment extends Fragment implements IBtEventHandler, SeekBar.OnSeekBarChangeListener
+public class DirectControlFragment extends  AppFragment implements IBtEventHandler, SeekBar.OnSeekBarChangeListener
 {
   private static final String TAG  = DirectControlFragment.class.getSimpleName();
   private final        short[]  rgbw = new short[ProjectConst.C_ASKRGB_LEN-1];
@@ -75,8 +77,11 @@ public class DirectControlFragment extends Fragment implements IBtEventHandler, 
     try
     {
       args = getArguments();
-      pos = args.getInt(ProjectConst.ARG_SECTION_NUMBER, 0);
-      Log.v(TAG, String.format(Locale.ENGLISH, "Konstructor: id is %04d", pos));
+      if( args != null )
+      {
+        pos = args.getInt(ProjectConst.ARG_SECTION_NUMBER, 0);
+        Log.v(TAG, String.format(Locale.ENGLISH, "Konstructor: id is %04d", pos));
+      }
     }
     catch( NullPointerException ex )
     {
@@ -274,7 +279,19 @@ public class DirectControlFragment extends Fragment implements IBtEventHandler, 
           // Frage nach RGBW
           //
           case ProjectConst.C_ASKRGB:
-            setSeekBars(param);
+            final String[] pm = param;
+            //
+            // Das läßt sich nur von diesem Thread aus machen, daher dieses
+            //
+            seekRed.post(new Runnable()
+            {
+              public void run()
+              {
+                setSeekBars(pm);
+              }
+            });
+
+            //setSeekBars(param);
             Log.v(TAG, "RGBW from module recived! (should not done) <" + data + ">");
             break;
 
@@ -431,5 +448,23 @@ public class DirectControlFragment extends Fragment implements IBtEventHandler, 
     // Mal wieder zum Contoller senden!
     //
     mainService.setModulRGBW( rgbw );
+  }
+
+  @Override
+  public void onConfigurationChanged(Configuration newConfig)
+  {
+    super.onConfigurationChanged( newConfig );
+    if( newConfig.orientation == Configuration.ORIENTATION_PORTRAIT )
+    {
+      Log.i(TAG, "new orientation is PORTRAIT");
+    }
+    else if( newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE )
+    {
+      Log.i(TAG, "new orientation is LANDSCAPE");
+    }
+    else
+    {
+      Log.w(TAG, "new orientation is UNKNOWN");
+    }
   }
 }

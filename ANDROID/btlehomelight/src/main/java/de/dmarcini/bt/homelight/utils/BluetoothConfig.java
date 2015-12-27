@@ -27,6 +27,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.BroadcastReceiver;
 
+import java.util.Vector;
+
 import de.dmarcini.bt.homelight.service.BluetoothLowEnergyService;
 
 /**
