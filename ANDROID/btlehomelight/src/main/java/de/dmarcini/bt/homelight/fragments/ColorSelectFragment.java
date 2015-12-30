@@ -33,12 +33,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-import com.larswerkman.holocolorpicker.ColorPicker;
-import com.larswerkman.holocolorpicker.OpacityBar;
-import com.larswerkman.holocolorpicker.SaturationBar;
-import com.larswerkman.holocolorpicker.ValueBar;
+import android.widget.ToggleButton;
 
 import java.util.List;
 import java.util.Locale;
@@ -49,21 +46,25 @@ import de.dmarcini.bt.homelight.interrfaces.IBtEventHandler;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothConfig;
 import de.dmarcini.bt.homelight.utils.ProjectConst;
+import de.dmarcini.bt.homelight.views.ColorPicker;
 
 
 /**
  * Created by dmarc on 22.08.2015.
- * TODO: ValueBar für RGB-Helligkeit, Verknüpfung so lassen
- * TODO: SatuationBar für WHITE Helligkeit
  */
-public class ColorSelectFragment extends AppFragment implements IBtEventHandler, ColorPicker.OnColorChangedListener, OpacityBar.OnOpacityChangedListener/*, SaturationBar.OnSaturationChangedListener*/
+public class ColorSelectFragment extends AppFragment implements IBtEventHandler, ColorPicker.OnColorChangedListener, ColorPicker.OnColorSelectedListener, View.OnClickListener
 {
   private static final String  TAG  = ColorSelectFragment.class.getSimpleName();
   private final        short[] rgbw = new short[ ProjectConst.C_ASKRGB_LEN - 1 ];
+  private int              currColor;
   private long             timeToSend;
   private ColorPicker      picker;
-  private ValueBar         vBar;
-  private OpacityBar oBar;
+  private LinearLayout     accLinearLayout;
+  private ToggleButton     calToggleButton;
+  private ImageView        imageViewRed;
+  private ImageView        imageViewGreen;
+  private ImageView        imageViewBlue;
+  private ImageView        imageViewWhite;
   private BluetoothConfig  btConfig;
   private IMainAppServices mainService;
 
@@ -135,25 +136,27 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
       resId = R.layout.fragment_colors_wheel_port;
     }
     View rootView = inflater.inflate(resId, container, false);
-    picker = ( ColorPicker ) rootView.findViewById(R.id.picker);
-    vBar = ( ValueBar ) rootView.findViewById(R.id.vbar);
-    oBar = (OpacityBar) rootView.findViewById(R.id.obar);
-    picker.addValueBar(vBar);
+    picker = ( ColorPicker ) rootView.findViewById(R.id.colorPicker);
+    accLinearLayout = ( LinearLayout ) rootView.findViewById(R.id.accLinearLayout);
+    calToggleButton = ( ToggleButton ) rootView.findViewById(R.id.RGBWToggleButton);
+    imageViewRed = ( ImageView ) rootView.findViewById((R.id.imageViewRed));
+    imageViewGreen = ( ImageView ) rootView.findViewById((R.id.imageViewGreen));
+    imageViewBlue = ( ImageView ) rootView.findViewById((R.id.imageViewBlue));
+    imageViewWhite = ( ImageView ) rootView.findViewById((R.id.imageViewWhite));
     //
     // Farbe setzen (Voreinstellung)
     //
     picker.setColor(0xFFFFFF);
-    oBar.setColor(0xFFFFFFFF);
-    picker.setOldCenterColor(picker.getColor());
+    calToggleButton.setChecked(true);
     //
     // Change Listener setzen
     //
     picker.setOnColorChangedListener(this);
-    oBar.setOnOpacityChangedListener( this );
+    picker.setOnColorSelectedListener(this);
+    calToggleButton.setOnClickListener(this);
     //
     // "alte" Farbe nicht setzen/anzeigen
     //
-    picker.setShowOldCenterColor(false);
     setColorPropertysFromConfig();
     setHasOptionsMenu(true);
     Log.v(TAG, "onCreateView...OK");
@@ -186,30 +189,34 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
     rootView.setOrientation(orientation);
     // neue Resource laden (wegen der Dimensionen, ist dort leicher definierbar
     tempView = ( LinearLayout ) getActivity().getLayoutInflater().inflate(resId, ( ViewGroup ) rootView.getParent(), false);
-    picker = ( ColorPicker ) tempView.findViewById(R.id.picker);
-    vBar = ( ValueBar ) rootView.findViewById(R.id.vbar);
-    oBar = (OpacityBar) rootView.findViewById(R.id.obar);
+    picker = ( ColorPicker ) tempView.findViewById(R.id.colorPicker);
+    accLinearLayout = ( LinearLayout ) tempView.findViewById(R.id.accLinearLayout);
+    calToggleButton = ( ToggleButton ) tempView.findViewById(R.id.RGBWToggleButton);
+    imageViewRed = ( ImageView ) tempView.findViewById((R.id.imageViewRed));
+    imageViewGreen = ( ImageView ) tempView.findViewById((R.id.imageViewGreen));
+    imageViewBlue = ( ImageView ) tempView.findViewById((R.id.imageViewBlue));
+    imageViewWhite = ( ImageView ) tempView.findViewById((R.id.imageViewWhite));
     //
     // Vies in das Layout einfügen
     //
     tempView.removeAllViews();
+    tempView.invalidate();
     rootView.addView(picker);
+    rootView.addView(accLinearLayout);
     //
     // Farbe setzen (Voreinstellung)
     //
     picker.setColor(0xFFFFFF);
-    oBar.setColor(0xFFFFFFFF);
-    picker.setOldCenterColor(picker.getColor());
+    calToggleButton.setChecked(true);
     //
     // Change Listener setzen
     //
     picker.setOnColorChangedListener(this);
-    oBar.setOnOpacityChangedListener( this );
-
+    picker.setOnColorSelectedListener(this);
+    calToggleButton.setOnClickListener(this);
     //
     // "alte" Farbe nicht setzen/anzeigen
     //
-    picker.setShowOldCenterColor(false);
     setColorPropertysFromConfig();
     setHasOptionsMenu(true);
 
@@ -221,10 +228,8 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
     if( btConfig != null && btConfig.isConnected() )
     {
       picker.setEnabled(true);
-      vBar.setEnabled(true);
     }
     picker.setEnabled(false);
-    vBar.setEnabled(false);
   }
 
 
@@ -263,24 +268,73 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
   @Override
   public void onColorChanged(int color)
   {
-    Log.i(TAG, String.format(Locale.ENGLISH, "color changed to %08X", color));
-    rgbw[ 0 ] = ( short ) ((color >> 16) & 0xff);
-    rgbw[ 1 ] = ( short ) ((color >> 8) & 0xff);
-    rgbw[ 2 ] = ( short ) (color & 0xff);
-    //rgbw[3] = nicht verändert;
+    Log.v(TAG, String.format(Locale.ENGLISH, "color changed to %08X", color));
+    currColor = color;
+    if( calToggleButton.isChecked() )
+    {
+      // Kalibrierte Werte verschicken
+      short[] col = picker.getColorRGBW();
+      rgbw[ 0 ] = col[ 0 ];
+      rgbw[ 1 ] = col[ 1 ];
+      rgbw[ 2 ] = col[ 2 ];
+      rgbw[ 3 ] = col[ 3 ];
+    }
+    else
+    {
+      // Rohe Werte verschicken
+      rgbw[ 0 ] = ( short ) ((color >> 16) & 0xff);
+      rgbw[ 1 ] = ( short ) ((color >> 8) & 0xff);
+      rgbw[ 2 ] = ( short ) (color & 0xff);
+      rgbw[ 3 ] = 0;
+    }
+    setPseudoPixels(currColor);
     //
     if( timeToSend < System.currentTimeMillis() && mainService != null )
     {
       //
       // Mal wieder zum Contoller senden!
       //
-      mainService.setModulRGBW(rgbw);
+      if( calToggleButton.isChecked() )
+      {
+        mainService.setModulCalibredRGBW(rgbw);
+      }
+      else
+      {
+        mainService.setModulRawRGBW(rgbw);
+      }
       //
       // Neue Deadline setzen
       //
       timeToSend = System.currentTimeMillis() + ProjectConst.TIMEDIFF_TO_SEND;
     }
   }
+
+  private void setPseudoPixels(int color)
+  {
+    //
+    // Kalibrierte Werte (RGBW)?
+    //
+    if( calToggleButton.isChecked() )
+    {
+      // Ja, kalibriert!
+      short[] col = picker.getColorRGBW();
+      imageViewRed.setBackgroundColor(0xff000000 | ((( int ) (col[ 0 ])) << 16));
+      imageViewGreen.setBackgroundColor(0xff000000 | ((( int ) (col[ 1 ])) << 8));
+      imageViewBlue.setBackgroundColor(0xff000000 | (( int ) col[ 2 ]));
+      // undurchsichtig! grau für intensitaet
+      imageViewWhite.setBackgroundColor(0xff000000 | (( int ) (col[ 3 ])) << 16 | (( int ) (col[ 3 ])) << 8 | ( int ) (col[ 3 ]));
+    }
+    else
+    {
+      // nein, Roh RGB
+      imageViewRed.setBackgroundColor(color & 0xffff0000);
+      imageViewGreen.setBackgroundColor(color & 0xff00ff00);
+      imageViewBlue.setBackgroundColor(color & 0xff0000ff);
+      // durchsichtig!
+      imageViewWhite.setBackgroundColor(0xff000000);
+    }
+  }
+
 
   @Override
   public void onBTConnected()
@@ -362,7 +416,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
             //
             // Frage nach RGBW
             //
-            case ProjectConst.C_ASKRGB:
+            case ProjectConst.C_ASKRAWRGB:
               Log.v(TAG, "RGBW from module recived! <" + data + ">");
               final String[] pm = param;
               //
@@ -418,7 +472,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
       //
       Log.v(TAG, "BT Device is connected and ready....");
       onServiceConnected();
-      mainService.askModulForRGBW();
+      mainService.askModulForRawRGBW();
     }
     else if( btConfig.isConnected() )
     {
@@ -451,13 +505,14 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
     }
     changeLayoutOrientation(newConfig.orientation);
     setShouldNewCreated(true);
+    // die Farbe auch wieder einstellen!
+    picker.setColor(currColor);
     (( IMainAppServices ) getActivity()).switchToFragment(ProjectConst.PAGE_COLOR_CIRCLE);
   }
 
 
   private void setColorWheel(String[] param)
   {
-    int color = 0;
     //
     if( param.length < ProjectConst.C_ASKRGB_LEN )
     {
@@ -483,30 +538,73 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
     // hier sollten die Parameter gesetzt sein
     //
     Log.i(TAG, "set color wheel...");
-    color = ((rgbw[ 0 ] << 16) | (rgbw[ 1 ] << 8) | (rgbw[ 2 ]));
-    picker.setColor(color);
-    oBar.setOpacity(rgbw[ 3 ]);
+    currColor = ((rgbw[ 0 ] << 16) | (rgbw[ 1 ] << 8) | (rgbw[ 2 ]));
+    picker.setColor(currColor);
+    setPseudoPixels(currColor);
   }
 
 
   @Override
-  public void onOpacityChanged(int opacity)
+  public void onColorSelected(int color)
   {
-    rgbw[ 3 ] = ( short ) (opacity);
-    Log.i(TAG, String.format(Locale.ENGLISH, "white changed to %08X %02X", opacity, rgbw[ 3 ]));
+    short calrgbw[] = new short[ 4 ];
+
+    Log.v(TAG, String.format(Locale.ENGLISH, "color selected to %08X", color));
+    currColor = color;
+    if( calToggleButton.isChecked() )
+    {
+      // Kalibrierte Werte verschicken
+      short[] col = picker.getColorRGBW();
+      calrgbw[ 0 ] = col[ 0 ];
+      calrgbw[ 1 ] = col[ 1 ];
+      calrgbw[ 2 ] = col[ 2 ];
+      calrgbw[ 3 ] = col[ 3 ];
+    }
+    // Rohe Werte auch verschicken
+    rgbw[ 0 ] = ( short ) ((color >> 16) & 0xff);
+    rgbw[ 1 ] = ( short ) ((color >> 8) & 0xff);
+    rgbw[ 2 ] = ( short ) (color & 0xff);
+    rgbw[ 3 ] = 0;
+    setPseudoPixels(currColor);
     //
-    if( (timeToSend < System.currentTimeMillis() || rgbw[ 3 ] == 0 ) && mainService != null )
+    if( mainService != null )
     {
       //
       // Mal wieder zum Contoller senden!
       //
-      mainService.setModulRGBW(rgbw);
+      if( calToggleButton.isChecked() )
+      {
+        mainService.setModulCalibredRGBW(calrgbw);
+        mainService.setModulRAWRGBWStore(rgbw);
+      }
+      else
+      {
+        mainService.setModulRawRGBW(rgbw);
+      }
       //
       // Neue Deadline setzen
       //
       timeToSend = System.currentTimeMillis() + ProjectConst.TIMEDIFF_TO_SEND;
     }
+  }
 
-    oBar.setOpacity(opacity);
+  @Override
+  public void onClick(View clickedView)
+  {
+    if( clickedView instanceof ToggleButton )
+    {
+      if( (( ToggleButton ) clickedView).equals(calToggleButton) )
+      {
+        if( (( ToggleButton ) clickedView).isChecked() )
+        {
+          Log.i(TAG, "Button CHECKED");
+        }
+        else
+        {
+          Log.i(TAG, "Button UNCHECKED");
+        }
+        onColorSelected(picker.getColor());
+      }
+    }
   }
 }

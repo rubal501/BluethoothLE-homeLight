@@ -46,16 +46,34 @@ public interface IMainAppServices
   void askModulForName();
 
   /**
-   * Frage das Modul nach der aktuellen RGBW Einstellung
+   * Frage das Modul nach der aktuellen RGBW Einstellung (Roh)
    */
-  public void askModulForRGBW();
+  public void askModulForRawRGBW();
 
   /**
-   * Setze im Modul die neuen Einstellungen
+   * Frage das Modul nach der aktuellen RGBW Einstellung (Kalibriert)
+   */
+  public void askModulForCalibratedRGBW();
+
+  /**
+   * Setze im Modul die neuen Einstellungen für LED (ROH/direkt)
    *
    * @param rgbw Array für RGBW
    */
-  void setModulRGBW( short[] rgbw );
+  void setModulRawRGBW(short[] rgbw);
+
+  /**
+   * Setze Modul RGBW unkalibriert (wird nur gespeichert als Basis für kalibrierte Daten )
+   *
+   * @param rgbw
+   */
+  void setModulRAWRGBWStore(short[] rgbw);
+
+  /**
+   * Setze Modul RGBW kalibriert (wird angezeigt)
+   * @param rgbw
+   */
+  void setModulCalibredRGBW( short[] rgbw );
 
   /**
    * Schalte die LED AUS/AN

@@ -146,7 +146,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         if( btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
         {
           handler.onBTConnected();
-          askModulForRGBW();
+          askModulForRawRGBW();
         }
         invalidateOptionsMenu();
       }
@@ -180,11 +180,11 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         //
         // sind alle Voraussetzungen erfüllt, um ordentlich zu kommunizieren?
         //
-        if( btConfig.isConnected() &&  btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
+        if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
         {
           handler.onBTConnected();
           askModulForType();
-          askModulForRGBW();
+          askModulForRawRGBW();
         }
       }
       else if( BluetoothLowEnergyService.ACTION_DATA_AVAILABLE.equals(action) )
@@ -487,6 +487,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     String kommandoString;
     //
     // Kommando zusammenbauen
+    //
     kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKTYP, ProjectConst.ETX);
     Log.d(TAG, "send ask for type =" + kommandoString);
     sendKdoToModule(kommandoString);
@@ -498,30 +499,69 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     String kommandoString;
     //
     // Kommando zusammenbauen
+    //
     kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKNAME, ProjectConst.ETX);
     Log.d(TAG, "send ask for name =" + kommandoString);
     sendKdoToModule(kommandoString);
   }
 
   @Override
-  public void askModulForRGBW()
+  public void askModulForRawRGBW()
   {
     String kommandoString;
     //
     // Kommando zusammenbauen
-    kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKRGB, ProjectConst.ETX);
-    Log.d(TAG, "send ask for rgbw =" + kommandoString);
+    //
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKRAWRGB, ProjectConst.ETX);
+    Log.d(TAG, "send ask for RGBW (raw) =" + kommandoString);
     sendKdoToModule(kommandoString);
   }
 
   @Override
-  public void setModulRGBW(short[] rgbw)
+  public void askModulForCalibratedRGBW()
   {
     String kommandoString;
     //
     // Kommando zusammenbauen
+    //
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKCALRGBW, ProjectConst.ETX);
+    Log.d(TAG, "send ask for RGBW (cal) =" + kommandoString);
+    sendKdoToModule(kommandoString);
+  }
+
+  @Override
+  public void setModulRawRGBW(short[] rgbw)
+  {
+    String kommandoString;
+    //
+    // Kommando zusammenbauen
+    //
     kommandoString = String.format(Locale.ENGLISH, "%s%02X:%02X:%02X:%02X:%02X%s", ProjectConst.STX, ProjectConst.C_SETCOLOR, rgbw[ 0 ], rgbw[ 1 ], rgbw[ 2 ], rgbw[ 3 ], ProjectConst.ETX);
     Log.d(TAG, "send set RGBW =" + kommandoString);
+    sendKdoToModule(kommandoString);
+  }
+
+  @Override
+  public void setModulRAWRGBWStore(short[] rgbw)
+  {
+    String kommandoString;
+    //
+    // Kommando zusammenbauen
+    //
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X:%02X:%02X:%02X:%02X%s", ProjectConst.STX, ProjectConst.C_SETCOLSAVE, rgbw[ 0 ], rgbw[ 1 ], rgbw[ 2 ], rgbw[ 3 ], ProjectConst.ETX);
+    Log.d(TAG, "send set RGBW (raw/store) =" + kommandoString);
+    sendKdoToModule(kommandoString);
+  }
+
+  @Override
+  public void setModulCalibredRGBW(short[] rgbw)
+  {
+    String kommandoString;
+    //
+    // Kommando zusammenbauen
+    //
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X:%02X:%02X:%02X:%02X%s", ProjectConst.STX, ProjectConst.C_SETCALCOLOR, rgbw[ 0 ], rgbw[ 1 ], rgbw[ 2 ], rgbw[ 3 ], ProjectConst.ETX);
+    Log.d(TAG, "send set RGBW (calibrated) =" + kommandoString);
     sendKdoToModule(kommandoString);
   }
 
@@ -531,6 +571,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     String kommandoString;
     //
     // Kommando zusammenbauen
+    //
     kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ONOFF, ProjectConst.ETX);
     Log.d(TAG, "send light on/off =" + kommandoString);
     sendKdoToModule(kommandoString);
@@ -539,7 +580,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   /**
    * Sende den Kommandostring (incl ETX und STX) zum Modul, wenn Verbunden
    *
-   * @param kdo String mit ETC udn STX
+   * @param kdo String mit ETC und STX
    */
   private void sendKdoToModule(final String kdo)
   {

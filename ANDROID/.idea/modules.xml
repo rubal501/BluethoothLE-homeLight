@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ANDROID.iml" filepath="$PROJECT_DIR$/ANDROID.iml" />
       <module fileurl="file://$PROJECT_DIR$/HoloColorPicker/HoloColorPicker.iml" filepath="$PROJECT_DIR$/HoloColorPicker/HoloColorPicker.iml" />
-      <module fileurl="file://$PROJECT_DIR$/androidColorPickermaster/androidColorPickermaster.iml" filepath="$PROJECT_DIR$/androidColorPickermaster/androidColorPickermaster.iml" />
       <module fileurl="file://$PROJECT_DIR$/btlehomelight/btlehomelight.iml" filepath="$PROJECT_DIR$/btlehomelight/btlehomelight.iml" />
       <module fileurl="file://$PROJECT_DIR$/libary/libary.iml" filepath="$PROJECT_DIR$/libary/libary.iml" />
       <module fileurl="file://$PROJECT_DIR$/testcolorpicker/testcolorpicker.iml" filepath="$PROJECT_DIR$/testcolorpicker/testcolorpicker.iml" />

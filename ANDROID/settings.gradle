@@ -1,2 +1,1 @@
 include ':btlehomelight', ':testcolorpicker', 'HoloColorPicker', ':libary'
-include ':androidColorPickermaster'

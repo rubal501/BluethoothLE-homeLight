@@ -82,9 +82,12 @@ public class ProjectConst
   public static final byte   C_UNKNOWN             = -1;
   public static final byte   C_ASKTYP              = 0x00;
   public static final byte   C_ASKNAME             = 0x01;
-  public static final byte   C_ASKRGB              = 0x02;
-  public static final byte   C_SETCOLOR            = 0x03;
-  public static final byte   C_ONOFF               = 0x04;
+  public static final byte   C_ASKRAWRGB           = 0x02;
+  public static final byte   C_ASKCALRGBW          = 0x03;
+  public static final byte   C_SETCOLOR            = 0x04;
+  public static final byte   C_SETCOLSAVE          = 0x05;
+  public static final byte   C_SETCALCOLOR         = 0x06;
+  public static final byte   C_ONOFF               = -2;
   //
   // Länge der Kommandoketten
   //

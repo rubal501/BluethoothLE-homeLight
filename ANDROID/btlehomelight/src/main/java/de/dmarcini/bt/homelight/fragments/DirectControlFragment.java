@@ -27,7 +27,6 @@ import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,9 +36,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -278,7 +275,7 @@ public class DirectControlFragment extends  AppFragment implements IBtEventHandl
           //
           // Frage nach RGBW
           //
-          case ProjectConst.C_ASKRGB:
+          case ProjectConst.C_ASKRAWRGB:
             final String[] pm = param;
             //
             // Das läßt sich nur von diesem Thread aus machen, daher dieses
@@ -377,7 +374,7 @@ public class DirectControlFragment extends  AppFragment implements IBtEventHandl
       //
       Log.v(TAG, "BT Device is connected and ready....");
       onServiceConnected();
-      mainService.askModulForRGBW();
+      mainService.askModulForRawRGBW();
     }
     else if( btConfig.isConnected() )
     {
@@ -423,7 +420,7 @@ public class DirectControlFragment extends  AppFragment implements IBtEventHandl
         //
         // Mal wieder zum Contoller senden!
         //
-        mainService.setModulRGBW( rgbw );
+        mainService.setModulRawRGBW(rgbw);
         //
         // Neue Deadline setzen
         //
@@ -447,7 +444,7 @@ public class DirectControlFragment extends  AppFragment implements IBtEventHandl
     //
     // Mal wieder zum Contoller senden!
     //
-    mainService.setModulRGBW( rgbw );
+    mainService.setModulRawRGBW(rgbw);
   }
 
   @Override

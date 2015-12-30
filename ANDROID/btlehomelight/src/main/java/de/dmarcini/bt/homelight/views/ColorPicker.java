@@ -38,21 +38,25 @@ import android.graphics.SweepGradient;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.Locale;
+
+import de.dmarcini.bt.homelight.R;
+
 public class ColorPicker extends View
 {
-
+  private static final String TAG = ColorPicker.class.getSimpleName();
   /**
    * Display Parameter in Prozent
    */
   private final int     paramOuterPadding     = 2; //** outer padding of the whole color picker view
   private final int     paramInnerPadding     = 5; //** distance between value slider wheel and inner color wheel
-  private final int     paramValueSliderWidth = 10; //** width of the value slider
+  private final int     paramValueSliderWidth = 16; //** width of the value slider
   private final int     paramArrowPointerSize = 4; //** size of the arrow pointer; set to 0 to hide the pointer
   private final float[] oldColorHSV           = new float[]{0f, 0f, 1f};
-  private final short[] RGBW                  = new short[]{128, 128, 128, 128};
   private Paint                   colorWheelPaint;
   private Paint                   valueSliderPaint;
   private Paint                   colorViewPaint;
@@ -285,9 +289,11 @@ public class ColorPicker extends View
     gradientRotationMatrix = new Matrix();
     gradientRotationMatrix.preRotate(270, width / 2, height / 2);
     //
+    colorViewPath.reset();
     colorViewPath.arcTo(outerWheelRect, 270, -180);
     colorViewPath.arcTo(innerWheelRect, 90, 180);
     //
+    valueSliderPath.reset();
     valueSliderPath.arcTo(outerWheelRect, 270, 180);
     valueSliderPath.arcTo(innerWheelRect, 90, -180);
   }
@@ -521,58 +527,50 @@ public class ColorPicker extends View
    *
    * @return RGBW-Wert, nicht veränderbar
    */
-  public final short[] getColorRGBW()
+  public short[] getColorRGBW()
   {
-    double maxVal;
+    short[] rgbw = new short[4];
+    //double maxVal;
     double minVal;
-    double k;
-    double r, g, b, w;
+    double Ri, Gi, Bi, Ro, Go, Bo, Wo;
     int    color;
 
     color = Color.HSVToColor(currColorHSV);
     //
+    // SIMPEL Methode
+    //
+
+    //
     // Berechnug in double
     //
-    r = ( double ) Color.red(color);
-    g = ( double ) Color.green(color);
-    b = ( double ) Color.blue(color);
+    Ri = ( double ) Color.red(color);
+    Gi = ( double ) Color.green(color);
+    Bi = ( double ) Color.blue(color);
     //
     // Bestimme maximal und Minimal Wert der Farben
     //
-    maxVal = Math.max(r, Math.max(g, b));
-    minVal = Math.min(r, Math.min(g, b));
+    //maxVal = Math.max(Ri, Math.max(Gi, Bi));
+    minVal = Math.min(Ri, Math.min(Gi, Bi));
     //
-    // White - Output bestimmen
+    // Weisswert
     //
-    if( (minVal / maxVal) < 0.5f )
-    {
-      //
-      // in diesem Falle berechne den Wert von Weiss
-      //
-      w = (minVal * maxVal) / (maxVal - minVal);
-    }
-    else
-    {
-      //
-      // hier ist das einfach der Maximalwert der Farben
-      //
-      w = Math.round(maxVal);
-    }
+    //double startVal = (255 - Math.round(100 * ((maxVal - minVal) / maxVal)));
+    //double averageVal = ((Color.red(color) + Color.green(color) + Color.blue(color)) / 3);
+    // Variante 1
+    //Wo = Math.floor( startVal / 255 * averageVal);
+    // Variante 2
+    Wo = Math.floor( minVal );
+    Ro = Ri >= Wo ? Math.floor(Ri - Wo) : 0.0;
+    Go = Gi >= Wo ? Math.floor( Gi - Wo ) : 0.0;
+    Bo = Bi >= Wo ? Math.floor( Bi - Wo ) : 0.0;
     //
-    // ab hier könnte es schon klappen, aber die Helligeit stimmt nicht
-    // daher jetzt die H_elligkeit berechnen
-    // (Es handelt sich um eine Matrix)
+    // Werte als Short (wenn > 0  in Array sichern)
     //
-    k = (w + maxVal) / minVal;
-    //
-    // Helligkeit korrigieren und in Array sichern
-    //
-    RGBW[ 0 ] = ( short ) (Math.round((k * r) - w) & 0xff);
-    RGBW[ 1 ] = ( short ) (Math.round((k * g) - w) & 0xff);
-    RGBW[ 2 ] = ( short ) (Math.round((k * b) - w) & 0xff);
-    RGBW[ 3 ] = ( short ) (Math.round(w) & 0xff);
-    //
-    return (RGBW);
+    rgbw[ 0 ] = ( short ) (Math.round( Ro ) & 0xff);
+    rgbw[ 1 ] = ( short ) (Math.round( Go ) & 0xff);
+    rgbw[ 2 ] = ( short ) (Math.round( Bo ) & 0xff);
+    rgbw[ 3 ] = ( short ) (Math.round(Wo) & 0xff);
+    return (rgbw);
   }
 
   /**
