@@ -46,10 +46,10 @@ void SysConfig::SystemPreInit( EEPROMConfig& theConfig )
   //
   // PWM Wert (Helligkeit) setzen
   //
-  analogWrite( PWM_RED, theConfig.getRed() );
-  analogWrite( PWM_GREEN, theConfig.getGreen() );
-  analogWrite( PWM_BLUE, theConfig.getBlue() );
-  analogWrite( PWM_WHITE, theConfig.getWhite() );
+  analogWrite( PWM_RED, theConfig.getCalRed() );
+  analogWrite( PWM_GREEN, theConfig.getCalGreen() );
+  analogWrite( PWM_BLUE, theConfig.getCalBlue() );
+  analogWrite( PWM_WHITE, theConfig.getCalWhite() );
 }
 
 void SysConfig::SystemInit( SoftwareSerial& mySerial, Communication& myComm, EEPROMConfig& theConfig )
@@ -75,13 +75,13 @@ void SysConfig::SystemInit( SoftwareSerial& mySerial, Communication& myComm, EEP
   delay(300);
 #ifdef DEBUG
   Serial.print("ROT: ");
-  Serial.println( theConfig.getRed(), HEX );
+  Serial.println( theConfig.getCalRed(), HEX );
   Serial.print("GRUEN: ");
-  Serial.println( theConfig.getGreen(), HEX );
+  Serial.println( theConfig.getCalGreen(), HEX );
   Serial.print("BLAU: ");
-  Serial.println( theConfig.getBlue(), HEX );
+  Serial.println( theConfig.getCalBlue(), HEX );
   Serial.print("WEISS: ");
-  Serial.println( theConfig.getWhite(), HEX );
+  Serial.println( theConfig.getCalWhite(), HEX );
 #endif
   //
   // Verbindungsgeschwindigkeit checken,

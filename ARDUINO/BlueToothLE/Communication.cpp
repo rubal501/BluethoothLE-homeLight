@@ -285,8 +285,8 @@ void Communication::sendRGBW( SoftwareSerial& comm, byte* rgbw )
 {
   String cmd;
   
-  cmd += nibbleToHex( C_ASKRGB >> 4 );
-  cmd += nibbleToHex( C_ASKRGB );
+  cmd += nibbleToHex( C_ASKRGBW >> 4 );
+  cmd += nibbleToHex( C_ASKRGBW );
   for( int i=0; i<4; i++ )
   {
     cmd += ':';

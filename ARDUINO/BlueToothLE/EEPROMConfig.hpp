@@ -18,7 +18,7 @@
 struct StoreStruct 
 {
   //
-  // Hier werden die Starteinstellugnen des 
+  // Hier werden die Starteinstellungen des 
   // Programmes gesichert
   //
   char version[6];
@@ -28,6 +28,10 @@ struct StoreStruct
   // der LED's
   //
   byte red,green,blue,white;
+  //
+  // die angezeigten Helligkeitswerte, ggf kalibriert
+  //
+  byte c_red,c_green,c_blue,c_white;
 };
 
 class EEPROMConfig
@@ -52,6 +56,10 @@ public:
   byte getGreen(void);
   byte getBlue(void);
   byte getWhite(void);
+  byte getCalRed(void);
+  byte getCalGreen(void);
+  byte getCalBlue(void);
+  byte getCalWhite(void);
   String getModuleName(void);
   //
   // Setter für Konfig
@@ -60,6 +68,10 @@ public:
   void setGreen(byte green);
   void setBlue(byte blue);
   void setWhite(byte white);
+  void setCalRed(byte red);
+  void setCalGreen(byte green);
+  void setCalBlue(byte blue);
+  void setCalWhite(byte white);
   void setModuleName(String& mName);
   
 protected:

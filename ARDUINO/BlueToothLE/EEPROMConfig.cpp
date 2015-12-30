@@ -10,7 +10,7 @@
 #include "config.hpp"
 #include "EEPROMConfig.hpp"
 
-static String verString             = "BLE001";
+static String verString             = "BLE002";
 const static unsigned int verLength  = 6;
 const static unsigned int CONFIG_START  = 32;
 
@@ -133,11 +133,27 @@ byte EEPROMConfig::getRed(void)
 }
 
 //
+// gespeicherter Wert für rot
+//
+byte EEPROMConfig::getCalRed(void)
+{
+  return( storedConfig.c_red);
+}
+
+//
 // gespeicherter Wert für grün
 //
 byte EEPROMConfig::getGreen(void)
 {
   return( storedConfig.green);
+}
+
+//
+// gespeicherter Wert für grün
+//
+byte EEPROMConfig::getCalGreen(void)
+{
+  return( storedConfig.c_green);
 }
 
 //
@@ -149,11 +165,27 @@ byte EEPROMConfig::getBlue(void)
 }
 
 //
+// gespeicherter Wert für blau
+//
+byte EEPROMConfig::getCalBlue(void)
+{
+  return( storedConfig.c_blue);
+}
+
+//
 // gespeicherter Wert für weiss
 //
 byte EEPROMConfig::getWhite(void)
 {
   return( storedConfig.white);
+}
+
+//
+// gespeicherter Wert für weiss
+//
+byte EEPROMConfig::getCalWhite(void)
+{
+  return( storedConfig.c_white);
 }
 
 //
@@ -176,12 +208,30 @@ void EEPROMConfig::setRed(byte red)
 }
 
 //
+// setzte rotwert in die Konfiguration
+//
+void EEPROMConfig::setCalRed(byte red)
+{
+  wasChanged = true;
+  storedConfig.c_red = red;
+}
+
+//
 // setzte Grünwert in die Konfiguration
 //
 void EEPROMConfig::setGreen(byte green)
 {
   wasChanged = true;
   storedConfig.green = green;
+}
+
+//
+// setzte Grünwert in die Konfiguration
+//
+void EEPROMConfig::setCalGreen(byte green)
+{
+  wasChanged = true;
+  storedConfig.c_green = green;
 }
 
 //
@@ -194,12 +244,30 @@ void EEPROMConfig::setBlue(byte blue)
 }
 
 //
+// setzte Blauwert in die Konfiguration
+//
+void EEPROMConfig::setCalBlue(byte blue)
+{
+  wasChanged = true;
+  storedConfig.c_blue = blue;
+}
+
+//
 // setze weiiswert in die Konfiguration
 //
 void EEPROMConfig::setWhite(byte white)
 {
   wasChanged = true;
   storedConfig.white = white;
+}
+
+//
+// setze weiiswert in die Konfiguration
+//
+void EEPROMConfig::setCalWhite(byte white)
+{
+  wasChanged = true;
+  storedConfig.c_white = white;
 }
 
 //

@@ -111,31 +111,84 @@ void loop()
         break;
         
       // Frage nach RGBW im Modul 0x02
-      case C_ASKRGB:
+      // die unkalibrierten Werte an die App
+      case C_ASKRGBW:
         kdo[0] = theConfig.getRed();
         kdo[1] = theConfig.getGreen();
         kdo[2] = theConfig.getBlue();
         kdo[3] = theConfig.getWhite();
         myComm->sendRGBW( mySerial, kdo );
         #ifdef DEBUG
-        Serial.println("Sende RGBW an Master..." );
+        Serial.println("Sende RGBW (raw) an Master..." );
         #endif
         break;
       
-      // Gib die Farbe an die LED aus 0x03
+      // Frage nach RGBW im Modul 0x03
+      case C_ASKCALRGBW:
+        kdo[0] = theConfig.getCalRed();
+        kdo[1] = theConfig.getCalGreen();
+        kdo[2] = theConfig.getCalBlue();
+        kdo[3] = theConfig.getCalWhite();
+        myComm->sendRGBW( mySerial, kdo );
+        #ifdef DEBUG
+        Serial.println("Sende RGBW (cal) an Master..." );
+        #endif
+        break;
+      
+      // Gib die Farbe an die LED aus 0x04
+      // Nativ, ohne Kalibrierung
       case C_SETCOLOR:
         isLightsOFF = false;
         theConfig.setRed( kdo[1] );
         theConfig.setGreen( kdo[2] );
         theConfig.setBlue( kdo[3] );
         theConfig.setWhite( kdo[4] );
+        // überschreibe die Kalibrierten Werte auch
+        theConfig.setCalRed( kdo[1] );
+        theConfig.setCalGreen( kdo[2] );
+        theConfig.setCalBlue( kdo[3] );
+        theConfig.setCalWhite( kdo[4] );
         analogWrite(PWM_RED, kdo[1]);
         analogWrite(PWM_GREEN, kdo[2]);
         analogWrite(PWM_BLUE, kdo[3]);
         analogWrite(PWM_WHITE, kdo[4]);
         #ifdef DEBUG
-        Serial.println("SET COLOR emfpangen..." );
+        Serial.println("SET COLOR (raw) emfpangen..." );
         #endif        
+        // in frühestens 2 Sekunden sichern
+        saveTime = millis() + SAVEDELAY;
+        break;
+
+      // Speichere die Farbe im EEPROM 0x05
+      // die unkalibrierten Werte für die App, als Basis für die Grundeinstellung
+      // bei ASKRGBW
+      case C_SETCOLSAVE:
+        theConfig.setRed( kdo[1] );
+        theConfig.setGreen( kdo[2] );
+        theConfig.setBlue( kdo[3] );
+        theConfig.setWhite( kdo[4] );
+        #ifdef DEBUG
+        Serial.println("SET COLOR SAVE emfpangen..." );
+        #endif
+        // in frühestens 2 Sekunden sichern
+        saveTime = millis() + SAVEDELAY;
+        break;
+
+      // Zeige die Farbe Kalibriert direkt an
+      // direakt nach dem Kommando C_SETCOLSAVE von der App
+      case C_SETCALCOLOR:
+        isLightsOFF = false;
+        theConfig.setCalRed( kdo[1] );
+        theConfig.setCalGreen( kdo[2] );
+        theConfig.setCalBlue( kdo[3] );
+        theConfig.setCalWhite( kdo[4] );
+        analogWrite(PWM_RED, kdo[1]);
+        analogWrite(PWM_GREEN, kdo[2]);
+        analogWrite(PWM_BLUE, kdo[3]);
+        analogWrite(PWM_WHITE, kdo[4]);
+        #ifdef DEBUG
+        Serial.println("SET COLOR (cal) emfpangen..." );
+        #endif
         // in frühestens 2 Sekunden sichern
         saveTime = millis() + SAVEDELAY;
         break;
@@ -148,10 +201,10 @@ void loop()
           Serial.println("LEDs ON..." );
           #endif
           // Die Dinger an machen
-          analogWrite( PWM_RED, theConfig.getRed() );
-          analogWrite( PWM_GREEN, theConfig.getGreen() );
-          analogWrite( PWM_BLUE, theConfig.getBlue() );
-          analogWrite( PWM_WHITE, theConfig.getWhite() );
+          analogWrite( PWM_RED, theConfig.getCalRed() );
+          analogWrite( PWM_GREEN, theConfig.getCalGreen() );
+          analogWrite( PWM_BLUE, theConfig.getCalBlue() );
+          analogWrite( PWM_WHITE, theConfig.getCalWhite() );
         }
         else
         {
@@ -191,8 +244,6 @@ void loop()
   {
     mySerial.write(Serial.read());
   }
-  //
-  // TODO: von Zeit zu Zeit update des EEPROM
-  //
+
 }
 
