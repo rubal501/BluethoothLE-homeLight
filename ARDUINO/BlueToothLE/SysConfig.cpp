@@ -36,20 +36,6 @@ void SysConfig::SystemPreInit( EEPROMConfig& theConfig )
   SysConfig::setPwmFrequency(PWM_GREEN, 64);
   SysConfig::setPwmFrequency(PWM_BLUE, 64);
   SysConfig::setPwmFrequency(PWM_WHITE, 64);
-  //
-  // Mode OUTPUT setzen
-  //
-  pinMode(PWM_RED, OUTPUT);
-  pinMode(PWM_GREEN, OUTPUT);
-  pinMode(PWM_BLUE, OUTPUT);
-  pinMode(PWM_WHITE, OUTPUT);
-  //
-  // PWM Wert (Helligkeit) setzen
-  //
-  analogWrite( PWM_RED, theConfig.getCalRed() );
-  analogWrite( PWM_GREEN, theConfig.getCalGreen() );
-  analogWrite( PWM_BLUE, theConfig.getCalBlue() );
-  analogWrite( PWM_WHITE, theConfig.getCalWhite() );
 }
 
 void SysConfig::SystemInit( SoftwareSerial& mySerial, Communication& myComm, EEPROMConfig& theConfig )

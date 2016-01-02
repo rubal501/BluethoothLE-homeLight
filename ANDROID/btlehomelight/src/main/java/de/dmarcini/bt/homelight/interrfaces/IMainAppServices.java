@@ -63,17 +63,11 @@ public interface IMainAppServices
   void setModulRawRGBW(short[] rgbw);
 
   /**
-   * Setze Modul RGBW unkalibriert (wird nur gespeichert als Basis für kalibrierte Daten )
+   * Setze Frben als RGB, Modul kalibriert nach RGBW
    *
-   * @param rgbw
+   * @param rgbw RGB Werte, White wird ignoriert
    */
-  void setModulRAWRGBWStore(short[] rgbw);
-
-  /**
-   * Setze Modul RGBW kalibriert (wird angezeigt)
-   * @param rgbw
-   */
-  void setModulCalibredRGBW( short[] rgbw );
+  void setModulRGB4Calibrate(short[] rgbw );
 
   /**
    * Schalte die LED AUS/AN

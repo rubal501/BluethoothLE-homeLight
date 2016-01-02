@@ -61,10 +61,6 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
   private ColorPicker      picker;
   private LinearLayout     accLinearLayout;
   private ToggleButton     calToggleButton;
-  private ImageView        imageViewRed;
-  private ImageView        imageViewGreen;
-  private ImageView        imageViewBlue;
-  private ImageView        imageViewWhite;
   private BluetoothConfig  btConfig;
   private IMainAppServices mainService;
 
@@ -139,10 +135,6 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
     picker = ( ColorPicker ) rootView.findViewById(R.id.colorPicker);
     accLinearLayout = ( LinearLayout ) rootView.findViewById(R.id.accLinearLayout);
     calToggleButton = ( ToggleButton ) rootView.findViewById(R.id.RGBWToggleButton);
-    imageViewRed = ( ImageView ) rootView.findViewById((R.id.imageViewRed));
-    imageViewGreen = ( ImageView ) rootView.findViewById((R.id.imageViewGreen));
-    imageViewBlue = ( ImageView ) rootView.findViewById((R.id.imageViewBlue));
-    imageViewWhite = ( ImageView ) rootView.findViewById((R.id.imageViewWhite));
     //
     // Farbe setzen (Voreinstellung)
     //
@@ -192,10 +184,6 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
     picker = ( ColorPicker ) tempView.findViewById(R.id.colorPicker);
     accLinearLayout = ( LinearLayout ) tempView.findViewById(R.id.accLinearLayout);
     calToggleButton = ( ToggleButton ) tempView.findViewById(R.id.RGBWToggleButton);
-    imageViewRed = ( ImageView ) tempView.findViewById((R.id.imageViewRed));
-    imageViewGreen = ( ImageView ) tempView.findViewById((R.id.imageViewGreen));
-    imageViewBlue = ( ImageView ) tempView.findViewById((R.id.imageViewBlue));
-    imageViewWhite = ( ImageView ) tempView.findViewById((R.id.imageViewWhite));
     //
     // Vies in das Layout einfügen
     //
@@ -270,24 +258,11 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
   {
     Log.v(TAG, String.format(Locale.ENGLISH, "color changed to %08X", color));
     currColor = color;
-    if( calToggleButton.isChecked() )
-    {
-      // Kalibrierte Werte verschicken
-      short[] col = picker.getColorRGBW();
-      rgbw[ 0 ] = col[ 0 ];
-      rgbw[ 1 ] = col[ 1 ];
-      rgbw[ 2 ] = col[ 2 ];
-      rgbw[ 3 ] = col[ 3 ];
-    }
-    else
-    {
-      // Rohe Werte verschicken
-      rgbw[ 0 ] = ( short ) ((color >> 16) & 0xff);
-      rgbw[ 1 ] = ( short ) ((color >> 8) & 0xff);
-      rgbw[ 2 ] = ( short ) (color & 0xff);
-      rgbw[ 3 ] = 0;
-    }
-    setPseudoPixels(currColor);
+    // Werte verschicken
+    rgbw[ 0 ] = ( short ) ((color >> 16) & 0xff);
+    rgbw[ 1 ] = ( short ) ((color >> 8) & 0xff);
+    rgbw[ 2 ] = ( short ) (color & 0xff);
+    rgbw[ 3 ] = 0;
     //
     if( timeToSend < System.currentTimeMillis() && mainService != null )
     {
@@ -296,7 +271,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
       //
       if( calToggleButton.isChecked() )
       {
-        mainService.setModulCalibredRGBW(rgbw);
+        mainService.setModulRGB4Calibrate( rgbw );
       }
       else
       {
@@ -306,32 +281,6 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
       // Neue Deadline setzen
       //
       timeToSend = System.currentTimeMillis() + ProjectConst.TIMEDIFF_TO_SEND;
-    }
-  }
-
-  private void setPseudoPixels(int color)
-  {
-    //
-    // Kalibrierte Werte (RGBW)?
-    //
-    if( calToggleButton.isChecked() )
-    {
-      // Ja, kalibriert!
-      short[] col = picker.getColorRGBW();
-      imageViewRed.setBackgroundColor(0xff000000 | ((( int ) (col[ 0 ])) << 16));
-      imageViewGreen.setBackgroundColor(0xff000000 | ((( int ) (col[ 1 ])) << 8));
-      imageViewBlue.setBackgroundColor(0xff000000 | (( int ) col[ 2 ]));
-      // undurchsichtig! grau für intensitaet
-      imageViewWhite.setBackgroundColor(0xff000000 | (( int ) (col[ 3 ])) << 16 | (( int ) (col[ 3 ])) << 8 | ( int ) (col[ 3 ]));
-    }
-    else
-    {
-      // nein, Roh RGB
-      imageViewRed.setBackgroundColor(color & 0xffff0000);
-      imageViewGreen.setBackgroundColor(color & 0xff00ff00);
-      imageViewBlue.setBackgroundColor(color & 0xff0000ff);
-      // durchsichtig!
-      imageViewWhite.setBackgroundColor(0xff000000);
     }
   }
 
@@ -540,32 +489,20 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
     Log.i(TAG, "set color wheel...");
     currColor = ((rgbw[ 0 ] << 16) | (rgbw[ 1 ] << 8) | (rgbw[ 2 ]));
     picker.setColor(currColor);
-    setPseudoPixels(currColor);
   }
 
 
   @Override
   public void onColorSelected(int color)
   {
-    short calrgbw[] = new short[ 4 ];
 
     Log.v(TAG, String.format(Locale.ENGLISH, "color selected to %08X", color));
     currColor = color;
-    if( calToggleButton.isChecked() )
-    {
-      // Kalibrierte Werte verschicken
-      short[] col = picker.getColorRGBW();
-      calrgbw[ 0 ] = col[ 0 ];
-      calrgbw[ 1 ] = col[ 1 ];
-      calrgbw[ 2 ] = col[ 2 ];
-      calrgbw[ 3 ] = col[ 3 ];
-    }
-    // Rohe Werte auch verschicken
+    // Werte verschicken
     rgbw[ 0 ] = ( short ) ((color >> 16) & 0xff);
     rgbw[ 1 ] = ( short ) ((color >> 8) & 0xff);
     rgbw[ 2 ] = ( short ) (color & 0xff);
     rgbw[ 3 ] = 0;
-    setPseudoPixels(currColor);
     //
     if( mainService != null )
     {
@@ -574,8 +511,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
       //
       if( calToggleButton.isChecked() )
       {
-        mainService.setModulCalibredRGBW(calrgbw);
-        mainService.setModulRAWRGBWStore(rgbw);
+        mainService.setModulRGB4Calibrate(rgbw);
       }
       else
       {

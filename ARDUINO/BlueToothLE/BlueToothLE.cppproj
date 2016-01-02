@@ -219,6 +219,12 @@
     <Compile Include="EEPROMConfig.hpp">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="LEDSet.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="LEDSet.hpp">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Main.cpp">
       <SubType>compile</SubType>
     </Compile>

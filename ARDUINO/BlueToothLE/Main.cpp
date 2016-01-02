@@ -7,6 +7,7 @@
 #include "Communication.hpp"
 #include "EEPROMConfig.hpp"
 #include "SysConfig.hpp"
+#include "LEDSet.hpp"
 
 //
 // der Modultyp
@@ -24,7 +25,7 @@ Communication *myComm = new Communication();
 //
 // die gespeicherten Vorgaben
 //
-EEPROMConfig theConfig;// = new EEPROMConfig();
+EEPROMConfig theConfig;
 
 const int baudRateVal = DESTBAUDRATE_VAL;
 String btInputString="";
@@ -42,6 +43,8 @@ void setup()
   // Die Sachen, die schnell gehen sollen zuerst...
   //
   SysConfig::SystemPreInit( theConfig );
+  // LED Helligkeiten aus Config einstellen
+  LEDSet::init( theConfig );    
   //
   // Serielle USB Verbindung öffnen
   //
@@ -138,60 +141,17 @@ void loop()
       // Gib die Farbe an die LED aus 0x04
       // Nativ, ohne Kalibrierung
       case C_SETCOLOR:
+      // oder kalibriere RGB selber  0x05
+      case C_SETCALRGB:
         isLightsOFF = false;
-        theConfig.setRed( kdo[1] );
-        theConfig.setGreen( kdo[2] );
-        theConfig.setBlue( kdo[3] );
-        theConfig.setWhite( kdo[4] );
-        // überschreibe die Kalibrierten Werte auch
-        theConfig.setCalRed( kdo[1] );
-        theConfig.setCalGreen( kdo[2] );
-        theConfig.setCalBlue( kdo[3] );
-        theConfig.setCalWhite( kdo[4] );
-        analogWrite(PWM_RED, kdo[1]);
-        analogWrite(PWM_GREEN, kdo[2]);
-        analogWrite(PWM_BLUE, kdo[3]);
-        analogWrite(PWM_WHITE, kdo[4]);
+        LEDSet::setBrightness( theConfig, kdo );
         #ifdef DEBUG
-        Serial.println("SET COLOR (raw) emfpangen..." );
+        Serial.println("SET COLOR emfpangen..." );
         #endif        
         // in frühestens 2 Sekunden sichern
         saveTime = millis() + SAVEDELAY;
         break;
 
-      // Speichere die Farbe im EEPROM 0x05
-      // die unkalibrierten Werte für die App, als Basis für die Grundeinstellung
-      // bei ASKRGBW
-      case C_SETCOLSAVE:
-        theConfig.setRed( kdo[1] );
-        theConfig.setGreen( kdo[2] );
-        theConfig.setBlue( kdo[3] );
-        theConfig.setWhite( kdo[4] );
-        #ifdef DEBUG
-        Serial.println("SET COLOR SAVE emfpangen..." );
-        #endif
-        // in frühestens 2 Sekunden sichern
-        saveTime = millis() + SAVEDELAY;
-        break;
-
-      // Zeige die Farbe Kalibriert direkt an
-      // direakt nach dem Kommando C_SETCOLSAVE von der App
-      case C_SETCALCOLOR:
-        isLightsOFF = false;
-        theConfig.setCalRed( kdo[1] );
-        theConfig.setCalGreen( kdo[2] );
-        theConfig.setCalBlue( kdo[3] );
-        theConfig.setCalWhite( kdo[4] );
-        analogWrite(PWM_RED, kdo[1]);
-        analogWrite(PWM_GREEN, kdo[2]);
-        analogWrite(PWM_BLUE, kdo[3]);
-        analogWrite(PWM_WHITE, kdo[4]);
-        #ifdef DEBUG
-        Serial.println("SET COLOR (cal) emfpangen..." );
-        #endif
-        // in frühestens 2 Sekunden sichern
-        saveTime = millis() + SAVEDELAY;
-        break;
 
       // der AN/AUS Schalter 
       case C_ONOFF:
@@ -201,20 +161,14 @@ void loop()
           Serial.println("LEDs ON..." );
           #endif
           // Die Dinger an machen
-          analogWrite( PWM_RED, theConfig.getCalRed() );
-          analogWrite( PWM_GREEN, theConfig.getCalGreen() );
-          analogWrite( PWM_BLUE, theConfig.getCalBlue() );
-          analogWrite( PWM_WHITE, theConfig.getCalWhite() );
+          LEDSet::setBrightnessFromConfig( theConfig );
         }
         else
         {
           #ifdef DEBUG
           Serial.println("LEDs OFF..." );
           #endif
-          analogWrite( PWM_RED, 0 );
-          analogWrite( PWM_GREEN, 0 );
-          analogWrite( PWM_BLUE, 0 );
-          analogWrite( PWM_WHITE, 0 );
+          LEDSet::setBrightnessOff();
         }
         isLightsOFF = !isLightsOFF;
         break;

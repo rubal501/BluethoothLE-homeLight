@@ -542,28 +542,17 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   }
 
   @Override
-  public void setModulRAWRGBWStore(short[] rgbw)
+  public void setModulRGB4Calibrate(short[] rgbw)
   {
     String kommandoString;
     //
     // Kommando zusammenbauen
     //
-    kommandoString = String.format(Locale.ENGLISH, "%s%02X:%02X:%02X:%02X:%02X%s", ProjectConst.STX, ProjectConst.C_SETCOLSAVE, rgbw[ 0 ], rgbw[ 1 ], rgbw[ 2 ], rgbw[ 3 ], ProjectConst.ETX);
-    Log.d(TAG, "send set RGBW (raw/store) =" + kommandoString);
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X:%02X:%02X:%02X:%02X%s", ProjectConst.STX, ProjectConst.C_SETCALRGB, rgbw[ 0 ], rgbw[ 1 ], rgbw[ 2 ], 0, ProjectConst.ETX);
+    Log.d(TAG, "send set RGB for calibrate in modul =" + kommandoString);
     sendKdoToModule(kommandoString);
   }
 
-  @Override
-  public void setModulCalibredRGBW(short[] rgbw)
-  {
-    String kommandoString;
-    //
-    // Kommando zusammenbauen
-    //
-    kommandoString = String.format(Locale.ENGLISH, "%s%02X:%02X:%02X:%02X:%02X%s", ProjectConst.STX, ProjectConst.C_SETCALCOLOR, rgbw[ 0 ], rgbw[ 1 ], rgbw[ 2 ], rgbw[ 3 ], ProjectConst.ETX);
-    Log.d(TAG, "send set RGBW (calibrated) =" + kommandoString);
-    sendKdoToModule(kommandoString);
-  }
 
   @Override
   public void setModulOnOff()

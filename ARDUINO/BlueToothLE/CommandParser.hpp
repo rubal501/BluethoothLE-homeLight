@@ -30,8 +30,7 @@
 #define C_ASKRGBW       0x02                          // Frage nach RGBW im Modul
 #define C_ASKCALRGBW    0x03                          // Frage nach RGBW im Modul, kalibriert
 #define C_SETCOLOR      0x04                          // Vom Meister Farbe, unkalibriert, direkte Anzeige mit Speichern
-#define C_SETCOLSAVE    0x05                          // Vom Meister, Farbe unkalibriert nur speichern für EEPROM
-#define C_SETCALCOLOR   0x06                          // Vom Meister, Farbe RGBW kalibiert
+#define C_SETCALRGB     0x05                          // Vom Meister, setze RGB Modul konvertiert zu RGBW
 #define C_ONOFF         0xfe                          // AUS, oder wenn alles auf 0 ist EIN
 
 
