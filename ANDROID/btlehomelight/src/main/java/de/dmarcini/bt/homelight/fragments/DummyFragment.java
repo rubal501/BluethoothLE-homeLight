@@ -1,24 +1,26 @@
 /*
- *   project: BlueThoothLE
- *   programm: Home Light control (Bluethooth LE with HM-10)
- *   purpose:  control home lights via BT (color and brightness)
- *   Copyright (C) 2015  Dirk Marciniak
- *   file: DummyFragment.java
- *   last modified: 20.12.15 12:15
+ * //@formatter:off
  *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
+ *     ANDROID
+ *     btlehomelight
+ *     DummyFragment
+ *     2016-01-02
+ *     Copyright (C) 2016  Dirk Marciniak
  *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/
+ * /
+ * //@formatter:on
  */
 
 package de.dmarcini.bt.homelight.fragments;
@@ -37,8 +39,9 @@ import android.view.ViewGroup;
 import java.util.List;
 import java.util.Locale;
 
-import de.dmarcini.bt.homelight.interrfaces.IBtEventHandler;
+import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.R;
+import de.dmarcini.bt.homelight.interrfaces.IBtEventHandler;
 import de.dmarcini.bt.homelight.utils.BluetoothConfig;
 import de.dmarcini.bt.homelight.utils.ProjectConst;
 
@@ -66,7 +69,7 @@ public class DummyFragment extends Fragment implements IBtEventHandler
     Bundle args = new Bundle();
     args.putInt(ProjectConst.ARG_SECTION_NUMBER, sectionNumber);
     fragment.setArguments(args);
-    Log.v(TAG, String.format(Locale.ENGLISH, "DiscoveringFragment.newInstance(%04d)", sectionNumber));
+    if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.ENGLISH, "DiscoveringFragment.newInstance(%04d)", sectionNumber));
     return fragment;
   }
 
@@ -86,7 +89,7 @@ public class DummyFragment extends Fragment implements IBtEventHandler
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
   {
-    Log.v(TAG, "onCreateOptionsMenu...");
+    if( BuildConfig.DEBUG )Log.v(TAG, "onCreateOptionsMenu...");
     //inflater.inflate(R.menu.menu_home_light_main, menu);
   }
 
@@ -95,13 +98,13 @@ public class DummyFragment extends Fragment implements IBtEventHandler
   {
     super.onPrepareOptionsMenu(menu);
     // noch was vorbereiten?
-    Log.v(TAG, "onPrepareOptionsMenu...");
+    if( BuildConfig.DEBUG )Log.v(TAG, "onPrepareOptionsMenu...");
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item)
   {
-    Log.e(TAG, "onOptionsItemSelected...");
+    if( BuildConfig.DEBUG )Log.e(TAG, "onOptionsItemSelected...");
     return super.onOptionsItemSelected(item);
   }
 
@@ -144,7 +147,7 @@ public class DummyFragment extends Fragment implements IBtEventHandler
   @Override
   public void onPageSelected()
   {
-    Log.v(TAG,"Page DUMMY was selected");
+    Log.d(TAG, "Page DUMMY was selected");
   }
 
 }

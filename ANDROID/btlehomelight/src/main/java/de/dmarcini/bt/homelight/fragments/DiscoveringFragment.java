@@ -1,24 +1,26 @@
 /*
- *   project: BlueThoothLE
- *   programm: Home Light control (Bluethooth LE with HM-10)
- *   purpose:  control home lights via BT (color and brightness)
- *   Copyright (C) 2015  Dirk Marciniak
- *   file: DiscoveringFragment.java
- *   last modified: 19.12.15 17:17
+ * //@formatter:off
  *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
+ *     ANDROID
+ *     btlehomelight
+ *     DiscoveringFragment
+ *     2016-01-02
+ *     Copyright (C) 2016  Dirk Marciniak
  *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/
+ * /
+ * //@formatter:on
  */
 
 package de.dmarcini.bt.homelight.fragments;
@@ -29,7 +31,6 @@ import android.bluetooth.BluetoothGattService;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,12 +42,11 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Pattern;
 
+import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.interrfaces.IBtEventHandler;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
@@ -58,11 +58,10 @@ import de.dmarcini.bt.homelight.utils.ProjectConst;
 /**
  * Created by dmarc on 22.08.2015.
  */
-public class DiscoveringFragment extends  AppFragment implements IBtEventHandler, AdapterView.OnItemClickListener, View.OnClickListener
+public class DiscoveringFragment extends AppFragment implements IBtEventHandler, AdapterView.OnItemClickListener, View.OnClickListener
 {
   private static final String TAG = DiscoveringFragment.class.getSimpleName();
   private BluetoothConfig btConfig;
-  private TextView        discoverHeadLine;
   private ListView        discoverListView;
   private Button          scanButton;
   private ProgressBar     scanProgress;
@@ -98,7 +97,7 @@ public class DiscoveringFragment extends  AppFragment implements IBtEventHandler
       if( args != null )
       {
         pos = args.getInt(ProjectConst.ARG_SECTION_NUMBER, 0);
-        Log.v(TAG, String.format(Locale.ENGLISH, "Konstructor: id is %04d", pos));
+        if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.ENGLISH, "Konstructor: id is %04d", pos));
       }
     }
     catch( NullPointerException ex )
@@ -118,7 +117,7 @@ public class DiscoveringFragment extends  AppFragment implements IBtEventHandler
     Bundle args = new Bundle();
     args.putInt(ProjectConst.ARG_SECTION_NUMBER, sectionNumber);
     fragment.setArguments(args);
-    Log.v(TAG, String.format(Locale.ENGLISH, "DiscoveringFragment.newInstance(%04d)", sectionNumber));
+    if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.ENGLISH, "DiscoveringFragment.newInstance(%04d)", sectionNumber));
     return fragment;
   }
 
@@ -130,13 +129,12 @@ public class DiscoveringFragment extends  AppFragment implements IBtEventHandler
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
   {
-    Log.v(TAG, "onCreateView...");
+    if( BuildConfig.DEBUG )Log.v(TAG, "onCreateView...");
     //
     // Objekte generieren udn finden
     //
     View rootView = inflater.inflate(R.layout.fragment_home_discover, container, false);
     discoverListView = ( ListView ) rootView.findViewById(R.id.discoverList);
-    discoverHeadLine = ( TextView ) rootView.findViewById(R.id.discoverHeadLine);
     scanButton = ( Button ) rootView.findViewById(R.id.scanButton);
     scanProgress = ( ProgressBar ) rootView.findViewById(R.id.scanProgress);
     //
@@ -146,14 +144,14 @@ public class DiscoveringFragment extends  AppFragment implements IBtEventHandler
     scanButton.setOnClickListener(this);
     setHasOptionsMenu(true);
     prepareHeader();
-    Log.v(TAG, "onCreateView...OK");
+    if( BuildConfig.DEBUG )Log.v(TAG, "onCreateView...OK");
     return (rootView);
   }
 
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
   {
-    Log.v(TAG, "onCreateOptionsMenu...");
+    if( BuildConfig.DEBUG )Log.v(TAG, "onCreateOptionsMenu...");
     inflater.inflate(R.menu.menu_home_light_main, menu);
     //
     if( !mScanning )
@@ -212,20 +210,20 @@ public class DiscoveringFragment extends  AppFragment implements IBtEventHandler
     {
       case R.id.menu_scan:
         mBTLEDeviceListAdapter.clear();
-        scanLeDevice(true);
+        scanBTLEDevice(true);
         break;
       case R.id.menu_stop:
-        scanLeDevice(false);
+        scanBTLEDevice(false);
         break;
     }
     return super.onOptionsItemSelected(item);
   }
 
-  private void scanLeDevice(final boolean enable)
+  private void scanBTLEDevice(final boolean enable)
   {
     if( enable )
     {
-      Log.v(TAG, "scanLeDevice START...");
+      if( BuildConfig.DEBUG )Log.v(TAG, "scanBTLEDevice START...");
       // Stops scanning after a pre-defined scan period.
       mHandler.postDelayed(new Runnable()
       {
@@ -245,7 +243,7 @@ public class DiscoveringFragment extends  AppFragment implements IBtEventHandler
     }
     else
     {
-      Log.v(TAG, "scanLeDevice STOP...");
+      if( BuildConfig.DEBUG )Log.v(TAG, "scanBTLEDevice STOP...");
       mScanning = false;
       btConfig.getBluethoothAdapter().stopLeScan(mLeScanCallback);
       prepareHeader();
@@ -261,7 +259,7 @@ public class DiscoveringFragment extends  AppFragment implements IBtEventHandler
     {
       return;
     }
-    Log.v(TAG, String.format(Locale.ENGLISH, "connect to device %s...", device.getAddress()));
+    if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.ENGLISH, "connect to device %s...", device.getAddress()));
     //
     // wenn er noch am scannen ist, erst mal abschalten
     //
@@ -275,13 +273,14 @@ public class DiscoveringFragment extends  AppFragment implements IBtEventHandler
     //
     if( getActivity() instanceof IMainAppServices )
     {
-      Log.i(TAG, "activity is instance of IMainAppServices!");
+      if( BuildConfig.DEBUG )Log.i(TAG, "activity is instance of IMainAppServices!");
       if( btConfig.isConnected() )
       {
-        Log.v(TAG, "BT is connected, so first disconnect device...");
+        Log.d(TAG, "BT is connected, so first disconnect device...");
         btConfig.getBluetoothService().disconnect();
       }
-      Log.v(TAG, "try BT connect device...");
+      Log.d(TAG, "try BT connect device...");
+      btConfig.setDeviceAddress( device.getAddress());
       btConfig.getBluetoothService().connect(device.getAddress());
       //
       // wechseln zur nächsten Seite dann, wenn die Services eingelesen sind
@@ -297,7 +296,7 @@ public class DiscoveringFragment extends  AppFragment implements IBtEventHandler
   public void onPause()
   {
     super.onPause();
-    Log.v(TAG, "onPause()");
+    if( BuildConfig.DEBUG )Log.v(TAG, "onPause()");
 
   }
 
@@ -305,27 +304,27 @@ public class DiscoveringFragment extends  AppFragment implements IBtEventHandler
   public void onResume()
   {
     super.onResume();
-    Log.v(TAG, "onResume()");
+    if( BuildConfig.DEBUG )Log.v(TAG, "onResume()");
   }
 
   @Override
   public void onBTConnected()
   {
-    Log.v(TAG, "BT Device connected!");
+    if( BuildConfig.DEBUG )Log.v(TAG, "BT Device connected!");
     prepareHeader();
   }
 
   @Override
   public void onBTDisconnected()
   {
-    Log.v(TAG, "BT Device disconnected!");
+    if( BuildConfig.DEBUG )Log.v(TAG, "BT Device disconnected!");
     prepareHeader();
   }
 
   @Override
   public void onBTServicesRecived(List<BluetoothGattService> gattServices)
   {
-    Log.v(TAG, "BT Device services recived");
+    if( BuildConfig.DEBUG )Log.v(TAG, "BT Device services recived");
     if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
     {
       //
@@ -338,25 +337,25 @@ public class DiscoveringFragment extends  AppFragment implements IBtEventHandler
   @Override
   public void onBTDataAvaiable(String data)
   {
-    Log.v(TAG, "BT Device data recived");
+    if( BuildConfig.DEBUG )Log.v(TAG, "BT Device data recived");
   }
 
   @Override
   public void onServiceConnected()
   {
-    Log.v(TAG, "BT Service connected");
+    if( BuildConfig.DEBUG )Log.v(TAG, "BT Service connected");
   }
 
   @Override
   public void onServiceDisconnected()
   {
-    Log.v(TAG, "BT Service disconnected");
+    if( BuildConfig.DEBUG )Log.v(TAG, "BT Service disconnected");
   }
 
   @Override
   public void onPageSelected()
   {
-    Log.v(TAG, "Page DISCOVERING was selected");
+    if( BuildConfig.DEBUG )Log.v(TAG, "Page DISCOVERING was selected");
     prepareHeader();
     // TODO: ist das Ding verbunden, kann er nicht suchen
     // zeige das dem User
@@ -368,7 +367,7 @@ public class DiscoveringFragment extends  AppFragment implements IBtEventHandler
     //
     // Checke mal, ob das was für mich ist
     //
-    if( view instanceof Button && (( Button ) view).equals(scanButton) )
+    if( view instanceof Button && view.equals(scanButton) )
     {
       if( btConfig.isConnected() )
       {
@@ -376,7 +375,7 @@ public class DiscoveringFragment extends  AppFragment implements IBtEventHandler
       }
       else
       {
-        scanLeDevice(!mScanning);
+        scanBTLEDevice(!mScanning);
       }
     }
   }
@@ -384,14 +383,14 @@ public class DiscoveringFragment extends  AppFragment implements IBtEventHandler
   @Override
   public void onConfigurationChanged(Configuration newConfig)
   {
-    super.onConfigurationChanged( newConfig );
+    super.onConfigurationChanged(newConfig);
     if( newConfig.orientation == Configuration.ORIENTATION_PORTRAIT )
     {
-      Log.i(TAG, "new orientation is PORTRAIT");
+      if( BuildConfig.DEBUG )Log.i(TAG, "new orientation is PORTRAIT");
     }
     else if( newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE )
     {
-      Log.i(TAG, "new orientation is LANDSCAPE");
+      if( BuildConfig.DEBUG )Log.i(TAG, "new orientation is LANDSCAPE");
     }
     else
     {

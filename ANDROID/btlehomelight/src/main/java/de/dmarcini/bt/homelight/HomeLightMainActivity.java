@@ -1,24 +1,26 @@
 /*
- *   project: BlueThoothLE
- *   programm: Home Light control (Bluethooth LE with HM-10)
- *   purpose:  control home lights via BT (color and brightness)
- *   Copyright (C) 2015  Dirk Marciniak
- *   file: HomeLightMainActivity.java
- *   last modified: 19.12.15 17:17
+ * //@formatter:off
  *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
+ *     ANDROID
+ *     btlehomelight
+ *     HomeLightMainActivity
+ *     2016-01-02
+ *     Copyright (C) 2016  Dirk Marciniak
  *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/
+ * /
+ * //@formatter:on
  */
 
 package de.dmarcini.bt.homelight;
@@ -67,8 +69,8 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   private static final String             TAG          = HomeLightMainActivity.class.getSimpleName();
   final                IntentFilter       intentFilter = new IntentFilter();
   private final        CircularByteBuffer ringBuffer   = new CircularByteBuffer(1024);
-  private              BluetoothConfig    btConfig     = new BluetoothConfig();
   private final        Vector<String>     recCmdQueue  = new Vector<>();
+  private              BluetoothConfig    btConfig     = new BluetoothConfig();
   private BTReaderThread     readerThread;
   private CmdQueueThread     cmdTread;
   private SelectPagesAdapter mSectionsPagerAdapter;
@@ -139,6 +141,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         readerThread = new BTReaderThread(ringBuffer, recCmdQueue);
         Thread rThread = new Thread(readerThread, "reader_thread");
         rThread.start();
+
         //
         // on connected erst weitergeben, wenn auch die RX und TX Kanäle vorhanden sind
         // sonst passiert das erst beim Discovering
@@ -217,20 +220,6 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       }
     }
   };
-
-  /**
-   * Ein Interface für eine Funktion, welche das fertige Kommando empfängt
-   */
-  public interface CommandReciver
-  {
-    /**
-     * Empfange das Kommando vom entfernten Gerät
-     *
-     * @param cmd Kommandostring ohne STX/ETX
-     */
-    void reciveCommand(String cmd);
-  }
-
   /**
    * Implementiere den Callback mit dem Interface zum Empfang der Kommandosequenz
    * und Weiterleitung an den Empfänger...
@@ -252,9 +241,12 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   protected void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
-    Log.v(TAG, "erzeuge Application...");
+    if( BuildConfig.DEBUG )Log.v(TAG, "erzeuge Application...");
     setContentView(R.layout.activity_home_light_main);
-
+    if( BuildConfig.DEBUG )
+    {
+      Log.e(TAG, "D E B U G Version");
+    }
     //
     // erzeuge INTENT Filter für BT
     //
@@ -324,7 +316,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     Intent gattServiceIntent = new Intent(this, BluetoothLowEnergyService.class);
     bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-    Log.v(TAG, "erzeuge Application...OK");
+    if( BuildConfig.DEBUG )Log.v(TAG, "erzeuge Application...OK");
   }
 
   @Override
@@ -347,7 +339,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   protected void onResume()
   {
     super.onResume();
-    Log.v(TAG, "onResume()");
+    if( BuildConfig.DEBUG )Log.v(TAG, "onResume()");
     //
     // Stelle sicher, dass der BT Adapter aktiviert wurde
     // erzeuge einen Intend (eine Absicht) und schicke diese an das System
@@ -412,7 +404,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   protected void onPause()
   {
     super.onPause();
-    Log.v(TAG, "onPause()");
+    if( BuildConfig.DEBUG )Log.v(TAG, "onPause()");
     try
     {
       unregisterReceiver(mGattUpdateReceiver);
@@ -553,7 +545,6 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     sendKdoToModule(kommandoString);
   }
 
-
   @Override
   public void setModulOnOff()
   {
@@ -596,7 +587,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   @Override
   public void onPageSelected(int position)
   {
-    Log.d(TAG, String.format(Locale.ENGLISH, "page %02d selected", position));
+    if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.ENGLISH, "page %02d selected", position));
     //
     // Gib dem Fragment order, dass es selektiert wurde
     //
@@ -616,15 +607,28 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     super.onConfigurationChanged(newConfig);
     if( newConfig.orientation == Configuration.ORIENTATION_PORTRAIT )
     {
-      Log.i(TAG, "new orientation is PORTRAIT");
+      if( BuildConfig.DEBUG )Log.i(TAG, "new orientation is PORTRAIT");
     }
     else if( newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE )
     {
-      Log.i(TAG, "new orientation is LANDSCAPE");
+      if( BuildConfig.DEBUG )Log.i(TAG, "new orientation is LANDSCAPE");
     }
     else
     {
-      Log.w(TAG, "new orientation is UNKNOWN");
+      if( BuildConfig.DEBUG )Log.w(TAG, "new orientation is UNKNOWN");
     }
+  }
+
+  /**
+   * Ein Interface für eine Funktion, welche das fertige Kommando empfängt
+   */
+  public interface CommandReciver
+  {
+    /**
+     * Empfange das Kommando vom entfernten Gerät
+     *
+     * @param cmd Kommandostring ohne STX/ETX
+     */
+    void reciveCommand(String cmd);
   }
 }

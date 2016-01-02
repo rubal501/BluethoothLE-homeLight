@@ -1,24 +1,26 @@
 /*
- *   project: BlueThoothLE
- *   programm: Home Light control (Bluethooth LE with HM-10)
- *   purpose:  control home lights via BT (color and brightness)
- *   Copyright (C) 2015  Dirk Marciniak
- *   file: ColorSelectFragment.java
- *   last modified: 19.12.15 20:01
+ * //@formatter:off
  *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
+ *     ANDROID
+ *     btlehomelight
+ *     ColorSelectFragment
+ *     2016-01-02
+ *     Copyright (C) 2016  Dirk Marciniak
  *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/
+ * /
+ * //@formatter:on
  */
 
 package de.dmarcini.bt.homelight.fragments;
@@ -33,7 +35,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 
@@ -41,6 +42,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.interrfaces.IBtEventHandler;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
@@ -74,7 +76,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
       if( args != null )
       {
         pos = args.getInt(ProjectConst.ARG_SECTION_NUMBER, 0);
-        Log.v(TAG, String.format(Locale.ENGLISH, "Konstructor: id is %04d", pos));
+        if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.ENGLISH, "Konstructor: id is %04d", pos));
       }
     }
     catch( NullPointerException ex )
@@ -94,7 +96,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
     Bundle args = new Bundle();
     args.putInt(ProjectConst.ARG_SECTION_NUMBER, sectionNumber);
     fragment.setArguments(args);
-    Log.v(TAG, String.format(Locale.ENGLISH, "ColorSelectFragment.newInstance(%04d)", sectionNumber));
+    if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.ENGLISH, "ColorSelectFragment.newInstance(%04d)", sectionNumber));
     return fragment;
   }
 
@@ -108,7 +110,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
   {
     int resId;
     //
-    Log.v(TAG, "onCreateView...");
+    if( BuildConfig.DEBUG )Log.v(TAG, "onCreateView...");
     //
     if( getActivity() instanceof IMainAppServices )
     {
@@ -122,12 +124,12 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
 
     if( getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE )
     {
-      Log.v(TAG, "Orientation => LANDSCAPE...");
+      if( BuildConfig.DEBUG )Log.v(TAG, "Orientation => LANDSCAPE...");
       resId = R.layout.fragment_colors_wheel_land;
     }
     else
     {
-      Log.v(TAG, "Orientation => PORTRAIT...");
+      if( BuildConfig.DEBUG )Log.v(TAG, "Orientation => PORTRAIT...");
       resId = R.layout.fragment_colors_wheel_port;
     }
     View rootView = inflater.inflate(resId, container, false);
@@ -149,7 +151,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
     //
     setColorPropertysFromConfig();
     setHasOptionsMenu(true);
-    Log.v(TAG, "onCreateView...OK");
+    if( BuildConfig.DEBUG )Log.v(TAG, "onCreateView...OK");
     return (rootView);
   }
 
@@ -161,12 +163,12 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
 
     if( orientation == Configuration.ORIENTATION_LANDSCAPE )
     {
-      Log.v(TAG, "changeLayoutOrientation => LANDSCAPE...");
+      if( BuildConfig.DEBUG )Log.v(TAG, "changeLayoutOrientation => LANDSCAPE...");
       resId = R.layout.fragment_colors_wheel_land;
     }
     else
     {
-      Log.v(TAG, "changeLayoutOrientation => PORTRAIT...");
+      if( BuildConfig.DEBUG )Log.v(TAG, "changeLayoutOrientation => PORTRAIT...");
       resId = R.layout.fragment_colors_wheel_port;
     }
     //
@@ -205,7 +207,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
     setColorPropertysFromConfig();
     setHasOptionsMenu(true);
 
-    Log.v(TAG, "changeLayoutOrientation...OK");
+    if( BuildConfig.DEBUG )Log.v(TAG, "changeLayoutOrientation...OK");
   }
 
   private void setColorPropertysFromConfig()
@@ -221,7 +223,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
   {
-    Log.v(TAG, "onCreateOptionsMenu...");
+    if( BuildConfig.DEBUG )Log.v(TAG, "onCreateOptionsMenu...");
     inflater.inflate(R.menu.menu_home_light_main, menu);
   }
 
@@ -230,13 +232,13 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
   {
     super.onPrepareOptionsMenu(menu);
     // noch was vorbereiten?
-    Log.v(TAG, "onPrepareOptionsMenu...");
+    if( BuildConfig.DEBUG )Log.v(TAG, "onPrepareOptionsMenu...");
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item)
   {
-    Log.e(TAG, "onOptionsItemSelected...");
+    if( BuildConfig.DEBUG )Log.v(TAG, "onOptionsItemSelected...");
     switch( item.getItemId() )
     {
       case R.id.menu_scan:
@@ -253,7 +255,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
   @Override
   public void onColorChanged(int color)
   {
-    Log.v(TAG, String.format(Locale.ENGLISH, "color changed to %08X", color));
+    if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.ENGLISH, "color changed to %08X", color));
     currColor = color;
     // Werte verschicken
     rgbw[ 0 ] = ( short ) ((color >> 16) & 0xff);
@@ -268,7 +270,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
       //
       if( calToggleButton.isChecked() )
       {
-        mainService.setModulRGB4Calibrate( rgbw );
+        mainService.setModulRGB4Calibrate(rgbw);
       }
       else
       {
@@ -349,21 +351,21 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
             // Frage nach dem Typ / Antwort
             //
             case ProjectConst.C_ASKTYP:
-              Log.v(TAG, "Modul type recived! <" + data + ">");
+              if( BuildConfig.DEBUG )Log.v(TAG, "Modul type recived! <" + data + ">");
               break;
 
             //
             // Frage nach dem Modulname / Antwort
             //
             case ProjectConst.C_ASKNAME:
-              Log.v(TAG, "Modul name recived! <" + data + ">");
+              if( BuildConfig.DEBUG )Log.v(TAG, "Modul name recived! <" + data + ">");
               break;
 
             //
             // Frage nach RGBW
             //
             case ProjectConst.C_ASKRAWRGB:
-              Log.v(TAG, "RGBW from module recived! <" + data + ">");
+              if( BuildConfig.DEBUG )Log.v(TAG, "RGBW from module recived! <" + data + ">");
               final String[] pm = param;
               //
               // Das läßt sich nur von diesem Thread aus machen, daher dieses
@@ -381,7 +383,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
             // Sende COLOR
             //
             case ProjectConst.C_SETCOLOR:
-              Log.v(TAG, "SET RGBW to module (should not done)  <" + data + ">");
+              if( BuildConfig.DEBUG )Log.v(TAG, "SET RGBW to module (should not done)  <" + data + ">");
               break;
           }
         }
@@ -409,20 +411,20 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
   @Override
   public void onPageSelected()
   {
-    Log.v(TAG, "Page COLORSELECT (Weehl) was selected");
+    if( BuildConfig.DEBUG )Log.v(TAG, "Page COLORSELECT (Weehl) was selected");
     if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
     {
       //
       // Alles ist so wie es soll
       // mach eine Abfrage vom Modul und dann geht es weiter
       //
-      Log.v(TAG, "BT Device is connected and ready....");
+      if( BuildConfig.DEBUG )Log.v(TAG, "BT Device is connected and ready....");
       onServiceConnected();
       mainService.askModulForRawRGBW();
     }
     else if( btConfig.isConnected() )
     {
-      Log.v(TAG, "BT Device is connected....");
+      if( BuildConfig.DEBUG )Log.v(TAG, "BT Device is connected....");
       onServiceConnected();
       if( btConfig.getModuleType() == null )
       {
@@ -439,15 +441,15 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
     super.onConfigurationChanged(newConfig);
     if( newConfig.orientation == Configuration.ORIENTATION_PORTRAIT )
     {
-      Log.i(TAG, "new orientation is PORTRAIT");
+      if( BuildConfig.DEBUG )Log.i(TAG, "new orientation is PORTRAIT");
     }
     else if( newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE )
     {
-      Log.i(TAG, "new orientation is LANDSCAPE");
+      if( BuildConfig.DEBUG )Log.i(TAG, "new orientation is LANDSCAPE");
     }
     else
     {
-      Log.w(TAG, "new orientation is UNKNOWN");
+      if( BuildConfig.DEBUG )Log.w(TAG, "new orientation is UNKNOWN");
     }
     changeLayoutOrientation(newConfig.orientation);
     setShouldNewCreated(true);
@@ -483,7 +485,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
     //
     // hier sollten die Parameter gesetzt sein
     //
-    Log.i(TAG, "set color wheel...");
+    Log.d(TAG, "set color wheel...");
     currColor = ((rgbw[ 0 ] << 16) | (rgbw[ 1 ] << 8) | (rgbw[ 2 ]));
     picker.setColor(currColor);
   }
@@ -493,7 +495,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
   public void onColorSelected(int color)
   {
 
-    Log.v(TAG, String.format(Locale.ENGLISH, "color selected to %08X", color));
+    if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.ENGLISH, "color selected to %08X", color));
     currColor = color;
     // Werte verschicken
     rgbw[ 0 ] = ( short ) ((color >> 16) & 0xff);
@@ -526,15 +528,15 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
   {
     if( clickedView instanceof ToggleButton )
     {
-      if( (( ToggleButton ) clickedView).equals(calToggleButton) )
+      if( clickedView.equals(calToggleButton) )
       {
         if( (( ToggleButton ) clickedView).isChecked() )
         {
-          Log.i(TAG, "Button CHECKED");
+          if( BuildConfig.DEBUG )Log.i(TAG, "Button CHECKED");
         }
         else
         {
-          Log.i(TAG, "Button UNCHECKED");
+          if( BuildConfig.DEBUG )Log.i(TAG, "Button UNCHECKED");
         }
         onColorSelected(picker.getColor());
       }

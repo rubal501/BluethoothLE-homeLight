@@ -1,24 +1,26 @@
 /*
- *   project: BlueThoothLE
- *   programm: Home Light control (Bluethooth LE with HM-10)
- *   purpose:  control home lights via BT (color and brightness)
- *   Copyright (C) 2015  Dirk Marciniak
- *   file: ProjectConst.java
- *   last modified: 19.12.15 17:17
+ * //@formatter:off
  *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
+ *     ANDROID
+ *     btlehomelight
+ *     ProjectConst
+ *     2016-01-02
+ *     Copyright (C) 2016  Dirk Marciniak
  *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/
+ * /
+ * //@formatter:on
  */
 
 package de.dmarcini.bt.homelight.utils;

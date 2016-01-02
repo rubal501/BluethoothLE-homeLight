@@ -1,3 +1,28 @@
+/*
+ * //@formatter:off
+ *
+ *     ANDROID
+ *     btlehomelight
+ *     BTReaderThread
+ *     2016-01-02
+ *     Copyright (C) 2016  Dirk Marciniak
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/
+ * /
+ * //@formatter:on
+ */
+
 package de.dmarcini.bt.homelight.utils;
 
 import android.util.Log;
@@ -7,7 +32,7 @@ import java.io.InputStream;
 import java.util.Locale;
 import java.util.Vector;
 
-import de.dmarcini.bt.homelight.HomeLightMainActivity;
+import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.exceptions.BufferOverflowException;
 
 /**
@@ -15,12 +40,12 @@ import de.dmarcini.bt.homelight.exceptions.BufferOverflowException;
  */
 public class BTReaderThread implements Runnable
 {
+  public final Object syncObj = new Object();
   private final String TAG = BTReaderThread.class.getSimpleName();
-  private CircularByteBuffer                   ringBuffer;
+  private CircularByteBuffer ringBuffer;
   //private HomeLightMainActivity.CommandReciver cReciver;
   private volatile boolean isRunning = true;
   private Vector<String> cmdBuffer;
-  public final     Object  syncObj   = new Object();
 
   /**
    * Standartkonstruktor als PRIVAT => nicht benutzbar
@@ -34,7 +59,7 @@ public class BTReaderThread implements Runnable
    * Konstruktor für den Reader-Thread
    *
    * @param ringBuffer Der Puffer für empfangene Daten
-   * @param cmdBuffer Das extraierte Kommando
+   * @param cmdBuffer  Das extraierte Kommando
    */
   public BTReaderThread(CircularByteBuffer ringBuffer, Vector<String> cmdBuffer)
   {
@@ -52,7 +77,7 @@ public class BTReaderThread implements Runnable
     //
     // den Inputstream solange lesen, wie die Verbindung besteht
     //
-    Log.i(TAG, "BEGIN BTreaderThread");
+    Log.d(TAG, "BEGIN BTreaderThread");
     ringBuffer.clear();
     iStream = ringBuffer.getInputStream();
     isRunning = true;
@@ -65,12 +90,11 @@ public class BTReaderThread implements Runnable
       {
         start = ringBuffer.indexOf(ProjectConst.BSTX);
         end = ringBuffer.indexOf(ProjectConst.BETX);
-        Log.e(TAG, String.format(Locale.ENGLISH, "START: <%02d>, END: <%02d>, AVL: <%02d>", start, end, ringBuffer.getAvailable()));
         //
         // solange ENDE gefunden wurde
         // oder nicht CANCEL gerufen
         //
-        while( (end > -1) && isRunning && ( ringBuffer != null ) )
+        while( (end > -1) && isRunning && (ringBuffer != null) )
         {
           try
           {
@@ -81,7 +105,7 @@ public class BTReaderThread implements Runnable
               if( start > 0 )
               {
                 iStream.skip(start - 1);
-                Log.v(TAG, String.format(Locale.GERMAN, "before STX deleted: <%02d> bytes", start));
+                if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.GERMAN, "before STX deleted: <%02d> bytes", start));
                 start = ringBuffer.indexOf(ProjectConst.BSTX);
                 end = ringBuffer.indexOf(ProjectConst.BETX);
                 continue;
@@ -92,7 +116,7 @@ public class BTReaderThread implements Runnable
               if( start > end )
               {
                 iStream.skip(start);
-                Log.v(TAG, String.format(Locale.GERMAN, "past ETX deleted: <%02d> bytes", start));
+                if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.GERMAN, "past ETX deleted: <%02d> bytes", start));
                 start = ringBuffer.indexOf(ProjectConst.BSTX);
                 end = ringBuffer.indexOf(ProjectConst.BETX);
                 continue;
@@ -110,7 +134,7 @@ public class BTReaderThread implements Runnable
                 // ETX überlesen
                 iStream.skip(1L);
                 readMessage = new String(buf);
-                Log.v(TAG, "message recived: <" + readMessage + ">, len <" + readMessage.length() + ">...");
+                Log.d(TAG, "message recived: <" + readMessage + ">, len <" + readMessage.length() + ">...");
                 //
                 // Kommando gefunden => Sende an die App / das Fragment
                 //
@@ -119,8 +143,6 @@ public class BTReaderThread implements Runnable
                 {
                   cmdBuffer.notifyAll();
                 }
-                //Log.v(TAG, "message delivered to queue!");
-                //cReciver.reciveCommand(readMessage);
                 start = ringBuffer.indexOf(ProjectConst.BSTX);
                 end = ringBuffer.indexOf(ProjectConst.BETX);
               }
@@ -177,7 +199,7 @@ public class BTReaderThread implements Runnable
         }
       }
     }
-    Log.i(TAG, "END BTreaderThread");
+    Log.d(TAG, "END BTreaderThread");
   }
 
   public void doStop()

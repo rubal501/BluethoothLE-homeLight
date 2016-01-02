@@ -1,19 +1,26 @@
 /*
- * Copyright 2013 Piotr Adamus
+ * //@formatter:off
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     ANDROID
+ *     btlehomelight
+ *     ColorPicker
+ *     2016-01-02
+ *     Copyright (C) 2016  Dirk Marciniak
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- * modiefied D. Marciniak 2015
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/
+ * /
+ * //@formatter:on
  */
 
 package de.dmarcini.bt.homelight.views;
@@ -38,25 +45,20 @@ import android.graphics.SweepGradient;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.Locale;
-
-import de.dmarcini.bt.homelight.R;
-
 public class ColorPicker extends View
 {
-  private static final String TAG = ColorPicker.class.getSimpleName();
+  private static final String  TAG                   = ColorPicker.class.getSimpleName();
   /**
    * Display Parameter in Prozent
    */
-  private final int     paramOuterPadding     = 2; //** outer padding of the whole color picker view
-  private final int     paramInnerPadding     = 5; //** distance between value slider wheel and inner color wheel
-  private final int     paramValueSliderWidth = 16; //** width of the value slider
-  private final int     paramArrowPointerSize = 4; //** size of the arrow pointer; set to 0 to hide the pointer
-  private final float[] oldColorHSV           = new float[]{0f, 0f, 1f};
+  private final        int     paramOuterPadding     = 2; //** outer padding of the whole color picker view
+  private final        int     paramInnerPadding     = 5; //** distance between value slider wheel and inner color wheel
+  private final        int     paramValueSliderWidth = 16; //** width of the value slider
+  private final        int     paramArrowPointerSize = 4; //** size of the arrow pointer; set to 0 to hide the pointer
+  private final        float[] oldColorHSV           = new float[]{0f, 0f, 1f};
   private Paint                   colorWheelPaint;
   private Paint                   valueSliderPaint;
   private Paint                   colorViewPaint;
@@ -272,10 +274,10 @@ public class ColorPicker extends View
     int centerY = height / 2;
     //
     // Größe neu berechnen
-    innerPadding = ( int ) (paramInnerPadding * width / 100);
-    outerPadding = ( int ) (paramOuterPadding * width / 100);
-    arrowPointerSize = ( int ) (paramArrowPointerSize * width / 100);
-    valueSliderWidth = ( int ) (paramValueSliderWidth * width / 100);
+    innerPadding = paramInnerPadding * width / 100;
+    outerPadding = paramOuterPadding * width / 100;
+    arrowPointerSize = paramArrowPointerSize * width / 100;
+    valueSliderWidth = paramValueSliderWidth * width / 100;
     //
     outerWheelRadius = width / 2 - outerPadding - arrowPointerSize;
     innerWheelRadius = outerWheelRadius - valueSliderWidth;
@@ -415,12 +417,8 @@ public class ColorPicker extends View
    */
   private boolean colorChanged()
   {
-    if( (currColorHSV[ 0 ] != oldColorHSV[ 0 ]) || (currColorHSV[ 1 ] != oldColorHSV[ 1 ]) || (currColorHSV[ 2 ] != oldColorHSV[ 2 ]) )
-    {
-      return (true);
+    return (currColorHSV[ 0 ] != oldColorHSV[ 0 ]) || (currColorHSV[ 1 ] != oldColorHSV[ 1 ]) || (currColorHSV[ 2 ] != oldColorHSV[ 2 ]);
     }
-    return (false);
-  }
 
   /**
    * setze die alte Farbe auf die neue....
@@ -529,7 +527,7 @@ public class ColorPicker extends View
    */
   public short[] getColorRGBW()
   {
-    short[] rgbw = new short[4];
+    short[] rgbw = new short[ 4 ];
     //double maxVal;
     double minVal;
     double Ri, Gi, Bi, Ro, Go, Bo, Wo;
@@ -559,16 +557,16 @@ public class ColorPicker extends View
     // Variante 1
     //Wo = Math.floor( startVal / 255 * averageVal);
     // Variante 2
-    Wo = Math.floor( minVal );
+    Wo = Math.floor(minVal);
     Ro = Ri >= Wo ? Math.floor(Ri - Wo) : 0.0;
-    Go = Gi >= Wo ? Math.floor( Gi - Wo ) : 0.0;
-    Bo = Bi >= Wo ? Math.floor( Bi - Wo ) : 0.0;
+    Go = Gi >= Wo ? Math.floor(Gi - Wo) : 0.0;
+    Bo = Bi >= Wo ? Math.floor(Bi - Wo) : 0.0;
     //
     // Werte als Short (wenn > 0  in Array sichern)
     //
-    rgbw[ 0 ] = ( short ) (Math.round( Ro ) & 0xff);
-    rgbw[ 1 ] = ( short ) (Math.round( Go ) & 0xff);
-    rgbw[ 2 ] = ( short ) (Math.round( Bo ) & 0xff);
+    rgbw[ 0 ] = ( short ) (Math.round(Ro) & 0xff);
+    rgbw[ 1 ] = ( short ) (Math.round(Go) & 0xff);
+    rgbw[ 2 ] = ( short ) (Math.round(Bo) & 0xff);
     rgbw[ 3 ] = ( short ) (Math.round(Wo) & 0xff);
     return (rgbw);
   }
@@ -580,7 +578,7 @@ public class ColorPicker extends View
    */
   public interface OnColorChangedListener
   {
-    public void onColorChanged(int color);
+    void onColorChanged(int color);
   }
 
   /**
@@ -588,7 +586,7 @@ public class ColorPicker extends View
    */
   public interface OnColorSelectedListener
   {
-    public void onColorSelected(int color);
+    void onColorSelected(int color);
   }
 
 }

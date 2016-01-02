@@ -1,24 +1,26 @@
 /*
- *   project: BlueThoothLE
- *   programm: Home Light control (Bluethooth LE with HM-10)
- *   purpose:  control home lights via BT (color and brightness)
- *   Copyright (C) 2015  Dirk Marciniak
- *   file: BluetoothLowEnergyService.java
- *   last modified: 19.12.15 17:17
+ * //@formatter:off
  *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
+ *     ANDROID
+ *     btlehomelight
+ *     BluetoothLowEnergyService
+ *     2016-01-02
+ *     Copyright (C) 2016  Dirk Marciniak
  *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/
+ * /
+ * //@formatter:on
  */
 
 package de.dmarcini.bt.homelight.service;
@@ -42,6 +44,7 @@ import android.util.Log;
 import java.util.List;
 import java.util.UUID;
 
+import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.utils.HM10GattAttributes;
 import de.dmarcini.bt.homelight.utils.ProjectConst;
 
@@ -51,24 +54,24 @@ import de.dmarcini.bt.homelight.utils.ProjectConst;
  */
 public class BluetoothLowEnergyService extends Service
 {
-  public final static String ACTION_GATT_CONNECTED           = "de.dmarcini.bt.homelight.service.ACTION_GATT_CONNECTED";
-  public final static String ACTION_GATT_DISCONNECTED        = "de.dmarcini.bt.homelight.service.ACTION_GATT_DISCONNECTED";
-  public final static String ACTION_GATT_SERVICES_DISCOVERED = "de.dmarcini.bt.homelight.service.ACTION_GATT_SERVICES_DISCOVERED";
-  public final static String ACTION_DATA_AVAILABLE           = "de.dmarcini.bt.homelight.service.ACTION_DATA_AVAILABLE";
-  public final static String EXTRA_DATA                      = "de.dmarcini.bt.homelight.service.EXTRA_DATA";
-  private final static String TAG = BluetoothLowEnergyService.class.getSimpleName();
-  private static final int STATE_DISCONNECTED = 0;
-  private static final int STATE_CONNECTING   = 1;
-  private static final int STATE_CONNECTED    = 2;
-  private final IBinder mBinder = new LocalBinder();
+  public final static  String  ACTION_GATT_CONNECTED           = "de.dmarcini.bt.homelight.service.ACTION_GATT_CONNECTED";
+  public final static  String  ACTION_GATT_DISCONNECTED        = "de.dmarcini.bt.homelight.service.ACTION_GATT_DISCONNECTED";
+  public final static  String  ACTION_GATT_SERVICES_DISCOVERED = "de.dmarcini.bt.homelight.service.ACTION_GATT_SERVICES_DISCOVERED";
+  public final static  String  ACTION_DATA_AVAILABLE           = "de.dmarcini.bt.homelight.service.ACTION_DATA_AVAILABLE";
+  public final static  String  EXTRA_DATA                      = "de.dmarcini.bt.homelight.service.EXTRA_DATA";
+  private final static String  TAG                             = BluetoothLowEnergyService.class.getSimpleName();
+  private static final int     STATE_DISCONNECTED              = 0;
+  private static final int     STATE_CONNECTING                = 1;
+  private static final int     STATE_CONNECTED                 = 2;
+  private final        IBinder mBinder                         = new LocalBinder();
   private BluetoothManager mBluetoothManager;
   private BluetoothAdapter mBluetoothAdapter;
   private String           mBluetoothDeviceAddress;
   private BluetoothGatt    mBluetoothGatt;
-  private              int mConnectionState   = STATE_DISCONNECTED;
+  private       int                   mConnectionState = STATE_DISCONNECTED;
   // Implements callback methods for GATT events that the app cares about.  For example,
   // connection change and services discovered.
-  private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback()
+  private final BluetoothGattCallback mGattCallback    = new BluetoothGattCallback()
   {
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState)
@@ -79,16 +82,16 @@ public class BluetoothLowEnergyService extends Service
         intentAction = ACTION_GATT_CONNECTED;
         mConnectionState = STATE_CONNECTED;
         broadcastUpdate(intentAction);
-        Log.i(TAG, "Connected to GATT server.");
+        if( BuildConfig.DEBUG )Log.i(TAG, "Connected to GATT server.");
         // Attempts to discover services after successful connection.
-        Log.i(TAG, "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
+        if( BuildConfig.DEBUG )Log.i(TAG, "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
 
       }
       else if( newState == BluetoothProfile.STATE_DISCONNECTED )
       {
         intentAction = ACTION_GATT_DISCONNECTED;
         mConnectionState = STATE_DISCONNECTED;
-        Log.i(TAG, "Disconnected from GATT server.");
+        if( BuildConfig.DEBUG )Log.i(TAG, "Disconnected from GATT server.");
         broadcastUpdate(intentAction);
       }
     }
@@ -102,7 +105,7 @@ public class BluetoothLowEnergyService extends Service
       }
       else
       {
-        Log.w(TAG, "onServicesDiscovered received: " + status);
+        if( BuildConfig.DEBUG )Log.i(TAG, "onServicesDiscovered received: " + status);
       }
     }
 
@@ -134,7 +137,7 @@ public class BluetoothLowEnergyService extends Service
 
     // For all other profiles, writes the data formatted in HEX.
     final byte[] data = characteristic.getValue();
-    Log.i(TAG, "data" + characteristic.getValue());
+    if( BuildConfig.DEBUG )Log.i(TAG, "data" + characteristic.getValue());
 
     if( data != null && data.length > 0 )
     {
@@ -143,7 +146,7 @@ public class BluetoothLowEnergyService extends Service
       {
         stringBuilder.append(String.format("%02X ", byteChar));
       }
-      Log.d(TAG, String.format("%s", new String(data)));
+      if( BuildConfig.DEBUG )Log.d(TAG, String.format("%s", new String(data)));
       // getting cut off when longer, need to push on new line, 0A
       intent.putExtra(EXTRA_DATA, String.format("%s", new String(data)));
 
@@ -216,7 +219,7 @@ public class BluetoothLowEnergyService extends Service
     // Previously connected device.  Try to reconnect.
     if( mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress) && mBluetoothGatt != null )
     {
-      Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
+      if( BuildConfig.DEBUG )Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
       if( mBluetoothGatt.connect() )
       {
         mConnectionState = STATE_CONNECTING;
