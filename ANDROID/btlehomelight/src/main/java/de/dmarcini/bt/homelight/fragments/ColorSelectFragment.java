@@ -59,7 +59,6 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
   private int              currColor;
   private long             timeToSend;
   private ColorPicker      picker;
-  private LinearLayout     accLinearLayout;
   private ToggleButton     calToggleButton;
   private BluetoothConfig  btConfig;
   private IMainAppServices mainService;
@@ -133,7 +132,6 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
     }
     View rootView = inflater.inflate(resId, container, false);
     picker = ( ColorPicker ) rootView.findViewById(R.id.colorPicker);
-    accLinearLayout = ( LinearLayout ) rootView.findViewById(R.id.accLinearLayout);
     calToggleButton = ( ToggleButton ) rootView.findViewById(R.id.RGBWToggleButton);
     //
     // Farbe setzen (Voreinstellung)
@@ -182,7 +180,6 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
     // neue Resource laden (wegen der Dimensionen, ist dort leicher definierbar
     tempView = ( LinearLayout ) getActivity().getLayoutInflater().inflate(resId, ( ViewGroup ) rootView.getParent(), false);
     picker = ( ColorPicker ) tempView.findViewById(R.id.colorPicker);
-    accLinearLayout = ( LinearLayout ) tempView.findViewById(R.id.accLinearLayout);
     calToggleButton = ( ToggleButton ) tempView.findViewById(R.id.RGBWToggleButton);
     //
     // Vies in das Layout einfügen
@@ -190,7 +187,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
     tempView.removeAllViews();
     tempView.invalidate();
     rootView.addView(picker);
-    rootView.addView(accLinearLayout);
+    rootView.addView(calToggleButton);
     //
     // Farbe setzen (Voreinstellung)
     //

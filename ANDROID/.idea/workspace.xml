@@ -22,15 +22,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f63e8067-b20f-4aba-a47d-412ebba147ff" name="Default" comment="Umrechnug von RGB zu RGBW">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ARDUINO/BlueToothLE/BlueToothLE.cppproj" afterPath="$PROJECT_DIR$/../ARDUINO/BlueToothLE/BlueToothLE.cppproj" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/fragments/ColorSelectFragment.java" afterPath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/fragments/ColorSelectFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ARDUINO/BlueToothLE/CommandParser.hpp" afterPath="$PROJECT_DIR$/../ARDUINO/BlueToothLE/CommandParser.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/HomeLightMainActivity.java" afterPath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/HomeLightMainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/interrfaces/IMainAppServices.java" afterPath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/interrfaces/IMainAppServices.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ARDUINO/BlueToothLE/Main.cpp" afterPath="$PROJECT_DIR$/../ARDUINO/BlueToothLE/Main.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/utils/ProjectConst.java" afterPath="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/utils/ProjectConst.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ARDUINO/BlueToothLE/SysConfig.cpp" afterPath="$PROJECT_DIR$/../ARDUINO/BlueToothLE/SysConfig.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testcolorpicker/testcolorpicker.iml" afterPath="$PROJECT_DIR$/testcolorpicker/testcolorpicker.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btlehomelight/src/main/res/layout/fragment_colors_wheel_land.xml" afterPath="$PROJECT_DIR$/btlehomelight/src/main/res/layout/fragment_colors_wheel_land.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btlehomelight/src/main/res/layout/fragment_colors_wheel_port.xml" afterPath="$PROJECT_DIR$/btlehomelight/src/main/res/layout/fragment_colors_wheel_port.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="14d944d5-c443-40dc-ab61-7b32209fbc26" name="Rejected commit: Default" comment="Umrechnug von RGB zu RGBW" />
@@ -77,14 +71,40 @@
       <file leaf-file-name="ColorSelectFragment.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/fragments/ColorSelectFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="3.2089915">
-              <caret line="491" column="0" selection-start-line="491" selection-start-column="0" selection-end-line="491" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.46415552">
+              <caret line="242" column="23" selection-start-line="242" selection-start-column="23" selection-end-line="242" selection-end-column="23" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3516#3517#0" expanded="true" />
-                <element signature="e#3550#3551#0" expanded="true" />
+                <element signature="e#3472#3473#0" expanded="true" />
+                <element signature="e#3506#3507#0" expanded="true" />
               </folding>
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="fragment_colors_wheel_land.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/btlehomelight/src/main/res/layout/fragment_colors_wheel_land.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-14.965517">
+              <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+          <provider editor-type-id="android-designer">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="fragment_colors_wheel_port.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/btlehomelight/src/main/res/layout/fragment_colors_wheel_port.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-21.793104">
+              <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+          <provider editor-type-id="android-designer">
+            <state />
           </provider>
         </entry>
       </file>
@@ -3415,12 +3435,12 @@
         <option value="$PROJECT_DIR$/testcolorpicker/src/main/java/de/dmarcini/test/colorpicker/MainActivity.java" />
         <option value="$PROJECT_DIR$/testcolorpicker/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/testcolorpicker/src/main/res/layout/act_picker.xml" />
-        <option value="$PROJECT_DIR$/btlehomelight/src/main/res/layout/fragment_colors_wheel_land.xml" />
-        <option value="$PROJECT_DIR$/btlehomelight/src/main/res/layout/fragment_colors_wheel_port.xml" />
         <option value="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/views/ColorPicker.java" />
         <option value="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/utils/ProjectConst.java" />
         <option value="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/interrfaces/IMainAppServices.java" />
         <option value="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/HomeLightMainActivity.java" />
+        <option value="$PROJECT_DIR$/btlehomelight/src/main/res/layout/fragment_colors_wheel_land.xml" />
+        <option value="$PROJECT_DIR$/btlehomelight/src/main/res/layout/fragment_colors_wheel_port.xml" />
         <option value="$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/fragments/ColorSelectFragment.java" />
       </list>
     </option>
@@ -3508,170 +3528,7 @@
       <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="AndroidView">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ANDROID" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ANDROID" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="btlehomelight" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ANDROID" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="btlehomelight" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ANDROID" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="btlehomelight" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="homelight" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ANDROID" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="btlehomelight" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="homelight" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="views" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ANDROID" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="btlehomelight" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="homelight" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="utils" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ANDROID" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="btlehomelight" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="homelight" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="utils" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ColorComputeServices.java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ANDROID" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="btlehomelight" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="homelight" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interrfaces" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ANDROID" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="btlehomelight" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="homelight" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fragments" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
+        <subPane />
       </pane>
     </panes>
   </component>
@@ -3937,7 +3794,8 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32902467" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="true" weight="0.32902467" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" x="2754" y="5" width="1521" height="975" />
+      <window_info id="Android Monitor" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="true" weight="0.32902467" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" x="2754" y="5" width="1521" height="975" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32902467" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32902467" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -3957,7 +3815,6 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32902467" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -4058,8 +3915,8 @@
           <caret line="497" column="14" selection-start-line="497" selection-start-column="14" selection-end-line="497" selection-end-column="14" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3516#3517#0" expanded="true" />
-            <element signature="e#3550#3551#0" expanded="true" />
+            <element signature="e#3472#3473#0" expanded="true" />
+            <element signature="e#3506#3507#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -4116,8 +3973,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3516#3517#0" expanded="true" />
-            <element signature="e#3550#3551#0" expanded="true" />
+            <element signature="e#3472#3473#0" expanded="true" />
+            <element signature="e#3506#3507#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -4375,31 +4232,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/btlehomelight/src/main/res/layout/fragment_colors_wheel_port.xml">
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="43" column="38" selection-start-line="43" selection-start-column="38" selection-end-line="43" selection-end-column="38" />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/utils/ColorComputeServices.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="113" column="38" selection-start-line="113" selection-start-column="13" selection-end-line="113" selection-end-column="47" />
         </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/btlehomelight/src/main/res/layout/fragment_colors_wheel_land.xml">
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="40" column="36" selection-start-line="40" selection-start-column="25" selection-end-line="40" selection-end-column="40" />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/views/ColorPicker.java">
@@ -4448,14 +4285,36 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/btlehomelight/src/main/res/layout/fragment_colors_wheel_land.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-14.965517">
+          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/btlehomelight/src/main/res/layout/fragment_colors_wheel_port.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-21.793104">
+          <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/fragments/ColorSelectFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="3.2089915">
-          <caret line="491" column="0" selection-start-line="491" selection-start-column="0" selection-end-line="491" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.46415552">
+          <caret line="242" column="23" selection-start-line="242" selection-start-column="23" selection-end-line="242" selection-end-column="23" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3516#3517#0" expanded="true" />
-            <element signature="e#3550#3551#0" expanded="true" />
+            <element signature="e#3472#3473#0" expanded="true" />
+            <element signature="e#3506#3507#0" expanded="true" />
           </folding>
         </state>
       </provider>

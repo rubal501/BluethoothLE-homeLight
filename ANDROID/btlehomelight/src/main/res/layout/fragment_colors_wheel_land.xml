@@ -22,12 +22,12 @@
   ~
   -->
 
-<LinearLayout android:id="@+id/colorWeelLayout"
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="horizontal"
+<LinearLayout
+    android:id="@+id/colorWeelLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
     >
 
     <de.dmarcini.bt.homelight.views.ColorPicker
@@ -35,93 +35,21 @@
         android:layout_width="0dp"
         android:layout_height="fill_parent"
         android:layout_gravity="center"
-        android:layout_weight="1.0" />
+        android:layout_weight="1.0"/>
 
-    <LinearLayout
-        android:id="@+id/accLinearLayout"
-        android:orientation="vertical"
+    <ToggleButton
+        android:id="@+id/RGBWToggleButton"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="right"
-        android:layout_marginLeft="20dp">
+        android:layout_height="60dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="40dp"
+        android:contentDescription="RGBW Mischung"
+        android:labelFor="@id/RGBWToggleButton"
+        android:minWidth="160dp"
+        android:text="RGBW"
+        android:textOff="nur RGB"
+        android:textOn="RGBW"/>
 
-        <ToggleButton
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:text="RGBW"
-            android:id="@+id/RGBWToggleButton"
-            android:contentDescription="RGBW Mischung"
-            android:labelFor="@id/RGBWToggleButton"
-            android:textOff="nur RGB"
-            android:textOn="RGBW"
-            android:minWidth="160dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginTop="40dp"/>
-
-        <GridLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:rowCount="2"
-            android:background="#70001eff"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="40dp">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageViewRed"
-                android:layout_column="0"
-                android:layout_row="0"
-                android:minWidth="40dp"
-                android:minHeight="40dp"
-                android:maxHeight="60dp"
-                android:maxWidth="60dp"
-                android:background="#ff0000"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="4dp"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageViewGreen"
-                android:minHeight="40dp"
-                android:minWidth="40dp"
-                android:maxHeight="60dp"
-                android:maxWidth="60dp"
-                android:layout_column="1"
-                android:layout_row="0"
-                android:background="#00ff00"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="4dp"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageViewBlue"
-                android:minHeight="40dp"
-                android:minWidth="40dp"
-                android:maxHeight="60dp"
-                android:maxWidth="60dp"
-                android:layout_column="0"
-                android:layout_row="1"
-                android:background="#0000ff"
-                android:layout_marginLeft="20dp"
-                android:layout_marginBottom="4dp"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageViewWhite"
-                android:minHeight="40dp"
-                android:minWidth="40dp"
-                android:maxHeight="60dp"
-                android:maxWidth="60dp"
-                android:layout_column="1"
-                android:layout_row="1"
-                android:background="#ffffff"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="4dp"/>
-        </GridLayout>
-    </LinearLayout>
 
     <!--
     <com.larswerkman.holocolorpicker.ColorPicker
