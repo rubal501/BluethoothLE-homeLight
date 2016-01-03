@@ -1,10 +1,9 @@
 /*
- * //@formatter:off
  *
  *     ANDROID
  *     btlehomelight
  *     AppFragment
- *     2016-01-02
+ *     2016-01-03
  *     Copyright (C) 2016  Dirk Marciniak
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -20,29 +19,65 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/
  * /
- * //@formatter:on
+ *
  */
 
 package de.dmarcini.bt.homelight.fragments;
 
+import android.bluetooth.BluetoothGattService;
 import android.support.v4.app.Fragment;
+
+import java.util.List;
+
+import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
+import de.dmarcini.bt.homelight.utils.BluetoothConfig;
 
 /**
  * Created by dmarc on 24.12.2015.
  */
-public class AppFragment extends Fragment
+public abstract class AppFragment extends Fragment
 {
-  private boolean shouldNewCreated = false;
+  protected IMainAppServices mainService;
+  protected BluetoothConfig  btConfig;
 
-  public boolean isShouldNewCreated()
-  {
-    return shouldNewCreated;
-  }
+  /**
+   * Das BT Gerät wurde verbunden
+   */
+  public abstract void onBTConnected(/*TODO: Gerät mit übergeben?*/);
 
-  public void setShouldNewCreated(boolean shouldNewCreated)
-  {
-    this.shouldNewCreated = shouldNewCreated;
-  }
+  /**
+   * Das BT Gerät wurde getrennt
+   */
+  public abstract void onBTDisconnected();
 
+  /**
+   * Das BT Gerät meldet verfügbarte Services
+   *
+   * @param gattServices
+   */
+  public abstract void onBTServicesRecived(List<BluetoothGattService> gattServices);
+
+  /**
+   * Es kommen Daten vom BT Gerät
+   *
+   * @param data
+   */
+  public abstract void onBTDataAvaiable(String data);
+
+
+  /**
+   * Bluethooth Hintergrundservice verbunden!
+   */
+  public abstract void onServiceConnected();
+
+  /**
+   * Bluethooth Hintergrundservice getrennt
+   */
+  public abstract void onServiceDisconnected();
+
+  /**
+   * Page wurde selektiert
+   */
+  public abstract void onPageSelected();
 
 }
