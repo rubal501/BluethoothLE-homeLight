@@ -1,27 +1,26 @@
-/*
- * //@formatter:off
- *
- *     ANDROID
- *     btlehomelight
- *     DiscoveringFragment
- *     2016-01-02
- *     Copyright (C) 2016  Dirk Marciniak
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/
- * /
- * //@formatter:on
- */
+/******************************************************************************
+ *                                                                            *
+ *      project: ANDROID                                                      *
+ *      module: btlehomelight                                                 *
+ *      class: DiscoveringFragment                                            *
+ *      date: 2016-01-03                                                      *
+ *                                                                            *
+ *      Copyright (C) 2016  Dirk Marciniak                                    *
+ *                                                                            *
+ *      This program is free software: you can redistribute it and/or modify  *
+ *      it under the terms of the GNU General Public License as published by  *
+ *      the Free Software Foundation, either version 3 of the License, or     *
+ *      (at your option) any later version.                                   *
+ *                                                                            *
+ *      This program is distributed in the hope that it will be useful,       *
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *      GNU General Public License for more details.                          *
+ *                                                                            *
+ *      You should have received a copy of the GNU General Public License     *
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ *                                                                            *
+ ******************************************************************************/
 
 package de.dmarcini.bt.homelight.fragments;
 
@@ -48,7 +47,6 @@ import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.R;
-import de.dmarcini.bt.homelight.interrfaces.IBtEventHandler;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BTLEListAdapter;
 import de.dmarcini.bt.homelight.utils.BluetoothConfig;
@@ -58,10 +56,9 @@ import de.dmarcini.bt.homelight.utils.ProjectConst;
 /**
  * Created by dmarc on 22.08.2015.
  */
-public class DiscoveringFragment extends AppFragment implements IBtEventHandler, AdapterView.OnItemClickListener, View.OnClickListener
+public class DiscoveringFragment extends AppFragment implements AdapterView.OnItemClickListener, View.OnClickListener
 {
   private static final String TAG = DiscoveringFragment.class.getSimpleName();
-  private BluetoothConfig btConfig;
   private ListView        discoverListView;
   private Button          scanButton;
   private ProgressBar     scanProgress;
@@ -97,7 +94,8 @@ public class DiscoveringFragment extends AppFragment implements IBtEventHandler,
       if( args != null )
       {
         pos = args.getInt(ProjectConst.ARG_SECTION_NUMBER, 0);
-        if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.ENGLISH, "Konstructor: id is %04d", pos));
+        if( BuildConfig.DEBUG )
+          Log.v(TAG, String.format(Locale.ENGLISH, "Konstructor: id is %04d", pos));
       }
     }
     catch( NullPointerException ex )
@@ -117,7 +115,8 @@ public class DiscoveringFragment extends AppFragment implements IBtEventHandler,
     Bundle args = new Bundle();
     args.putInt(ProjectConst.ARG_SECTION_NUMBER, sectionNumber);
     fragment.setArguments(args);
-    if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.ENGLISH, "DiscoveringFragment.newInstance(%04d)", sectionNumber));
+    if( BuildConfig.DEBUG )
+      Log.v(TAG, String.format(Locale.ENGLISH, "DiscoveringFragment.newInstance(%04d)", sectionNumber));
     return fragment;
   }
 
@@ -129,7 +128,8 @@ public class DiscoveringFragment extends AppFragment implements IBtEventHandler,
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
   {
-    if( BuildConfig.DEBUG )Log.v(TAG, "onCreateView...");
+    if( BuildConfig.DEBUG )
+      Log.v(TAG, "onCreateView...");
     //
     // Objekte generieren udn finden
     //
@@ -144,14 +144,16 @@ public class DiscoveringFragment extends AppFragment implements IBtEventHandler,
     scanButton.setOnClickListener(this);
     setHasOptionsMenu(true);
     prepareHeader();
-    if( BuildConfig.DEBUG )Log.v(TAG, "onCreateView...OK");
+    if( BuildConfig.DEBUG )
+      Log.v(TAG, "onCreateView...OK");
     return (rootView);
   }
 
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
   {
-    if( BuildConfig.DEBUG )Log.v(TAG, "onCreateOptionsMenu...");
+    if( BuildConfig.DEBUG )
+      Log.v(TAG, "onCreateOptionsMenu...");
     inflater.inflate(R.menu.menu_home_light_main, menu);
     //
     if( !mScanning )

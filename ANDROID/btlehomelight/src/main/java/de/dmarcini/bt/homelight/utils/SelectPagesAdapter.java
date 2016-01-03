@@ -1,27 +1,26 @@
-/*
- * //@formatter:off
- *
- *     ANDROID
- *     btlehomelight
- *     SelectPagesAdapter
- *     2016-01-02
- *     Copyright (C) 2016  Dirk Marciniak
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/
- * /
- * //@formatter:on
- */
+/******************************************************************************
+ *                                                                            *
+ *      project: ANDROID                                                      *
+ *      module: btlehomelight                                                 *
+ *      class: SelectPagesAdapter                                             *
+ *      date: 2016-01-03                                                      *
+ *                                                                            *
+ *      Copyright (C) 2016  Dirk Marciniak                                    *
+ *                                                                            *
+ *      This program is free software: you can redistribute it and/or modify  *
+ *      it under the terms of the GNU General Public License as published by  *
+ *      the Free Software Foundation, either version 3 of the License, or     *
+ *      (at your option) any later version.                                   *
+ *                                                                            *
+ *      This program is distributed in the hope that it will be useful,       *
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *      GNU General Public License for more details.                          *
+ *                                                                            *
+ *      You should have received a copy of the GNU General Public License     *
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ *                                                                            *
+ ******************************************************************************/
 
 package de.dmarcini.bt.homelight.utils;
 
@@ -36,7 +35,6 @@ import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.R;
-import de.dmarcini.bt.homelight.fragments.AppFragment;
 import de.dmarcini.bt.homelight.fragments.ColorSelectFragment;
 import de.dmarcini.bt.homelight.fragments.DirectControlFragment;
 import de.dmarcini.bt.homelight.fragments.DiscoveringFragment;
@@ -72,20 +70,8 @@ public class SelectPagesAdapter extends FragmentPagerAdapter
         //
         // ich habe das Fragment schon
         //
-        if( fragmentsArray[ position ] instanceof AppFragment )
-        {
-          if( !(( AppFragment ) fragmentsArray[ position ]).isShouldNewCreated() )
-          {
-            if( BuildConfig.DEBUG )Log.v(TAG, "getItem() => recycle Fragment Object");
-            return (fragmentsArray[ position ]);
-          }
-          fragmentsArray[ position ] = null;
-        }
-        else
-        {
-          if( BuildConfig.DEBUG )Log.v(TAG, "getItem() => recycle Fragment Object");
-          return (fragmentsArray[ position ]);
-        }
+        if( BuildConfig.DEBUG )Log.v(TAG, "getItem() => recycle Fragment Object");
+        return (fragmentsArray[ position ]);
       }
     }
     catch( IndexOutOfBoundsException ex )

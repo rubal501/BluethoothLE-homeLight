@@ -1,47 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ /*
-  ~     ANDROID
-  ~     btlehomelight
-  ~     fragment_brightness_only.xml
-  ~     2016-01-02
-  ~     Copyright (C) 2016  Dirk Marciniak
-  ~
-  ~     This program is free software: you can redistribute it and/or modify
-  ~     it under the terms of the GNU General Public License as published by
-  ~     the Free Software Foundation, either version 3 of the License, or
-  ~     (at your option) any later version.
-  ~
-  ~     This program is distributed in the hope that it will be useful,
-  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~     GNU General Public License for more details.
-  ~
-  ~     You should have received a copy of the GNU General Public License
-  ~     along with this program.  If not, see <http://www.gnu.org/licenses/
-  ~ */
-  ~
-  -->
+
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~                                                                           ~
+  ~      project: ANDROID                                                     ~
+  ~      module: btlehomelight                                                ~
+  ~      class: fragment_brightness_only.xml                                  ~
+  ~      date: 2016-01-03                                                     ~
+  ~                                                                           ~
+  ~      Copyright (C) 2016  Dirk Marciniak                                   ~
+  ~                                                                           ~
+  ~      This program is free software: you can redistribute it and/or modify ~
+  ~      it under the terms of the GNU General Public License as published by ~
+  ~      the Free Software Foundation, either version 3 of the License, or    ~
+  ~      (at your option) any later version.                                  ~
+  ~                                                                           ~
+  ~      This program is distributed in the hope that it will be useful,      ~
+  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of       ~
+  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        ~
+  ~      GNU General Public License for more details.                         ~
+  ~                                                                           ~
+  ~      You should have received a copy of the GNU General Public License    ~
+  ~      along with this program.  If not, see <http://www.gnu.org/licenses/  ~
+  ~                                                                           ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:orientation="horizontal">
 
-    <de.dmarcini.bt.homelight.views.ValueBar
-        android:layout_width="27dp"
-        android:layout_height="match_parent"
-        android:id="@+id/brightnessSeekBar"
-        android:layout_gravity="left"
-        android:layout_marginLeft="26dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:progress="100"/>
+
 
     <TextView
+        android:id="@+id/brightnessHeaderTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/brigtness_header"
-        android:id="@+id/brightnessHeaderTextView"/>
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+    <com.larswerkman.holocolorpicker.ValueBar
+        android:id="@+id/brightnessValueBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:bar_orientation_horizontal="false"/>
+
 </LinearLayout>

@@ -1,26 +1,26 @@
-/*
- *
- *     ANDROID
- *     btlehomelight
- *     BrightnessOnlyFragment
- *     2016-01-03
- *     Copyright (C) 2016  Dirk Marciniak
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/
- * /
- *
- */
+/******************************************************************************
+ *                                                                            *
+ *      project: ANDROID                                                      *
+ *      module: btlehomelight                                                 *
+ *      class: BrightnessOnlyFragment                                         *
+ *      date: 2016-01-03                                                      *
+ *                                                                            *
+ *      Copyright (C) 2016  Dirk Marciniak                                    *
+ *                                                                            *
+ *      This program is free software: you can redistribute it and/or modify  *
+ *      it under the terms of the GNU General Public License as published by  *
+ *      the Free Software Foundation, either version 3 of the License, or     *
+ *      (at your option) any later version.                                   *
+ *                                                                            *
+ *      This program is distributed in the hope that it will be useful,       *
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *      GNU General Public License for more details.                          *
+ *                                                                            *
+ *      You should have received a copy of the GNU General Public License     *
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ *                                                                            *
+ ******************************************************************************/
 
 package de.dmarcini.bt.homelight.fragments;
 
@@ -33,7 +33,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SeekBar;
+
+import com.larswerkman.holocolorpicker.ValueBar;
 
 import java.util.List;
 import java.util.Locale;
@@ -46,15 +47,14 @@ import de.dmarcini.bt.homelight.utils.BluetoothConfig;
 import de.dmarcini.bt.homelight.utils.ProjectConst;
 
 
-
 /**
  * Created by dmarc on 22.08.2015.
  */
-public class BrightnessOnlyFragment extends AppFragment implements SeekBar.OnSeekBarChangeListener
+public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnValueChangedListener
 {
-  private static final String TAG        = BrightnessOnlyFragment.class.getSimpleName();
+  private static final String TAG = BrightnessOnlyFragment.class.getSimpleName();
   private              int    brightness = 0;
-  //private VerticalSeekBar brightnessSeekBar;
+  private com.larswerkman.holocolorpicker.ValueBar brightnessSeekBar;
 
   public BrightnessOnlyFragment()
   {
@@ -120,9 +120,9 @@ public class BrightnessOnlyFragment extends AppFragment implements SeekBar.OnSee
     //
     // Adressen der GUI Objekte bestimmen
     //
-//    brightnessSeekBar = ( VerticalSeekBar ) rootView.findViewById(R.id.brightnessSeekBar);
-//    brightnessSeekBar.setOnSeekBarChangeListener(this);
-//    brightnessSeekBar.setMax(256);
+    brightnessSeekBar = ( com.larswerkman.holocolorpicker.ValueBar ) rootView.findViewById(R.id.brightnessValueBar);
+    brightnessSeekBar.setOnValueChangedListener(this);
+    brightnessSeekBar.setColor(0xffffffff);
     return (rootView);
   }
 
@@ -357,57 +357,32 @@ public class BrightnessOnlyFragment extends AppFragment implements SeekBar.OnSee
     {
       rgbw[ i ] = ( short ) brightness;
     }
-    brightnessSeekBar.setProgress(brightness);
+    //brightnessSeekBar.setColor(brightness);
   }
 
+
   @Override
-  public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+  public void onValueChanged(int value)
   {
     //Log.i(TAG, String.format(Locale.ENGLISH, "Changed BRIGHTNESS <%03d>", progress));
 
-    if( fromUser )
+    if( BuildConfig.DEBUG )
     {
-      if( seekBar.equals(brightnessSeekBar) )
-      {
-        if( BuildConfig.DEBUG )
-        {
-          Log.i(TAG, String.format(Locale.ENGLISH, "Changed BRIGHTNESS <%03d>", progress));
-        }
-        rgbw[ 0 ] = rgbw[ 1 ] = rgbw[ 2 ] = rgbw[ 3 ] = ( short ) (progress & 0xff);
+      Log.i(TAG, String.format(Locale.ENGLISH, "Changed BRIGHTNESS <%03d>", value));
+    }
+    rgbw[ 0 ] = rgbw[ 1 ] = rgbw[ 2 ] = rgbw[ 3 ] = ( short ) (value & 0xff);
 
-        if( timeToSend < System.currentTimeMillis() && mainService != null )
-        {
-          //
-          // Mal wieder zum Contoller senden!
-          //
-          mainService.setModulRawRGBW(rgbw);
-          //
-          // Neue Deadline setzen
-          //
-          timeToSend = System.currentTimeMillis() + ProjectConst.TIMEDIFF_TO_SEND;
-        }
-      }
-
+    if( timeToSend < System.currentTimeMillis() && mainService != null )
+    {
+      //
+      // Mal wieder zum Contoller senden!
+      //
+      mainService.setModulRawRGBW(rgbw);
+      //
+      // Neue Deadline setzen
+      //
+      timeToSend = System.currentTimeMillis() + ProjectConst.TIMEDIFF_TO_SEND;
     }
   }
 
-  @Override
-  public void onStartTrackingTouch(SeekBar seekBar)
-  {
-    //
-    // Wann soll gesendet werden, wenn der user kontinuierlich draggt?
-    //
-    timeToSend = System.currentTimeMillis() + ProjectConst.TIMEDIFF_TO_SEND;
-
-  }
-
-  @Override
-  public void onStopTrackingTouch(SeekBar seekBar)
-  {
-    //
-    // Mal wieder zum Contoller senden!
-    //
-    mainService.setModulRawRGBW(rgbw);
-
-  }
 }

@@ -1,27 +1,26 @@
-/*
- * //@formatter:off
- *
- *     ANDROID
- *     btlehomelight
- *     ColorSelectFragment
- *     2016-01-02
- *     Copyright (C) 2016  Dirk Marciniak
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/
- * /
- * //@formatter:on
- */
+/******************************************************************************
+ *                                                                            *
+ *      project: ANDROID                                                      *
+ *      module: btlehomelight                                                 *
+ *      class: ColorSelectFragment                                            *
+ *      date: 2016-01-03                                                      *
+ *                                                                            *
+ *      Copyright (C) 2016  Dirk Marciniak                                    *
+ *                                                                            *
+ *      This program is free software: you can redistribute it and/or modify  *
+ *      it under the terms of the GNU General Public License as published by  *
+ *      the Free Software Foundation, either version 3 of the License, or     *
+ *      (at your option) any later version.                                   *
+ *                                                                            *
+ *      This program is distributed in the hope that it will be useful,       *
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *      GNU General Public License for more details.                          *
+ *                                                                            *
+ *      You should have received a copy of the GNU General Public License     *
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ *                                                                            *
+ ******************************************************************************/
 
 package de.dmarcini.bt.homelight.fragments;
 
@@ -44,7 +43,6 @@ import java.util.regex.Pattern;
 
 import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.R;
-import de.dmarcini.bt.homelight.interrfaces.IBtEventHandler;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothConfig;
 import de.dmarcini.bt.homelight.utils.ProjectConst;
@@ -54,16 +52,12 @@ import de.dmarcini.bt.homelight.views.ColorPicker;
 /**
  * Created by dmarc on 22.08.2015.
  */
-public class ColorSelectFragment extends AppFragment implements IBtEventHandler, ColorPicker.OnColorChangedListener, ColorPicker.OnColorSelectedListener, View.OnClickListener
+public class ColorSelectFragment extends AppFragment implements ColorPicker.OnColorChangedListener, ColorPicker.OnColorSelectedListener, View.OnClickListener
 {
   private static final String  TAG  = ColorSelectFragment.class.getSimpleName();
-  private final        short[] rgbw = new short[ ProjectConst.C_ASKRGB_LEN - 1 ];
   private int              currColor;
-  private long             timeToSend;
   private ColorPicker      picker;
   private ToggleButton     calToggleButton;
-  private BluetoothConfig  btConfig;
-  private IMainAppServices mainService;
 
   public ColorSelectFragment()
   {
@@ -76,7 +70,8 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
       if( args != null )
       {
         pos = args.getInt(ProjectConst.ARG_SECTION_NUMBER, 0);
-        if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.ENGLISH, "Konstructor: id is %04d", pos));
+        if( BuildConfig.DEBUG )
+          Log.v(TAG, String.format(Locale.ENGLISH, "Konstructor: id is %04d", pos));
       }
     }
     catch( NullPointerException ex )
@@ -118,7 +113,7 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
     }
     else
     {
-      Log.e(TAG, "Application is not type of IMainAppServices");
+      Log.e(TAG, "Application is not type of AppServices");
       mainService = null;
     }
 

@@ -1,33 +1,31 @@
-/*
- * //@formatter:off
- *
- *     ANDROID
- *     btlehomelight
- *     DummyFragment
- *     2016-01-02
- *     Copyright (C) 2016  Dirk Marciniak
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/
- * /
- * //@formatter:on
- */
+/******************************************************************************
+ *                                                                            *
+ *      project: ANDROID                                                      *
+ *      module: btlehomelight                                                 *
+ *      class: DummyFragment                                                  *
+ *      date: 2016-01-03                                                      *
+ *                                                                            *
+ *      Copyright (C) 2016  Dirk Marciniak                                    *
+ *                                                                            *
+ *      This program is free software: you can redistribute it and/or modify  *
+ *      it under the terms of the GNU General Public License as published by  *
+ *      the Free Software Foundation, either version 3 of the License, or     *
+ *      (at your option) any later version.                                   *
+ *                                                                            *
+ *      This program is distributed in the hope that it will be useful,       *
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *      GNU General Public License for more details.                          *
+ *                                                                            *
+ *      You should have received a copy of the GNU General Public License     *
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ *                                                                            *
+ ******************************************************************************/
 
 package de.dmarcini.bt.homelight.fragments;
 
 import android.bluetooth.BluetoothGattService;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,7 +39,6 @@ import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.R;
-import de.dmarcini.bt.homelight.interrfaces.IBtEventHandler;
 import de.dmarcini.bt.homelight.utils.BluetoothConfig;
 import de.dmarcini.bt.homelight.utils.ProjectConst;
 
@@ -49,10 +46,9 @@ import de.dmarcini.bt.homelight.utils.ProjectConst;
 /**
  * Created by dmarc on 22.08.2015.
  */
-public class DummyFragment extends Fragment implements IBtEventHandler
+public class DummyFragment extends AppFragment
 {
   private static final String TAG = DummyFragment.class.getSimpleName();
-  private BluetoothConfig btConfig;
 
   public DummyFragment()
   {

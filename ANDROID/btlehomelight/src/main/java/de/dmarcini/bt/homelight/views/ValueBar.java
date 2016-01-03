@@ -1,25 +1,26 @@
-/*
- *
- *     ANDROID
- *     btlehomelight
- *     ValueBar
- *     2016-01-03
- *     Copyright (C) 2016  Dirk Marciniak
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/
- *
- */
+/******************************************************************************
+ *                                                                            *
+ *      project: ANDROID                                                      *
+ *      module: btlehomelight                                                 *
+ *      class: ValueBar                                                       *
+ *      date: 2016-01-03                                                      *
+ *                                                                            *
+ *      Copyright (C) 2016  Dirk Marciniak                                    *
+ *                                                                            *
+ *      This program is free software: you can redistribute it and/or modify  *
+ *      it under the terms of the GNU General Public License as published by  *
+ *      the Free Software Foundation, either version 3 of the License, or     *
+ *      (at your option) any later version.                                   *
+ *                                                                            *
+ *      This program is distributed in the hope that it will be useful,       *
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *      GNU General Public License for more details.                          *
+ *                                                                            *
+ *      You should have received a copy of the GNU General Public License     *
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ *                                                                            *
+ ******************************************************************************/
 
 package de.dmarcini.bt.homelight.views;
 
@@ -425,8 +426,6 @@ public class ValueBar extends View
     return true;
   }
 
-  ;
-
   /**
    * Set the pointer on the bar. With the opacity value.
    *
@@ -462,7 +461,7 @@ public class ValueBar extends View
       coord = mBarLength;
     }
     mColor = Color.HSVToColor(new float[]{
-        mHSVColor[ 0 ], mHSVColor[ 1 ], ( float ) (1 - (mPosToSatFactor * coord))
+        mHSVColor[ 0 ], mHSVColor[ 1 ], 1 - (mPosToSatFactor * coord)
     });
   }
 
@@ -559,6 +558,6 @@ public class ValueBar extends View
 
   public interface OnValueChangedListener
   {
-    public void onValueChanged(int value);
+    void onValueChanged(int value);
   }
 }
