@@ -1,25 +1,25 @@
 /******************************************************************************
- *                                                                            *
- *      project: ANDROID                                                      *
- *      module: btlehomelight                                                 *
- *      class: ProjectConst                                                   *
- *      date: 2016-01-03                                                      *
- *                                                                            *
- *      Copyright (C) 2016  Dirk Marciniak                                    *
- *                                                                            *
- *      This program is free software: you can redistribute it and/or modify  *
- *      it under the terms of the GNU General Public License as published by  *
- *      the Free Software Foundation, either version 3 of the License, or     *
- *      (at your option) any later version.                                   *
- *                                                                            *
- *      This program is distributed in the hope that it will be useful,       *
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *      GNU General Public License for more details.                          *
- *                                                                            *
- *      You should have received a copy of the GNU General Public License     *
- *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
- *                                                                            *
+ * *
+ * project: ANDROID                                                      *
+ * module: btlehomelight                                                 *
+ * class: ProjectConst                                                   *
+ * date: 2016-01-03                                                      *
+ * *
+ * Copyright (C) 2016  Dirk Marciniak                                    *
+ * *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ * *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ * *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ * *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight.utils;
@@ -34,14 +34,15 @@ public class ProjectConst
   //
   // zuerst definiere die Seitennummern
   //
-  public static final int    PAGE_COUNT            = 3;
   public static final int    PAGE_DISCOVERING      = 0;
   public static final int    PAGE_DIRECT_CONTROL   = 1;
   public static final int    PAGE_COLOR_CIRCLE     = 2;
+  public static final int    PAGE_BRIGHTNESS_ONLY  = 3;
+  public static final int    PAGE_COUNT            = 4;
   //
   // dahin wechseln, wenn Verbindung aufgebaut ist
   //
-  public static final int    DEFAULT_CONNECT_PAGE  = 1;
+  public static final int    DEFAULT_CONNECT_PAGE  = 2;
   //
   // UUID für die Modulattribute
   //
@@ -81,15 +82,14 @@ public class ProjectConst
   // ACHTUNG: Version mit Scetch vergleichen!
   //
   public static final byte   C_UNKNOWN             = -1;
-  public static final byte   C_ASKTYP              = 0x00;
-  public static final byte   C_ASKNAME             = 0x01;
-  public static final byte   C_ASKRAWRGB           = 0x02;
-  public static final byte   C_ASKCALRGBW          = 0x03;
-  public static final byte   C_SETCOLOR            = 0x04;
-  public static final byte   C_SETCALRGB           = 0x05;
+  public static final byte   C_ASKTYP              = 0x00; // Modultyp erfragen
+  public static final byte   C_ASKNAME             = 0x01; // Modul name erfragen
+  public static final byte   C_ASKRGBW             = 0x02; // RGBW aktuell erfragen
+  public static final byte   C_SETCOLOR            = 0x03; // Farbe DIREKT RGBW setzen
+  public static final byte   C_SETCALRGB           = 0x04; // Farbe als RGB senden, Modul kalibriert zu RGBW
   public static final byte   C_ONOFF               = -2;
   //
-  // Länge der Kommandoketten
+  // Länge der Kommandoketten für Farbe
   //
   public static final int    C_ASKRGB_LEN          = 5;
   //

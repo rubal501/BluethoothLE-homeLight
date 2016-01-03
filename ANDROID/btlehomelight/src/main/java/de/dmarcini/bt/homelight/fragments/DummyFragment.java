@@ -1,25 +1,25 @@
 /******************************************************************************
- *                                                                            *
- *      project: ANDROID                                                      *
- *      module: btlehomelight                                                 *
- *      class: DummyFragment                                                  *
- *      date: 2016-01-03                                                      *
- *                                                                            *
- *      Copyright (C) 2016  Dirk Marciniak                                    *
- *                                                                            *
- *      This program is free software: you can redistribute it and/or modify  *
- *      it under the terms of the GNU General Public License as published by  *
- *      the Free Software Foundation, either version 3 of the License, or     *
- *      (at your option) any later version.                                   *
- *                                                                            *
- *      This program is distributed in the hope that it will be useful,       *
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *      GNU General Public License for more details.                          *
- *                                                                            *
- *      You should have received a copy of the GNU General Public License     *
- *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
- *                                                                            *
+ * *
+ * project: ANDROID                                                      *
+ * module: btlehomelight                                                 *
+ * class: DummyFragment                                                  *
+ * date: 2016-01-03                                                      *
+ * *
+ * Copyright (C) 2016  Dirk Marciniak                                    *
+ * *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ * *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ * *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ * *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight.fragments;
@@ -39,7 +39,7 @@ import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.R;
-import de.dmarcini.bt.homelight.utils.BluetoothConfig;
+import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
 import de.dmarcini.bt.homelight.utils.ProjectConst;
 
 
@@ -58,18 +58,21 @@ public class DummyFragment extends AppFragment
    * Returns a new instance of this fragment for the given section
    * number.
    */
-  public static DummyFragment newInstance(int sectionNumber, BluetoothConfig btConfig)
+  public static DummyFragment newInstance(int sectionNumber, BluetoothModulConfig btConfig)
   {
     DummyFragment fragment = new DummyFragment();
     fragment.setBlutethoothConfig(btConfig);
     Bundle args = new Bundle();
     args.putInt(ProjectConst.ARG_SECTION_NUMBER, sectionNumber);
     fragment.setArguments(args);
-    if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.ENGLISH, "DiscoveringFragment.newInstance(%04d)", sectionNumber));
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, String.format(Locale.ENGLISH, "DiscoveringFragment.newInstance(%04d)", sectionNumber));
+    }
     return fragment;
   }
 
-  private void setBlutethoothConfig(BluetoothConfig btConfig)
+  private void setBlutethoothConfig(BluetoothModulConfig btConfig)
   {
     this.btConfig = btConfig;
   }
@@ -85,7 +88,10 @@ public class DummyFragment extends AppFragment
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
   {
-    if( BuildConfig.DEBUG )Log.v(TAG, "onCreateOptionsMenu...");
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "onCreateOptionsMenu...");
+    }
     //inflater.inflate(R.menu.menu_home_light_main, menu);
   }
 
@@ -94,13 +100,19 @@ public class DummyFragment extends AppFragment
   {
     super.onPrepareOptionsMenu(menu);
     // noch was vorbereiten?
-    if( BuildConfig.DEBUG )Log.v(TAG, "onPrepareOptionsMenu...");
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "onPrepareOptionsMenu...");
+    }
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item)
   {
-    if( BuildConfig.DEBUG )Log.e(TAG, "onOptionsItemSelected...");
+    if( BuildConfig.DEBUG )
+    {
+      Log.e(TAG, "onOptionsItemSelected...");
+    }
     return super.onOptionsItemSelected(item);
   }
 
@@ -123,7 +135,7 @@ public class DummyFragment extends AppFragment
   }
 
   @Override
-  public void onBTDataAvaiable(String data)
+  public void onBTDataAvaiable(String[] data)
   {
 
   }

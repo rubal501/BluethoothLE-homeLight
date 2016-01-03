@@ -1,25 +1,25 @@
 /******************************************************************************
- *                                                                            *
- *      project: ANDROID                                                      *
- *      module: btlehomelight                                                 *
- *      class: HomeLightMainActivity                                          *
- *      date: 2016-01-03                                                      *
- *                                                                            *
- *      Copyright (C) 2016  Dirk Marciniak                                    *
- *                                                                            *
- *      This program is free software: you can redistribute it and/or modify  *
- *      it under the terms of the GNU General Public License as published by  *
- *      the Free Software Foundation, either version 3 of the License, or     *
- *      (at your option) any later version.                                   *
- *                                                                            *
- *      This program is distributed in the hope that it will be useful,       *
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *      GNU General Public License for more details.                          *
- *                                                                            *
- *      You should have received a copy of the GNU General Public License     *
- *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
- *                                                                            *
+ * *
+ * project: ANDROID                                                      *
+ * module: btlehomelight                                                 *
+ * class: HomeLightMainActivity                                          *
+ * date: 2016-01-03                                                      *
+ * *
+ * Copyright (C) 2016  Dirk Marciniak                                    *
+ * *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ * *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ * *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ * *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight;
@@ -51,12 +51,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import de.dmarcini.bt.homelight.fragments.AppFragment;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.service.BluetoothLowEnergyService;
 import de.dmarcini.bt.homelight.utils.BTReaderThread;
-import de.dmarcini.bt.homelight.utils.BluetoothConfig;
+import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
 import de.dmarcini.bt.homelight.utils.CircularByteBuffer;
 import de.dmarcini.bt.homelight.utils.CmdQueueThread;
 import de.dmarcini.bt.homelight.utils.HM10GattAttributes;
@@ -65,15 +66,15 @@ import de.dmarcini.bt.homelight.utils.SelectPagesAdapter;
 
 public class HomeLightMainActivity extends AppCompatActivity implements IMainAppServices, ViewPager.OnPageChangeListener
 {
-  private static final String             TAG          = HomeLightMainActivity.class.getSimpleName();
-  final                IntentFilter       intentFilter = new IntentFilter();
-  private final        CircularByteBuffer ringBuffer   = new CircularByteBuffer(1024);
-  private final        Vector<String>     recCmdQueue  = new Vector<>();
-  private              BluetoothConfig    btConfig     = new BluetoothConfig();
-  private BTReaderThread     readerThread;
-  private CmdQueueThread     cmdTread;
-  private SelectPagesAdapter mSectionsPagerAdapter;
-  private ViewPager          mViewPager;
+  private static final String               TAG          = HomeLightMainActivity.class.getSimpleName();
+  final                IntentFilter         intentFilter = new IntentFilter();
+  private final        CircularByteBuffer   ringBuffer   = new CircularByteBuffer(1024);
+  private final        Vector<String>       recCmdQueue  = new Vector<>();
+  private final        short[]              rgbw         = new short[ ProjectConst.C_ASKRGB_LEN - 1 ];
+  private              BluetoothModulConfig btConfig     = new BluetoothModulConfig();
+  private BTReaderThread readerThread;
+  private CmdQueueThread cmdTread;
+  private ViewPager      mViewPager;
   //
   // verwaltung des Lebenszyklus des Servicves
   //
@@ -148,7 +149,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         if( btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
         {
           handler.onBTConnected();
-          askModulForRawRGBW();
+          askModulForRGBW();
         }
         invalidateOptionsMenu();
       }
@@ -186,7 +187,8 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         {
           handler.onBTConnected();
           askModulForType();
-          askModulForRawRGBW();
+          askModulForRGBW();
+          askModulForName();
         }
       }
       else if( BluetoothLowEnergyService.ACTION_DATA_AVAILABLE.equals(action) )
@@ -228,20 +230,160 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     @Override
     public void reciveCommand(String cmd)
     {
+      String[] data;
       //
       // finde das aktuelle Fragment und sende die Nachricht
       //
       AppFragment handler = ( AppFragment ) (( SelectPagesAdapter ) (mViewPager.getAdapter())).getItem(mViewPager.getCurrentItem());
-      handler.onBTDataAvaiable(cmd);
+      if( null != (data = onBTDataAvaiable(cmd)) )
+      {
+        handler.onBTDataAvaiable(data);
+      }
     }
   };
+
+  /**
+   * Vorprüfen, falls Infos kommen die schon hier abgearbetet werden können
+   * wie zum Beispiel getRGBW oder getType
+   *
+   * @param data Kommandostring
+   * @return Wurden die Daten schon abgearbetet?
+   */
+  private String[] onBTDataAvaiable(String data)
+  {
+    String[] param;
+    int      cmdNum;
+
+    //
+    // Kommando empfangen
+    //
+    param = data.split(":");
+    if( Pattern.matches(ProjectConst.KOMANDPATTERN, data) && (param.length > 0) )
+    {
+      //
+      // Hier mal das Kommando finden und umrechnen
+      //
+      try
+      {
+        cmdNum = Integer.parseInt(param[ 0 ], 16);
+      }
+      catch( NumberFormatException ex )
+      {
+        cmdNum = ProjectConst.C_UNKNOWN;
+      }
+      //
+      // Jetzt Kommando auswerten
+      //
+      switch( cmdNum )
+      {
+        //
+        // Unbekanntes Kommando
+        //
+        case ProjectConst.C_UNKNOWN:
+          Log.e(TAG, "unknown command recived! Ignored.");
+          return (null);
+
+        //
+        // Frage nach dem Typ / Antwort
+        //
+        case ProjectConst.C_ASKTYP:
+          if( BuildConfig.DEBUG )
+          {
+            Log.v(TAG, "Modul type recived! <" + data + ">");
+          }
+          if( param.length == 2 && param[1] != null )
+          {
+            btConfig.setModuleType( param[1]);
+          }
+          return (null);
+
+        //
+        // Frage nach dem Modulname / Antwort
+        //
+        case ProjectConst.C_ASKNAME:
+          if( BuildConfig.DEBUG )
+          {
+            Log.v(TAG, "Modul name recived! <" + data + ">");
+          }
+          if( param.length == 2 && param[1] != null )
+          {
+            btConfig.setModuleName( param[1]);
+          }
+          return (null);
+
+        //
+        // Frage nach RGBW
+        //
+        case ProjectConst.C_ASKRGBW:
+          //
+          // Weitergeben an die Fragmente
+          //
+          if( BuildConfig.DEBUG )
+          {
+            Log.v(TAG, "RGBW from module <" + data + ">");
+          }
+          if( param.length != ProjectConst.C_ASKRGB_LEN )
+          {
+            return (null);
+          }
+          fillValuesInArray(param);
+          return (param);
+
+        //
+        // Sende COLOR
+        //
+        case ProjectConst.C_SETCOLOR:
+          if( BuildConfig.DEBUG )
+          {
+            Log.v(TAG, "SET RGBW to module (should not done)  <" + data + ">");
+          }
+          return (param);
+
+        default:
+          Log.e(TAG, "default: send to handler....");
+          return (param);
+      }
+    }
+    else
+    {
+      Log.e(TAG, "wrong command string recived! Ignored.");
+    }
+    return (null);
+  }
+
+  /**
+   * Lese die Farbparameter aus dem Kommando und speichere diese in meinem Array
+   *
+   * @param param Array mit Kommandowerten
+   */
+  private void fillValuesInArray(String[] param)
+  {
+    //
+    // der erste Parameter ist das Kommando, den ignoriere ich mal
+    //
+    for( int i = 1; i < ProjectConst.C_ASKRGB_LEN; i++ )
+    {
+      try
+      {
+        rgbw[ i - 1 ] = Short.parseShort(param[ i ], 16);
+      }
+      catch( NumberFormatException ex )
+      {
+        Log.w(TAG, "fillValuesInArray: <" + param[ i ] + "> is not an valid number! Set to 0!");
+        rgbw[ i - 1 ] = 0;
+      }
+    }
+
+  }
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
     if( BuildConfig.DEBUG )
+    {
       Log.v(TAG, "erzeuge Application...");
+    }
     setContentView(R.layout.activity_home_light_main);
     if( BuildConfig.DEBUG )
     {
@@ -287,7 +429,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     // Erzeuge einen Select-Adapter zur Erzeugung und Rückgabe der angeforderten Fragmente
     //
-    mSectionsPagerAdapter = new SelectPagesAdapter(getSupportFragmentManager(), getApplicationContext(), btConfig);
+    SelectPagesAdapter mSectionsPagerAdapter = new SelectPagesAdapter(getSupportFragmentManager(), getApplicationContext(), btConfig);
     // Initialisiere den Pager mit dem Adapter
     mViewPager = ( ViewPager ) findViewById(R.id.container);
     mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -317,7 +459,9 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     Intent gattServiceIntent = new Intent(this, BluetoothLowEnergyService.class);
     bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
     if( BuildConfig.DEBUG )
+    {
       Log.v(TAG, "erzeuge Application...OK");
+    }
   }
 
   @Override
@@ -341,7 +485,9 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   {
     super.onResume();
     if( BuildConfig.DEBUG )
+    {
       Log.v(TAG, "onResume()");
+    }
     //
     // Stelle sicher, dass der BT Adapter aktiviert wurde
     // erzeuge einen Intend (eine Absicht) und schicke diese an das System
@@ -407,7 +553,9 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   {
     super.onPause();
     if( BuildConfig.DEBUG )
+    {
       Log.v(TAG, "onPause()");
+    }
     try
     {
       unregisterReceiver(mGattUpdateReceiver);
@@ -429,8 +577,8 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     {
       return;
     }
-    String uuid                 = null;
-    String unknownServiceString = getResources().getString(R.string.ble_unknown_service);
+    String                             uuid                 = null;
+    String                             unknownServiceString = getResources().getString(R.string.ble_unknown_service);
     ArrayList<HashMap<String, String>> gattServiceData      = new ArrayList<HashMap<String, String>>();
 
 
@@ -501,26 +649,14 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   }
 
   @Override
-  public void askModulForRawRGBW()
+  public void askModulForRGBW()
   {
     String kommandoString;
     //
     // Kommando zusammenbauen
     //
-    kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKRAWRGB, ProjectConst.ETX);
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKRGBW, ProjectConst.ETX);
     Log.d(TAG, "send ask for RGBW (raw) =" + kommandoString);
-    sendKdoToModule(kommandoString);
-  }
-
-  @Override
-  public void askModulForCalibratedRGBW()
-  {
-    String kommandoString;
-    //
-    // Kommando zusammenbauen
-    //
-    kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKCALRGBW, ProjectConst.ETX);
-    Log.d(TAG, "send ask for RGBW (cal) =" + kommandoString);
     sendKdoToModule(kommandoString);
   }
 
@@ -533,9 +669,23 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     kommandoString = String.format(Locale.ENGLISH, "%s%02X:%02X:%02X:%02X:%02X%s", ProjectConst.STX, ProjectConst.C_SETCOLOR, rgbw[ 0 ], rgbw[ 1 ], rgbw[ 2 ], rgbw[ 3 ], ProjectConst.ETX);
     Log.d(TAG, "send set RGBW =" + kommandoString);
-    sendKdoToModule(kommandoString);
+    if( sendKdoToModule(kommandoString))
+    {
+      //
+      // der Wert ist ja dann im Modul gespeichert (hoffe ich)
+      //
+      this.rgbw[0] = rgbw[0];
+      this.rgbw[1] = rgbw[1];
+      this.rgbw[2] = rgbw[2];
+      this.rgbw[3] = rgbw[3];
+    }
   }
 
+  /**
+   * Setze Farben als RGB, Modul kalibriert nach RGBW
+   *
+   * @param rgbw RGB Werte, White wird ignoriert
+   */
   @Override
   public void setModulRGB4Calibrate(short[] rgbw)
   {
@@ -544,8 +694,17 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     // Kommando zusammenbauen
     //
     kommandoString = String.format(Locale.ENGLISH, "%s%02X:%02X:%02X:%02X:%02X%s", ProjectConst.STX, ProjectConst.C_SETCALRGB, rgbw[ 0 ], rgbw[ 1 ], rgbw[ 2 ], 0, ProjectConst.ETX);
-    Log.d(TAG, "send set RGB for calibrate in modul =" + kommandoString);
-    sendKdoToModule(kommandoString);
+    Log.d(TAG, "send set RGBW =" + kommandoString);
+    if( sendKdoToModule(kommandoString))
+    {
+      //
+      // der Wert ist ja dann im Modul gespeichert (hoffe ich)
+      //
+      this.rgbw[0] = rgbw[0];
+      this.rgbw[1] = rgbw[1];
+      this.rgbw[2] = rgbw[2];
+      this.rgbw[3] = 0;
+    }
   }
 
   @Override
@@ -560,12 +719,18 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     sendKdoToModule(kommandoString);
   }
 
+  @Override
+  public short[] getModulRGBW()
+  {
+    return( rgbw );
+  }
+
   /**
    * Sende den Kommandostring (incl ETX und STX) zum Modul, wenn Verbunden
    *
    * @param kdo String mit ETC und STX
    */
-  private void sendKdoToModule(final String kdo)
+  private boolean sendKdoToModule(final String kdo)
   {
     if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
     {
@@ -574,10 +739,12 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       btConfig.getBluetoothService().writeCharacteristic(btConfig.getCharacteristicTX());
       btConfig.getBluetoothService().setCharacteristicNotification(btConfig.getCharacteristicRX(), true);
       Log.d(TAG, "send OK");
+      return( true );
     }
     else
     {
       Log.w(TAG, "send NOT OK, not connected?");
+      return( false );
     }
   }
 
@@ -590,7 +757,10 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   @Override
   public void onPageSelected(int position)
   {
-    if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.ENGLISH, "page %02d selected", position));
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, String.format(Locale.ENGLISH, "page %02d selected", position));
+    }
     //
     // Gib dem Fragment order, dass es selektiert wurde
     //
@@ -611,15 +781,23 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     if( newConfig.orientation == Configuration.ORIENTATION_PORTRAIT )
     {
       if( BuildConfig.DEBUG )
+      {
         Log.i(TAG, "new orientation is PORTRAIT");
+      }
     }
     else if( newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE )
     {
-      if( BuildConfig.DEBUG )Log.i(TAG, "new orientation is LANDSCAPE");
+      if( BuildConfig.DEBUG )
+      {
+        Log.i(TAG, "new orientation is LANDSCAPE");
+      }
     }
     else
     {
-      if( BuildConfig.DEBUG )Log.w(TAG, "new orientation is UNKNOWN");
+      if( BuildConfig.DEBUG )
+      {
+        Log.w(TAG, "new orientation is UNKNOWN");
+      }
     }
   }
 

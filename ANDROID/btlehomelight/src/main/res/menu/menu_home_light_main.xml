@@ -26,14 +26,14 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="de.dmarcini.bt.homelight.HomeLightMainActivity">
 
-    <item
-        android:id="@+id/menu_scan"
-        android:orderInCategory="100"
-        android:title="@string/menu_scan"/>
-    <item
-        android:id="@+id/menu_stop"
-        android:orderInCategory="101"
-        android:title="@string/menu_stop"/>
+  <item
+      android:id="@+id/menu_scan"
+      android:orderInCategory="100"
+      android:title="@string/menu_scan"/>
+  <item
+      android:id="@+id/menu_stop"
+      android:orderInCategory="101"
+      android:title="@string/menu_stop"/>
 </menu>
 
 

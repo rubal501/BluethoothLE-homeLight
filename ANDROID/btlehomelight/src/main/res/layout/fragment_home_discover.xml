@@ -30,60 +30,60 @@
               android:orientation="vertical"
     >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/primary_material_dark_actionbar"
+      android:orientation="horizontal"
+      android:paddingBottom="16dp"
+      android:paddingLeft="8dp"
+      android:paddingRight="0dp"
+      android:paddingTop="16dp"
+      >
+
+    <TextView
+        android:id="@+id/discoverHeadLine"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/primary_material_dark_actionbar"
-        android:orientation="horizontal"
-        android:paddingBottom="16dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="0dp"
-        android:paddingTop="16dp"
-        >
+        android:layout_alignEnd="@id/discoverHeadLine"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="4dp"
+        android:text="@string/discovering_headline"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"/>
 
-        <TextView
-            android:id="@+id/discoverHeadLine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@id/discoverHeadLine"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="4dp"
-            android:text="@string/discovering_headline"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/colorAccent"
-            android:textStyle="bold"/>
+    <ProgressBar
+        android:id="@+id/scanProgress"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical|right"
+        android:layout_marginStart="16dp"
+        android:layout_toEndOf="@id/discoverHeadLine"
+        android:visibility="invisible"/>
 
-        <ProgressBar
-            android:id="@+id/scanProgress"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_vertical|right"
-            android:layout_marginStart="16dp"
-            android:layout_toEndOf="@id/discoverHeadLine"
-            android:visibility="invisible"/>
-
-        <Button
-            android:id="@+id/scanButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="16dp"
-            android:paddingEnd="8dp"
-            android:text="@string/discovering_scan"/>
+    <Button
+        android:id="@+id/scanButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="16dp"
+        android:paddingEnd="8dp"
+        android:text="@string/discovering_scan"/>
 
 
-    </RelativeLayout>
+  </RelativeLayout>
 
-    <ListView
-        android:id="@+id/discoverList"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:drawSelectorOnTop="false"/>
+  <ListView
+      android:id="@+id/discoverList"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:drawSelectorOnTop="false"/>
 
 </LinearLayout>
 

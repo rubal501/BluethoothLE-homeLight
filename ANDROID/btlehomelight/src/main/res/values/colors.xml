@@ -24,11 +24,11 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <resources>
-    <color name="colorPrimary">#262731</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#05a9f5</color>
-    <color name="primary_material_dark_actionbar">#01146c</color>
-    <color name="primary_material_dark">#212121</color>
-    <color name="foreground_material_dark">#ffffff</color>
-    <color name="primary_text_default_material_dark">#b0fefe</color>
+  <color name="colorPrimary">#262731</color>
+  <color name="colorPrimaryDark">#303F9F</color>
+  <color name="colorAccent">#05a9f5</color>
+  <color name="primary_material_dark_actionbar">#01146c</color>
+  <color name="primary_material_dark">#212121</color>
+  <color name="foreground_material_dark">#ffffff</color>
+  <color name="primary_text_default_material_dark">#b0fefe</color>
 </resources>

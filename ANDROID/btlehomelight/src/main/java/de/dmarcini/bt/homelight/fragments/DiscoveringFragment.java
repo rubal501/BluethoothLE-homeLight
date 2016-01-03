@@ -1,25 +1,25 @@
 /******************************************************************************
- *                                                                            *
- *      project: ANDROID                                                      *
- *      module: btlehomelight                                                 *
- *      class: DiscoveringFragment                                            *
- *      date: 2016-01-03                                                      *
- *                                                                            *
- *      Copyright (C) 2016  Dirk Marciniak                                    *
- *                                                                            *
- *      This program is free software: you can redistribute it and/or modify  *
- *      it under the terms of the GNU General Public License as published by  *
- *      the Free Software Foundation, either version 3 of the License, or     *
- *      (at your option) any later version.                                   *
- *                                                                            *
- *      This program is distributed in the hope that it will be useful,       *
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *      GNU General Public License for more details.                          *
- *                                                                            *
- *      You should have received a copy of the GNU General Public License     *
- *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
- *                                                                            *
+ * *
+ * project: ANDROID                                                      *
+ * module: btlehomelight                                                 *
+ * class: DiscoveringFragment                                            *
+ * date: 2016-01-03                                                      *
+ * *
+ * Copyright (C) 2016  Dirk Marciniak                                    *
+ * *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ * *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ * *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ * *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight.fragments;
@@ -49,7 +49,7 @@ import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BTLEListAdapter;
-import de.dmarcini.bt.homelight.utils.BluetoothConfig;
+import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
 import de.dmarcini.bt.homelight.utils.ProjectConst;
 
 
@@ -95,7 +95,9 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
       {
         pos = args.getInt(ProjectConst.ARG_SECTION_NUMBER, 0);
         if( BuildConfig.DEBUG )
+        {
           Log.v(TAG, String.format(Locale.ENGLISH, "Konstructor: id is %04d", pos));
+        }
       }
     }
     catch( NullPointerException ex )
@@ -108,7 +110,7 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
    * Returns a new instance of this fragment for the given section
    * number.
    */
-  public static DiscoveringFragment newInstance(int sectionNumber, BluetoothConfig btConfig)
+  public static DiscoveringFragment newInstance(int sectionNumber, BluetoothModulConfig btConfig)
   {
     DiscoveringFragment fragment = new DiscoveringFragment();
     fragment.setBlutethoothConfig(btConfig);
@@ -116,11 +118,13 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     args.putInt(ProjectConst.ARG_SECTION_NUMBER, sectionNumber);
     fragment.setArguments(args);
     if( BuildConfig.DEBUG )
+    {
       Log.v(TAG, String.format(Locale.ENGLISH, "DiscoveringFragment.newInstance(%04d)", sectionNumber));
+    }
     return fragment;
   }
 
-  private void setBlutethoothConfig(BluetoothConfig btConfig)
+  private void setBlutethoothConfig(BluetoothModulConfig btConfig)
   {
     this.btConfig = btConfig;
   }
@@ -129,7 +133,9 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
   {
     if( BuildConfig.DEBUG )
+    {
       Log.v(TAG, "onCreateView...");
+    }
     //
     // Objekte generieren udn finden
     //
@@ -145,7 +151,9 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     setHasOptionsMenu(true);
     prepareHeader();
     if( BuildConfig.DEBUG )
+    {
       Log.v(TAG, "onCreateView...OK");
+    }
     return (rootView);
   }
 
@@ -153,7 +161,9 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
   {
     if( BuildConfig.DEBUG )
+    {
       Log.v(TAG, "onCreateOptionsMenu...");
+    }
     inflater.inflate(R.menu.menu_home_light_main, menu);
     //
     if( !mScanning )
@@ -225,7 +235,10 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
   {
     if( enable )
     {
-      if( BuildConfig.DEBUG )Log.v(TAG, "scanBTLEDevice START...");
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, "scanBTLEDevice START...");
+      }
       // Stops scanning after a pre-defined scan period.
       mHandler.postDelayed(new Runnable()
       {
@@ -245,7 +258,10 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     }
     else
     {
-      if( BuildConfig.DEBUG )Log.v(TAG, "scanBTLEDevice STOP...");
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, "scanBTLEDevice STOP...");
+      }
       mScanning = false;
       btConfig.getBluethoothAdapter().stopLeScan(mLeScanCallback);
       prepareHeader();
@@ -261,7 +277,10 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     {
       return;
     }
-    if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.ENGLISH, "connect to device %s...", device.getAddress()));
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, String.format(Locale.ENGLISH, "connect to device %s...", device.getAddress()));
+    }
     //
     // wenn er noch am scannen ist, erst mal abschalten
     //
@@ -275,14 +294,17 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     //
     if( getActivity() instanceof IMainAppServices )
     {
-      if( BuildConfig.DEBUG )Log.i(TAG, "activity is instance of IMainAppServices!");
+      if( BuildConfig.DEBUG )
+      {
+        Log.i(TAG, "activity is instance of IMainAppServices!");
+      }
       if( btConfig.isConnected() )
       {
         Log.d(TAG, "BT is connected, so first disconnect device...");
         btConfig.getBluetoothService().disconnect();
       }
       Log.d(TAG, "try BT connect device...");
-      btConfig.setDeviceAddress( device.getAddress());
+      btConfig.setDeviceAddress(device.getAddress());
       btConfig.getBluetoothService().connect(device.getAddress());
       //
       // wechseln zur nächsten Seite dann, wenn die Services eingelesen sind
@@ -298,7 +320,10 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
   public void onPause()
   {
     super.onPause();
-    if( BuildConfig.DEBUG )Log.v(TAG, "onPause()");
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "onPause()");
+    }
 
   }
 
@@ -306,27 +331,39 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
   public void onResume()
   {
     super.onResume();
-    if( BuildConfig.DEBUG )Log.v(TAG, "onResume()");
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "onResume()");
+    }
   }
 
   @Override
   public void onBTConnected()
   {
-    if( BuildConfig.DEBUG )Log.v(TAG, "BT Device connected!");
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "BT Device connected!");
+    }
     prepareHeader();
   }
 
   @Override
   public void onBTDisconnected()
   {
-    if( BuildConfig.DEBUG )Log.v(TAG, "BT Device disconnected!");
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "BT Device disconnected!");
+    }
     prepareHeader();
   }
 
   @Override
   public void onBTServicesRecived(List<BluetoothGattService> gattServices)
   {
-    if( BuildConfig.DEBUG )Log.v(TAG, "BT Device services recived");
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "BT Device services recived");
+    }
     if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
     {
       //
@@ -337,27 +374,39 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
   }
 
   @Override
-  public void onBTDataAvaiable(String data)
+  public void onBTDataAvaiable(String[] data)
   {
-    if( BuildConfig.DEBUG )Log.v(TAG, "BT Device data recived");
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "BT Device data recived");
+    }
   }
 
   @Override
   public void onServiceConnected()
   {
-    if( BuildConfig.DEBUG )Log.v(TAG, "BT Service connected");
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "BT Service connected");
+    }
   }
 
   @Override
   public void onServiceDisconnected()
   {
-    if( BuildConfig.DEBUG )Log.v(TAG, "BT Service disconnected");
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "BT Service disconnected");
+    }
   }
 
   @Override
   public void onPageSelected()
   {
-    if( BuildConfig.DEBUG )Log.v(TAG, "Page DISCOVERING was selected");
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "Page DISCOVERING was selected");
+    }
     prepareHeader();
     // TODO: ist das Ding verbunden, kann er nicht suchen
     // zeige das dem User
@@ -388,11 +437,17 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     super.onConfigurationChanged(newConfig);
     if( newConfig.orientation == Configuration.ORIENTATION_PORTRAIT )
     {
-      if( BuildConfig.DEBUG )Log.i(TAG, "new orientation is PORTRAIT");
+      if( BuildConfig.DEBUG )
+      {
+        Log.i(TAG, "new orientation is PORTRAIT");
+      }
     }
     else if( newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE )
     {
-      if( BuildConfig.DEBUG )Log.i(TAG, "new orientation is LANDSCAPE");
+      if( BuildConfig.DEBUG )
+      {
+        Log.i(TAG, "new orientation is LANDSCAPE");
+      }
     }
     else
     {

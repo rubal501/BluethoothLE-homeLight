@@ -1,25 +1,25 @@
 /******************************************************************************
- *                                                                            *
- *      project: ANDROID                                                      *
- *      module: btlehomelight                                                 *
- *      class: BTReaderThread                                                 *
- *      date: 2016-01-03                                                      *
- *                                                                            *
- *      Copyright (C) 2016  Dirk Marciniak                                    *
- *                                                                            *
- *      This program is free software: you can redistribute it and/or modify  *
- *      it under the terms of the GNU General Public License as published by  *
- *      the Free Software Foundation, either version 3 of the License, or     *
- *      (at your option) any later version.                                   *
- *                                                                            *
- *      This program is distributed in the hope that it will be useful,       *
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *      GNU General Public License for more details.                          *
- *                                                                            *
- *      You should have received a copy of the GNU General Public License     *
- *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
- *                                                                            *
+ * *
+ * project: ANDROID                                                      *
+ * module: btlehomelight                                                 *
+ * class: BTReaderThread                                                 *
+ * date: 2016-01-03                                                      *
+ * *
+ * Copyright (C) 2016  Dirk Marciniak                                    *
+ * *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ * *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ * *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ * *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight.utils;
@@ -39,8 +39,8 @@ import de.dmarcini.bt.homelight.exceptions.BufferOverflowException;
  */
 public class BTReaderThread implements Runnable
 {
-  public final Object syncObj = new Object();
-  private final String TAG = BTReaderThread.class.getSimpleName();
+  public final  Object syncObj = new Object();
+  private final String TAG     = BTReaderThread.class.getSimpleName();
   private CircularByteBuffer ringBuffer;
   //private HomeLightMainActivity.CommandReciver cReciver;
   private volatile boolean isRunning = true;
@@ -104,7 +104,10 @@ public class BTReaderThread implements Runnable
               if( start > 0 )
               {
                 iStream.skip(start - 1);
-                if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.GERMAN, "before STX deleted: <%02d> bytes", start));
+                if( BuildConfig.DEBUG )
+                {
+                  Log.v(TAG, String.format(Locale.GERMAN, "before STX deleted: <%02d> bytes", start));
+                }
                 start = ringBuffer.indexOf(ProjectConst.BSTX);
                 end = ringBuffer.indexOf(ProjectConst.BETX);
                 continue;
@@ -115,7 +118,10 @@ public class BTReaderThread implements Runnable
               if( start > end )
               {
                 iStream.skip(start);
-                if( BuildConfig.DEBUG )Log.v(TAG, String.format(Locale.GERMAN, "past ETX deleted: <%02d> bytes", start));
+                if( BuildConfig.DEBUG )
+                {
+                  Log.v(TAG, String.format(Locale.GERMAN, "past ETX deleted: <%02d> bytes", start));
+                }
                 start = ringBuffer.indexOf(ProjectConst.BSTX);
                 end = ringBuffer.indexOf(ProjectConst.BETX);
                 continue;

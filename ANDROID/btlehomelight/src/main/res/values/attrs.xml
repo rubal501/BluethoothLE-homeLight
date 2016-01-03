@@ -3,7 +3,7 @@
   ~                                                                           ~
   ~      project: ANDROID                                                     ~
   ~      module: btlehomelight                                                ~
-  ~      class: fragment_colors_wheel_land.xml                                ~
+  ~      class: attrs.xml                                                     ~
   ~      date: 2016-01-03                                                     ~
   ~                                                                           ~
   ~      Copyright (C) 2016  Dirk Marciniak                                   ~
@@ -23,33 +23,25 @@
   ~                                                                           ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<LinearLayout
-    android:id="@+id/colorWeelLayout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    >
+<resources>
 
-  <de.dmarcini.bt.homelight.views.ColorPicker
-      android:id="@+id/colorPicker"
-      android:layout_width="0dp"
-      android:layout_height="fill_parent"
-      android:layout_gravity="center"
-      android:layout_weight="1.0"/>
+  <!--
+  <declare-styleable name="ColorPicker">
+    <attr name="color_wheel_radius" format="dimension"/>
+    <attr name="color_wheel_thickness" format="dimension"/>
+    <attr name="color_center_radius" format="dimension"/>
+    <attr name="color_center_halo_radius" format="dimension"/>
+    <attr name="color_pointer_radius" format="dimension"/>
+    <attr name="color_pointer_halo_radius" format="dimension"/>
+  </declare-styleable>
+  -->
 
-  <ToggleButton
-      android:id="@+id/RGBWToggleButton"
-      android:layout_width="wrap_content"
-      android:layout_height="60dp"
-      android:layout_gravity="center_vertical"
-      android:layout_marginTop="40dp"
-      android:contentDescription="RGBW Mischung"
-      android:labelFor="@id/RGBWToggleButton"
-      android:minWidth="160dp"
-      android:text="RGBW"
-      android:textOff="nur RGB"
-      android:textOn="RGBW"/>
+  <declare-styleable name="ColorBars">
+    <attr name="bar_thickness" format="dimension"/>
+    <attr name="bar_length" format="dimension"/>
+    <attr name="bar_pointer_radius" format="dimension"/>
+    <attr name="bar_pointer_halo_radius" format="dimension"/>
+    <attr name="bar_orientation_horizontal" format="boolean"/>
+  </declare-styleable>
 
-
-</LinearLayout>
+</resources>

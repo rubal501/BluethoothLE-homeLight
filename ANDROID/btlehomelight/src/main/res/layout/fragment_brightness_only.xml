@@ -30,19 +30,26 @@
               android:layout_height="match_parent"
               android:orientation="horizontal">
 
+  <com.larswerkman.holocolorpicker.ValueBar
+      android:id="@+id/brightnessValueBar"
+      android:layout_width="wrap_content"
+      android:layout_height="fill_parent"
+      app:bar_orientation_horizontal="false"
+      app:bar_thickness="35dp"
+      app:bar_pointer_radius="25dp"
+      app:bar_pointer_halo_radius="30dp"
+      android:layout_marginLeft="25dp"
+      android:layout_marginTop="30dp"
+      android:layout_marginBottom="30dp"
+      android:layout_marginRight="25dp"/>
 
 
-    <TextView
-        android:id="@+id/brightnessHeaderTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/brigtness_header"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-    <com.larswerkman.holocolorpicker.ValueBar
-        android:id="@+id/brightnessValueBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:bar_orientation_horizontal="false"/>
+  <TextView
+      android:id="@+id/brightnessHeaderTextView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/brigtness_header"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:layout_marginTop="40dp"/>
 
 </LinearLayout>

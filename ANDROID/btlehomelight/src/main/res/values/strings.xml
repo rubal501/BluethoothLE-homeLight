@@ -24,42 +24,44 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <resources>
-    <string name="app_name">BT Home Light</string>
-    <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+  <string name="app_name">BT Home Light</string>
+  <string name="action_settings">Settings</string>
+  <string name="section_format">Hello World from section: %1$d</string>
 
-    <!-- HomeLightMainActivity -->
-    <string name="ble_not_supported">BT 4.0 nicht unterstützt!</string>
-    <string name="ble_unknown_service">unbekannter Service</string>
+  <!-- HomeLightMainActivity -->
+  <string name="ble_not_supported">BT 4.0 nicht unterstützt!</string>
+  <string name="ble_unknown_service">unbekannter Service</string>
 
-    <!-- Main Menu -->
-    <string name="menu_refresh">erneuern...</string>
-    <string name="menu_scan">suchen...</string>
-    <string name="menu_stop">suche beenden.</string>
+  <!-- Main Menu -->
+  <string name="menu_refresh">erneuern...</string>
+  <string name="menu_scan">suchen...</string>
+  <string name="menu_stop">suche beenden.</string>
 
-    <!-- Discovering Fragment -->
-    <string name="discovering_no_data">Kein Gerät verfügbar</string>
-    <string name="discovering_headline">Suche Gerät</string>
-    <string name="discovering_scan">suchen...</string>
-    <string name="discovering_stop">suche beenden.</string>
-    <string name="discovering_disconnect">trennen</string>
+  <!-- Discovering Fragment -->
+  <string name="discovering_no_data">Kein Gerät verfügbar</string>
+  <string name="discovering_headline">Suche Gerät</string>
+  <string name="discovering_scan">suchen...</string>
+  <string name="discovering_stop">suche beenden.</string>
+  <string name="discovering_disconnect">trennen</string>
 
-    <!-- BTLEListAdapter -->
-    <string name="unknown_device">unbekanntes Gerät</string>
+  <!-- BTLEListAdapter -->
+  <string name="unknown_device">unbekanntes Gerät</string>
 
-    <!-- direct Control Fragment -->
-    <string name="disconnected">getrennt</string>
-    <string name="connected">verbunden</string>
-    <string name="label_device_address">Geräteadresse</string>
-    <string name="label_state">Status</string>
-    <string name="label_data">Daten</string>
-    <string name="no_data">- keine -</string>
-    <string name="is_serial">ist UART</string>
-    <string name="no_serial">kein UART</string>
-    <string name="red_slide">Rot</string>
-    <string name="green_slide">Grün</string>
-    <string name="blue_slide">Blau</string>
-    <string name="white_slide">Weiß</string>
+  <!-- direct Control Fragment -->
+  <string name="disconnected">getrennt</string>
+  <string name="connected">verbunden</string>
+  <string name="label_device_address">Geräteadresse</string>
+  <string name="label_state">Status</string>
+  <string name="label_data">Daten</string>
+  <string name="no_data">- keine -</string>
+  <string name="is_serial">ist UART</string>
+  <string name="no_serial">kein UART</string>
+  <string name="red_slide">Rot</string>
+  <string name="green_slide">Grün</string>
+  <string name="blue_slide">Blau</string>
+  <string name="white_slide">Weiß</string>
 
-    <string name="brigtness_header">Helligkeit(weiß)</string>
+  <!-- Helligkeit-Only schirm -->
+  <string name="brigtness_header">Helligkeit(weiß)</string>
+  <string name="brigtness_header_vals" format="raw">Helligkeit: %02d </string>
 </resources>

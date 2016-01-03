@@ -1,25 +1,25 @@
 /******************************************************************************
- *                                                                            *
- *      project: ANDROID                                                      *
- *      module: btlehomelight                                                 *
- *      class: BluetoothLowEnergyService                                      *
- *      date: 2016-01-03                                                      *
- *                                                                            *
- *      Copyright (C) 2016  Dirk Marciniak                                    *
- *                                                                            *
- *      This program is free software: you can redistribute it and/or modify  *
- *      it under the terms of the GNU General Public License as published by  *
- *      the Free Software Foundation, either version 3 of the License, or     *
- *      (at your option) any later version.                                   *
- *                                                                            *
- *      This program is distributed in the hope that it will be useful,       *
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *      GNU General Public License for more details.                          *
- *                                                                            *
- *      You should have received a copy of the GNU General Public License     *
- *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
- *                                                                            *
+ * *
+ * project: ANDROID                                                      *
+ * module: btlehomelight                                                 *
+ * class: BluetoothLowEnergyService                                      *
+ * date: 2016-01-03                                                      *
+ * *
+ * Copyright (C) 2016  Dirk Marciniak                                    *
+ * *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ * *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ * *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ * *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight.service;
@@ -81,16 +81,25 @@ public class BluetoothLowEnergyService extends Service
         intentAction = ACTION_GATT_CONNECTED;
         mConnectionState = STATE_CONNECTED;
         broadcastUpdate(intentAction);
-        if( BuildConfig.DEBUG )Log.i(TAG, "Connected to GATT server.");
+        if( BuildConfig.DEBUG )
+        {
+          Log.i(TAG, "Connected to GATT server.");
+        }
         // Attempts to discover services after successful connection.
-        if( BuildConfig.DEBUG )Log.i(TAG, "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
+        if( BuildConfig.DEBUG )
+        {
+          Log.i(TAG, "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
+        }
 
       }
       else if( newState == BluetoothProfile.STATE_DISCONNECTED )
       {
         intentAction = ACTION_GATT_DISCONNECTED;
         mConnectionState = STATE_DISCONNECTED;
-        if( BuildConfig.DEBUG )Log.i(TAG, "Disconnected from GATT server.");
+        if( BuildConfig.DEBUG )
+        {
+          Log.i(TAG, "Disconnected from GATT server.");
+        }
         broadcastUpdate(intentAction);
       }
     }
@@ -104,7 +113,10 @@ public class BluetoothLowEnergyService extends Service
       }
       else
       {
-        if( BuildConfig.DEBUG )Log.i(TAG, "onServicesDiscovered received: " + status);
+        if( BuildConfig.DEBUG )
+        {
+          Log.i(TAG, "onServicesDiscovered received: " + status);
+        }
       }
     }
 
@@ -136,7 +148,10 @@ public class BluetoothLowEnergyService extends Service
 
     // For all other profiles, writes the data formatted in HEX.
     final byte[] data = characteristic.getValue();
-    if( BuildConfig.DEBUG )Log.i(TAG, "data" + characteristic.getValue());
+    if( BuildConfig.DEBUG )
+    {
+      Log.i(TAG, "data" + characteristic.getValue());
+    }
 
     if( data != null && data.length > 0 )
     {
@@ -145,7 +160,10 @@ public class BluetoothLowEnergyService extends Service
       {
         stringBuilder.append(String.format("%02X ", byteChar));
       }
-      if( BuildConfig.DEBUG )Log.d(TAG, String.format("%s", new String(data)));
+      if( BuildConfig.DEBUG )
+      {
+        Log.d(TAG, String.format("%s", new String(data)));
+      }
       // getting cut off when longer, need to push on new line, 0A
       intent.putExtra(EXTRA_DATA, String.format("%s", new String(data)));
 
@@ -218,7 +236,10 @@ public class BluetoothLowEnergyService extends Service
     // Previously connected device.  Try to reconnect.
     if( mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress) && mBluetoothGatt != null )
     {
-      if( BuildConfig.DEBUG )Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
+      if( BuildConfig.DEBUG )
+      {
+        Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
+      }
       if( mBluetoothGatt.connect() )
       {
         mConnectionState = STATE_CONNECTING;

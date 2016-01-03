@@ -1,25 +1,25 @@
 /******************************************************************************
- *                                                                            *
- *      project: ANDROID                                                      *
- *      module: btlehomelight                                                 *
- *      class: BrightnessOnlyFragment                                         *
- *      date: 2016-01-03                                                      *
- *                                                                            *
- *      Copyright (C) 2016  Dirk Marciniak                                    *
- *                                                                            *
- *      This program is free software: you can redistribute it and/or modify  *
- *      it under the terms of the GNU General Public License as published by  *
- *      the Free Software Foundation, either version 3 of the License, or     *
- *      (at your option) any later version.                                   *
- *                                                                            *
- *      This program is distributed in the hope that it will be useful,       *
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *      GNU General Public License for more details.                          *
- *                                                                            *
- *      You should have received a copy of the GNU General Public License     *
- *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
- *                                                                            *
+ * *
+ * project: ANDROID                                                      *
+ * module: btlehomelight                                                 *
+ * class: BrightnessOnlyFragment                                         *
+ * date: 2016-01-03                                                      *
+ * *
+ * Copyright (C) 2016  Dirk Marciniak                                    *
+ * *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ * *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ * *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ * *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight.fragments;
@@ -33,17 +33,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.larswerkman.holocolorpicker.ValueBar;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Pattern;
 
 import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
-import de.dmarcini.bt.homelight.utils.BluetoothConfig;
+import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
 import de.dmarcini.bt.homelight.utils.ProjectConst;
 
 
@@ -52,9 +52,11 @@ import de.dmarcini.bt.homelight.utils.ProjectConst;
  */
 public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnValueChangedListener
 {
-  private static final String TAG = BrightnessOnlyFragment.class.getSimpleName();
+  private static final String TAG        = BrightnessOnlyFragment.class.getSimpleName();
   private              int    brightness = 0;
-  private com.larswerkman.holocolorpicker.ValueBar brightnessSeekBar;
+  private ValueBar brightnessSeekBar;
+  private TextView brightnessHeaderTextView;
+  private String   brightnessValueString;
 
   public BrightnessOnlyFragment()
   {
@@ -86,7 +88,7 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
    * Returns a new instance of this fragment for the given section
    * number.
    */
-  public static BrightnessOnlyFragment newInstance(int sectionNumber, BluetoothConfig btConfig)
+  public static BrightnessOnlyFragment newInstance(int sectionNumber, BluetoothModulConfig btConfig)
   {
     BrightnessOnlyFragment fragment = new BrightnessOnlyFragment();
     fragment.setBlutethoothConfig(btConfig);
@@ -100,7 +102,7 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
     return fragment;
   }
 
-  private void setBlutethoothConfig(BluetoothConfig btConfig)
+  private void setBlutethoothConfig(BluetoothModulConfig btConfig)
   {
     this.btConfig = btConfig;
   }
@@ -120,7 +122,9 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
     //
     // Adressen der GUI Objekte bestimmen
     //
-    brightnessSeekBar = ( com.larswerkman.holocolorpicker.ValueBar ) rootView.findViewById(R.id.brightnessValueBar);
+    brightnessHeaderTextView = ( TextView ) rootView.findViewById(R.id.brightnessHeaderTextView);
+    brightnessValueString = getActivity().getString(R.string.brigtness_header_vals);
+    brightnessSeekBar = ( ValueBar ) rootView.findViewById(R.id.brightnessValueBar);
     brightnessSeekBar.setOnValueChangedListener(this);
     brightnessSeekBar.setColor(0xffffffff);
     return (rootView);
@@ -176,100 +180,62 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
   }
 
   @Override
-  public void onBTDataAvaiable(String data)
+  public void onBTDataAvaiable(String[] param)
   {
-    String[] param;
-    int      cmdNum;
+    int cmdNum;
 
-    if( Pattern.matches(ProjectConst.KOMANDPATTERN, data) )
+    if( param.length > 0 )
     {
       //
-      // Kommando empfangen
+      // Hier mal das Kommando finden und umrechnen
       //
-      param = data.split(":");
-      if( param.length > 0 )
+      try
+      {
+        cmdNum = Integer.parseInt(param[ 0 ], 16);
+      }
+      catch( NumberFormatException ex )
+      {
+        cmdNum = ProjectConst.C_UNKNOWN;
+      }
+      //
+      // Jetzt Kommando auswerten
+      //
+      switch( cmdNum )
       {
         //
-        // Hier mal das Kommando finden und umrechnen
+        // Unbekanntes Kommando
         //
-        try
-        {
-          cmdNum = Integer.parseInt(param[ 0 ], 16);
-        }
-        catch( NumberFormatException ex )
-        {
-          cmdNum = ProjectConst.C_UNKNOWN;
-        }
+        case ProjectConst.C_UNKNOWN:
+        default:
+          if(BuildConfig.DEBUG)Log.v(TAG, "unhandled command recived! Ignored.");
+          break;
+
         //
-        // Jetzt Kommando auswerten
+        // Frage nach RGBW
         //
-        switch( cmdNum )
-        {
+        case ProjectConst.C_ASKRGBW:
+          final String[] pm = param;
           //
-          // Unbekanntes Kommando
+          // Das läßt sich nur von diesem Thread aus machen, daher dieses
           //
-          case ProjectConst.C_UNKNOWN:
-          default:
-            Log.e(TAG, "unknown command recived! Ignored.");
-            break;
-
-          //
-          // Frage nach dem Typ / Antwort
-          //
-          case ProjectConst.C_ASKTYP:
-            if( BuildConfig.DEBUG )
+          brightnessSeekBar.post(new Runnable()
+          {
+            public void run()
             {
-              Log.v(TAG, "Modul type recived! <" + data + ">");
+              setSeekBar(pm);
             }
-            break;
+          });
 
-          //
-          // Frage nach dem Modulname / Antwort
-          //
-          case ProjectConst.C_ASKNAME:
-            if( BuildConfig.DEBUG )
-            {
-              Log.v(TAG, "Modul name recived! <" + data + ">");
-            }
-            break;
-
-          //
-          // Frage nach RGBW
-          //
-          case ProjectConst.C_ASKRAWRGB:
-            final String[] pm = param;
-            //
-            // Das läßt sich nur von diesem Thread aus machen, daher dieses
-            //
-            brightnessSeekBar.post(new Runnable()
-            {
-              public void run()
-              {
-                setSeekBar(pm);
-              }
-            });
-
-            if( BuildConfig.DEBUG )
-            {
-              Log.v(TAG, "RGBW from module recived!  <" + data + ">");
-            }
-            break;
-
-          //
-          // Sende COLOR
-          //
-          case ProjectConst.C_SETCOLOR:
-            if( BuildConfig.DEBUG )
-            {
-              Log.v(TAG, "SET RGBW to module (should not done)  <" + data + ">");
-            }
-            break;
-        }
-      }
-      else
-      {
-        Log.e(TAG, "wrong command string recived! Ignored.");
-      }
+          if( BuildConfig.DEBUG )
+          {
+            Log.v(TAG, "RGBW from module recived!");
+          }
+          break;
+       }
+    }
+    else
+    {
+      Log.e(TAG, "wrong command string recived! Ignored.");
     }
 
   }
@@ -304,21 +270,13 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
         Log.v(TAG, "BT Device is connected and ready....");
       }
       onServiceConnected();
-      mainService.askModulForRawRGBW();
-    }
-    else if( btConfig.isConnected() )
-    {
-      if( BuildConfig.DEBUG )
-      {
-        Log.v(TAG, "BT Device is connected....");
-      }
-      onServiceConnected();
-      if( btConfig.getModuleType() == null )
-      {
-        // Frage das Modul nach dem Typ, wenn noch nicht geschehen
-        // sollte nach dem connect passieren
-        mainService.askModulForType();
-      }
+      final short[] pm = mainService.getModulRGBW();
+      rgbw[0] = pm[0];
+      rgbw[1] = pm[1];
+      rgbw[2] = pm[2];
+      rgbw[3] = pm[3];
+      setSeekBar();
+      //mainService.askModulForRGBW();
     }
   }
 
@@ -351,27 +309,43 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
     //
     // hier sollten die Parameter gesetzt sein
     //
+    setSeekBar();
+  }
 
+  /**
+   * Setze die Bar auf die vorhandenen Helligkeitswerte
+   */
+  private void setSeekBar()
+  {
     brightness = ( int ) Math.floor((rgbw[ 0 ] + rgbw[ 1 ] + rgbw[ 2 ] + (3 * rgbw[ 3 ])) / 6);
     for( int i = 0; i < 4; i++ )
     {
       rgbw[ i ] = ( short ) brightness;
     }
-    //brightnessSeekBar.setColor(brightness);
+    brightnessHeaderTextView.setText(String.format(Locale.ENGLISH, brightnessValueString, brightness));
+    brightnessSeekBar.setValue( (float)(brightness / 256.0F));
   }
 
 
   @Override
   public void onValueChanged(int value)
   {
-    //Log.i(TAG, String.format(Locale.ENGLISH, "Changed BRIGHTNESS <%03d>", progress));
-
+    //
+    // Da die Bar mit weiss initialisiert wurde, sind RGB immer gleich
+    // daher nutze ich nur einen Werrt (B)
+    //
+    brightness = value & 0xff;
     if( BuildConfig.DEBUG )
     {
-      Log.i(TAG, String.format(Locale.ENGLISH, "Changed BRIGHTNESS <%03d>", value));
+      Log.i(TAG, String.format(Locale.ENGLISH, "Changed BRIGHTNESS <%03d>", brightness));
     }
-    rgbw[ 0 ] = rgbw[ 1 ] = rgbw[ 2 ] = rgbw[ 3 ] = ( short ) (value & 0xff);
-
+    // die RGBW Werte setzen
+    rgbw[ 0 ] = rgbw[ 1 ] = rgbw[ 2 ] = rgbw[ 3 ] = ( short ) brightness;
+    // die Anzeige korrigieren
+    brightnessHeaderTextView.setText(String.format(Locale.ENGLISH, brightnessValueString, brightness));
+    //
+    // Falls die Zeit reif ist für eine Übertragung zum Modul
+    //
     if( timeToSend < System.currentTimeMillis() && mainService != null )
     {
       //
