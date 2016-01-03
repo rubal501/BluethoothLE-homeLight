@@ -44,7 +44,7 @@ import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothConfig;
 import de.dmarcini.bt.homelight.utils.ProjectConst;
-import de.dmarcini.bt.homelight.utils.VerticalSeekBar;
+
 
 
 /**
@@ -54,7 +54,7 @@ public class BrightnessOnlyFragment extends AppFragment implements SeekBar.OnSee
 {
   private static final String TAG        = BrightnessOnlyFragment.class.getSimpleName();
   private              int    brightness = 0;
-  private VerticalSeekBar brightnessSeekBar;
+  //private VerticalSeekBar brightnessSeekBar;
 
   public BrightnessOnlyFragment()
   {
@@ -109,7 +109,6 @@ public class BrightnessOnlyFragment extends AppFragment implements SeekBar.OnSee
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
   {
     View rootView = inflater.inflate(R.layout.fragment_brightness_only, container, false);
-    setHasOptionsMenu(true);
     if( getActivity() instanceof IMainAppServices )
     {
       mainService = ( IMainAppServices ) getActivity();
@@ -121,9 +120,9 @@ public class BrightnessOnlyFragment extends AppFragment implements SeekBar.OnSee
     //
     // Adressen der GUI Objekte bestimmen
     //
-    brightnessSeekBar = ( VerticalSeekBar ) rootView.findViewById(R.id.brightnessSeekBar);
-    brightnessSeekBar.setOnSeekBarChangeListener(this);
-    brightnessSeekBar.setMax(256);
+//    brightnessSeekBar = ( VerticalSeekBar ) rootView.findViewById(R.id.brightnessSeekBar);
+//    brightnessSeekBar.setOnSeekBarChangeListener(this);
+//    brightnessSeekBar.setMax(256);
     return (rootView);
   }
 

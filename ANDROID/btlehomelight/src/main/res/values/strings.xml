@@ -60,4 +60,6 @@
     <string name="green_slide">Grün</string>
     <string name="blue_slide">Blau</string>
     <string name="white_slide">Weiß</string>
+
+    <string name="brigtness_header">Helligkeit(weiß)</string>
 </resources>

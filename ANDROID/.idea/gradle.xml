@@ -10,10 +10,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/HoloColorPicker" />
             <option value="$PROJECT_DIR$/btlehomelight" />
             <option value="$PROJECT_DIR$/libary" />
-            <option value="$PROJECT_DIR$/testcolorpicker" />
           </set>
         </option>
       </GradleProjectSettings>

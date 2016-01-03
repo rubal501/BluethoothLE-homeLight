@@ -452,7 +452,6 @@ public class ColorSelectFragment extends AppFragment implements IBtEventHandler,
       if( BuildConfig.DEBUG )Log.w(TAG, "new orientation is UNKNOWN");
     }
     changeLayoutOrientation(newConfig.orientation);
-    setShouldNewCreated(true);
     // die Farbe auch wieder einstellen!
     picker.setColor(currColor);
     (( IMainAppServices ) getActivity()).switchToFragment(ProjectConst.PAGE_COLOR_CIRCLE);

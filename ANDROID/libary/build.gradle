@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 android {
-    compileSdkVersion 23
+    compileSdkVersion 22
     buildToolsVersion '22.0.1'
     defaultConfig {
         minSdkVersion 19
@@ -27,6 +27,9 @@ android {
             pseudoLocalesEnabled false
             zipAlignEnabled true
         }
+    }
+    dexOptions {
+        incremental true
     }
 }
 /*apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'*/
