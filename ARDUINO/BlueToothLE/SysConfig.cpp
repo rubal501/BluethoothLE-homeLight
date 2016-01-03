@@ -26,6 +26,10 @@ SysConfig::~SysConfig()
 void SysConfig::SystemPreInit( EEPROMConfig& theConfig )
 {
   //
+  // EEPROM-Pin setzen
+  //
+  pinMode( EEPROM_PIN, OUTPUT );
+  //
   // Die Konfiguration laden (Aus EEPROM)
   //
   theConfig.loadConfig();

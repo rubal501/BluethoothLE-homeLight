@@ -30,7 +30,9 @@ EEPROMConfig theConfig;
 const int baudRateVal = DESTBAUDRATE_VAL;
 String btInputString="";
 unsigned long saveTime = 0L;
-const unsigned long SAVEDELAY = 2000L;
+unsigned long eepromShutoffTime = 0L;
+const unsigned long SAVEDELAY = 2500L;
+const unsigned long BEAMDELAY = 250L;
 boolean isOnline = false;
 boolean isLightsOFF = false;
 
@@ -42,6 +44,8 @@ void setup()
   //
   // Die Sachen, die schnell gehen sollen zuerst...
   //
+  eepromShutoffTime = millis() + BEAMDELAY;
+  digitalWrite(ONLINE_PIN, HIGH );
   SysConfig::SystemPreInit( theConfig );
   // LED Helligkeiten aus Config einstellen
   LEDSet::init( theConfig );    
@@ -126,19 +130,7 @@ void loop()
         #endif
         break;
       
-      // Frage nach RGBW im Modul 0x03
-      case C_ASKCALRGBW:
-        kdo[0] = theConfig.getCalRed();
-        kdo[1] = theConfig.getCalGreen();
-        kdo[2] = theConfig.getCalBlue();
-        kdo[3] = theConfig.getCalWhite();
-        myComm->sendRGBW( mySerial, kdo );
-        #ifdef DEBUG
-        Serial.println("Sende RGBW (cal) an Master..." );
-        #endif
-        break;
-      
-      // Gib die Farbe an die LED aus 0x04
+       // Gib die Farbe an die LED aus 0x04
       // Nativ, ohne Kalibrierung
       case C_SETCOLOR:
       // oder kalibriere RGB selber  0x05
@@ -190,10 +182,20 @@ void loop()
     if( saveTime < millis() )
     {
       theConfig.saveConfig();
+      eepromShutoffTime = millis() + BEAMDELAY;
       saveTime = 0L;
     }
   }
-  
+  if( eepromShutoffTime > 0L )
+  {
+    // EEPROM Leuchte aus
+    if( eepromShutoffTime < millis() )
+    {
+      digitalWrite(ONLINE_PIN, LOW );
+      eepromShutoffTime = 0L;
+    }
+    
+  }
   if(Serial.available()) 
   {
     mySerial.write(Serial.read());

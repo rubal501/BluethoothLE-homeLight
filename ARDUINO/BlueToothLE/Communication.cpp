@@ -274,13 +274,16 @@ void Communication::sendToMaster( SoftwareSerial& comm, String& toSend )
 }
 
 //#############################################################################
-// Wendle Nibbles in Hex
+// Wandle Nibbles in Hex
 //#############################################################################
 char Communication::nibbleToHex(byte ch)
 {
   return("0123456789ABCDEF"[0x0F & (unsigned char)ch]);
 }
 
+//#############################################################################
+//  Sende aktuelle Einstellungen des Moduls RGBW
+//#############################################################################
 void Communication::sendRGBW( SoftwareSerial& comm, byte* rgbw )
 {
   String cmd;
@@ -294,7 +297,7 @@ void Communication::sendRGBW( SoftwareSerial& comm, byte* rgbw )
     cmd += nibbleToHex( *rgbw );
     rgbw++;
   }
-  sendToMaster( comm, cmd );  
+  sendToMaster( comm, cmd );
 }
 
 

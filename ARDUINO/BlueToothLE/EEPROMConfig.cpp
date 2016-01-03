@@ -30,7 +30,7 @@ EEPROMConfig::~EEPROMConfig()
 void EEPROMConfig::loadConfig() 
 {
   //
-  // Wenn die version stimmt, lade Config aus dem EEPROM
+  // Wenn die Version stimmt, lade Config aus dem EEPROM
   //
   if (checkVersion())
   {  

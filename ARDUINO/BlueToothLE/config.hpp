@@ -22,8 +22,15 @@
 //
 #define RXPIN               8
 #define TXPIN               2
+//
+// Test PINS
+//
 #define ONLINE_PIN          12
 #define RESET_PIN           7
+//
+// PIN zur Sifgnalisierung
+//
+#define EEPROM_PIN          13
  
 //
 // Übertragungsgeschwindigkeiten

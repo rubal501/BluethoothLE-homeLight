@@ -28,9 +28,8 @@
 #define C_ASKTYP        0x00                          // Frage nach TYP des Moduls
 #define C_ASKNAME       0x01                          // Frage nach dem Modulnamen
 #define C_ASKRGBW       0x02                          // Frage nach RGBW im Modul
-#define C_ASKCALRGBW    0x03                          // Frage nach RGBW im Modul, kalibriert
-#define C_SETCOLOR      0x04                          // Vom Meister Farbe, unkalibriert, direkte Anzeige mit Speichern
-#define C_SETCALRGB     0x05                          // Vom Meister, setze RGB Modul konvertiert zu RGBW
+#define C_SETCOLOR      0x03                          // Vom Meister Farbe, unkalibriert, direkte Anzeige mit Speichern
+#define C_SETCALRGB     0x04                          // Vom Meister, setze RGB,  Modul konvertiert zu RGBW
 #define C_ONOFF         0xfe                          // AUS, oder wenn alles auf 0 ist EIN
 
 
