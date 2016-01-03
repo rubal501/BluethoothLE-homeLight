@@ -417,7 +417,7 @@ public class ColorPicker extends View
   private boolean colorChanged()
   {
     return (currColorHSV[ 0 ] != oldColorHSV[ 0 ]) || (currColorHSV[ 1 ] != oldColorHSV[ 1 ]) || (currColorHSV[ 2 ] != oldColorHSV[ 2 ]);
-    }
+  }
 
   /**
    * setze die alte Farbe auf die neue....
@@ -448,6 +448,7 @@ public class ColorPicker extends View
   {
     Color.colorToHSV(color, currColorHSV);
     setOldColor();
+    invalidate();
   }
 
   /**
