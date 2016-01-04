@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~                                                                           ~
+  ~      project: ANDROID                                                     ~
+  ~      module: btlehomelight                                                ~
+  ~      class: fragment_direct_control_land.xml                              ~
+  ~      date: 2016-01-04                                                     ~
+  ~                                                                           ~
+  ~      Copyright (C) 2016  Dirk Marciniak                                   ~
+  ~                                                                           ~
+  ~      This program is free software: you can redistribute it and/or modify ~
+  ~      it under the terms of the GNU General Public License as published by ~
+  ~      the Free Software Foundation, either version 3 of the License, or    ~
+  ~      (at your option) any later version.                                  ~
+  ~                                                                           ~
+  ~      This program is distributed in the hope that it will be useful,      ~
+  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of       ~
+  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        ~
+  ~      GNU General Public License for more details.                         ~
+  ~                                                                           ~
+  ~      You should have received a copy of the GNU General Public License    ~
+  ~      along with this program.  If not, see <http://www.gnu.org/licenses/  ~
+  ~                                                                           ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<LinearLayout
+    android:id="@+id/directControlRootLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+              android:layout_margin="10dp"
+    android:orientation="horizontal">
+
+  <LinearLayout
+      android:id="@+id/headerLayout"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_marginLeft="8dp"
+      android:layout_marginTop="15dp"
+      android:minWidth="180dp"
+      android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_device_address"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/deviceAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/label_state"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/connectionState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:text="@string/disconnected"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/isSerial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/is_serial"
+        android:textSize="18sp"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/sliderLayout"
+      android:layout_width="wrap_content"
+      android:layout_height="fill_parent"
+      android:orientation="horizontal">
+
+    <com.larswerkman.holocolorpicker.ValueBar
+        android:id="@+id/redValueBar"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="35dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="30dp"
+        app:bar_orientation_horizontal="false"
+        app:bar_pointer_halo_radius="30dp"
+        app:bar_pointer_radius="25dp"
+        app:bar_thickness="35dp"/>
+
+    <com.larswerkman.holocolorpicker.ValueBar
+        android:id="@+id/greenValueBar"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="35dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="30dp"
+        app:bar_orientation_horizontal="false"
+        app:bar_pointer_halo_radius="30dp"
+        app:bar_pointer_radius="25dp"
+        app:bar_thickness="35dp"/>
+
+    <com.larswerkman.holocolorpicker.ValueBar
+        android:id="@+id/blueValueBar"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="35dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="30dp"
+        app:bar_orientation_horizontal="false"
+        app:bar_pointer_halo_radius="30dp"
+        app:bar_pointer_radius="25dp"
+        app:bar_thickness="35dp"/>
+
+    <com.larswerkman.holocolorpicker.ValueBar
+        android:id="@+id/whiteValueBar"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="35dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="30dp"
+        app:bar_orientation_horizontal="false"
+        app:bar_pointer_halo_radius="30dp"
+        app:bar_pointer_radius="25dp"
+        app:bar_thickness="35dp"/>
+
+  </LinearLayout>
+</LinearLayout>
