@@ -5,7 +5,7 @@
   ~      project: ANDROID                                                     ~
   ~      module: btlehomelight                                                ~
   ~      class: fragment_brightness_only.xml                                  ~
-  ~      date: 2016-01-03                                                     ~
+  ~      date: 2016-01-04                                                     ~
   ~                                                                           ~
   ~      Copyright (C) 2016  Dirk Marciniak                                   ~
   ~                                                                           ~
@@ -34,22 +34,22 @@
       android:id="@+id/brightnessValueBar"
       android:layout_width="wrap_content"
       android:layout_height="fill_parent"
-      app:bar_orientation_horizontal="false"
-      app:bar_thickness="35dp"
-      app:bar_pointer_radius="25dp"
-      app:bar_pointer_halo_radius="30dp"
-      android:layout_marginLeft="25dp"
-      android:layout_marginTop="30dp"
       android:layout_marginBottom="30dp"
-      android:layout_marginRight="25dp"/>
+      android:layout_marginLeft="35dp"
+      android:layout_marginRight="25dp"
+      android:layout_marginTop="30dp"
+      app:bar_orientation_horizontal="false"
+      app:bar_pointer_halo_radius="40dp"
+      app:bar_pointer_radius="35dp"
+      app:bar_thickness="45dp"/>
 
 
   <TextView
       android:id="@+id/brightnessHeaderTextView"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginTop="40dp"
       android:text="@string/brigtness_header"
-      android:textAppearance="?android:attr/textAppearanceMedium"
-      android:layout_marginTop="40dp"/>
+      android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 </LinearLayout>
