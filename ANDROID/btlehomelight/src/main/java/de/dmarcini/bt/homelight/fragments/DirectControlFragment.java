@@ -1,25 +1,25 @@
 /******************************************************************************
- * *
- * project: ANDROID                                                      *
- * module: btlehomelight                                                 *
- * class: DirectControlFragment                                          *
- * date: 2016-01-03                                                      *
- * *
- * Copyright (C) 2016  Dirk Marciniak                                    *
- * *
- * This program is free software: you can redistribute it and/or modify  *
- * it under the terms of the GNU General Public License as published by  *
- * the Free Software Foundation, either version 3 of the License, or     *
- * (at your option) any later version.                                   *
- * *
- * This program is distributed in the hope that it will be useful,       *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- * GNU General Public License for more details.                          *
- * *
- * You should have received a copy of the GNU General Public License     *
- * along with this program.  If not, see <http://www.gnu.org/licenses/   *
- * *
+ *                                                                            *
+ *      project: ANDROID                                                      *
+ *      module: btlehomelight                                                 *
+ *      class: DirectControlFragment                                          *
+ *      date: 2016-01-04                                                      *
+ *                                                                            *
+ *      Copyright (C) 2016  Dirk Marciniak                                    *
+ *                                                                            *
+ *      This program is free software: you can redistribute it and/or modify  *
+ *      it under the terms of the GNU General Public License as published by  *
+ *      the Free Software Foundation, either version 3 of the License, or     *
+ *      (at your option) any later version.                                   *
+ *                                                                            *
+ *      This program is distributed in the hope that it will be useful,       *
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *      GNU General Public License for more details.                          *
+ *                                                                            *
+ *      You should have received a copy of the GNU General Public License     *
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ *                                                                            *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight.fragments;
@@ -35,6 +35,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.larswerkman.holocolorpicker.ValueBar;
@@ -115,11 +116,12 @@ public class DirectControlFragment extends AppFragment
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
   {
+    int resId;
+    //
     if( BuildConfig.DEBUG )
     {
       Log.v(TAG, "onCreateView...");
     }
-    View rootView = inflater.inflate(R.layout.fragment_direct_control, container, false);
     setHasOptionsMenu(true);
     if( getActivity() instanceof IMainAppServices )
     {
@@ -129,6 +131,111 @@ public class DirectControlFragment extends AppFragment
     {
       mainService = null;
     }
+    //
+    // die richtige Orientierung erfragen
+    //
+    if( getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE )
+    {
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, "Orientation => LANDSCAPE...");
+      }
+      resId = R.layout.fragment_direct_control_land;
+    }
+    else
+    {
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, "Orientation => PORTRAIT...");
+      }
+      resId = R.layout.fragment_direct_control_port;
+    }
+    View rootView = inflater.inflate(resId, container, false);
+    //
+    // Zeiger und Callbacks vorbereiten
+    //
+    prepareViews(rootView);
+    //
+    // nicht verbunden einstellen
+    //
+    onServiceDisconnected();
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "onCreateView...OK");
+    }
+    return (rootView);
+  }
+
+  /**
+   * lade ein neues Layout, wenn sich die Orientation geändert hat
+   *
+   * @param orientation Ausrichtung
+   */
+  private void changeLayoutOrientation(int orientation)
+  {
+    int          resId;
+    LinearLayout rootView;
+    LinearLayout tempLayout;
+    LinearLayout headerLayout;
+    LinearLayout sliderLayout;
+
+    if( orientation == Configuration.ORIENTATION_LANDSCAPE )
+    {
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, "changeLayoutOrientation => LANDSCAPE...");
+      }
+      resId = R.layout.fragment_direct_control_land;
+    }
+    else
+    {
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, "changeLayoutOrientation => PORTRAIT...");
+      }
+      resId = R.layout.fragment_direct_control_port;
+    }
+    //
+    // das rootview suchen
+    //
+    rootView = ( LinearLayout ) getActivity().findViewById(R.id.directControlRootLayout);
+    //
+    // remove Views...
+    //
+    rootView.removeAllViews();
+    // Orientierung ändern
+    rootView.setOrientation(orientation);
+    // neue Resource laden (wegen der Dimensionen, ist dort leicher definierbar
+    tempLayout = ( LinearLayout ) getActivity().getLayoutInflater().inflate(resId, ( ViewGroup ) rootView.getParent(), false);
+    headerLayout = ( LinearLayout ) tempLayout.findViewById(R.id.headerLayout);
+    sliderLayout = ( LinearLayout ) tempLayout.findViewById(R.id.sliderLayout);
+    //
+    // Vies in das Layout einfügen
+    //
+    tempLayout.removeAllViews();
+    tempLayout.invalidate();
+    rootView.addView(headerLayout);
+    rootView.addView(sliderLayout);
+    //
+    // Alle Zeiger und Callbacks vorbereiten
+    //
+    prepareViews(rootView);
+    setSeekBars();
+    rootView.invalidate();
+    //
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "changeLayoutOrientation...OK");
+    }
+  }
+
+  /**
+   * Die Zeiger (Referenzen) und Callbacks vorbereiten, wenn neues View erzeugt wird
+   *
+   * @param rootView das Wurzelview
+   */
+  private void prepareViews(View rootView)
+  {
     //
     // Adressen der GUI Objekte bestimmen
     //
@@ -155,7 +262,7 @@ public class DirectControlFragment extends AppFragment
       public void onValueChanged(int value)
       {
         rgbw[ 0 ] = ( short ) ((value >> 16) & 0xff);
-        Log.i(TAG, String.format(Locale.ENGLISH, "value RED changed to %02X...", rgbw[0]));
+        Log.i(TAG, String.format(Locale.ENGLISH, "value RED changed to %02X...", rgbw[ 0 ]));
         onProgressChanged();
       }
     });
@@ -166,7 +273,7 @@ public class DirectControlFragment extends AppFragment
       public void onValueChanged(int value)
       {
         rgbw[ 1 ] = ( short ) ((value >> 8) & 0xff);
-        Log.i(TAG, String.format(Locale.ENGLISH, "value GREEN changed to %02X...", rgbw[1]));
+        Log.i(TAG, String.format(Locale.ENGLISH, "value GREEN changed to %02X...", rgbw[ 1 ]));
         onProgressChanged();
       }
     });
@@ -176,7 +283,7 @@ public class DirectControlFragment extends AppFragment
       public void onValueChanged(int value)
       {
         rgbw[ 2 ] = ( short ) (value & 0xff);
-        Log.i(TAG, String.format(Locale.ENGLISH, "value BLUE changed to %02X...", rgbw[2]));
+        Log.i(TAG, String.format(Locale.ENGLISH, "value BLUE changed to %02X...", rgbw[ 2 ]));
         onProgressChanged();
       }
     });
@@ -186,19 +293,10 @@ public class DirectControlFragment extends AppFragment
       public void onValueChanged(int value)
       {
         rgbw[ 3 ] = ( short ) (value & 0xff);
-        Log.i(TAG, String.format(Locale.ENGLISH, "value WHITE changed to %02X...", rgbw[3]));
+        Log.i(TAG, String.format(Locale.ENGLISH, "value WHITE changed to %02X...", rgbw[ 3 ]));
         onProgressChanged();
       }
     });
-    //
-    // nicht verbunden einstellen
-    //
-    onServiceDisconnected();
-    if( BuildConfig.DEBUG )
-    {
-      Log.v(TAG, "onCreateView...OK");
-    }
-    return (rootView);
   }
 
   @Override
@@ -208,7 +306,6 @@ public class DirectControlFragment extends AppFragment
     {
       Log.v(TAG, "onCreateOptionsMenu...");
     }
-    //inflater.inflate(R.menu.menu_home_light_main, menu);
   }
 
   @Override
@@ -401,6 +498,14 @@ public class DirectControlFragment extends AppFragment
     seekGreen.setEnabled(true);
     seekBlue.setEnabled(true);
     seekWhite.setEnabled(true);
+    setGUIContent();
+  }
+
+  /**
+   * Inhalte in den Textfelder etc setzen
+   */
+  private void setGUIContent()
+  {
     if( btConfig == null )
     {
       Log.e(TAG, "not BT config object there!");
@@ -432,8 +537,8 @@ public class DirectControlFragment extends AppFragment
     {
       connectionState.setText(getActivity().getResources().getString(R.string.disconnected));
     }
-  }
 
+  }
   @Override
   public void onServiceDisconnected()
   {
@@ -445,10 +550,8 @@ public class DirectControlFragment extends AppFragment
     seekGreen.setEnabled(false);
     seekBlue.setEnabled(false);
     seekWhite.setEnabled(false);
-    seekRed.setValue(0.0F);
-    seekGreen.setValue(0.0F);
-    seekBlue.setValue(0.0F);
-    seekWhite.setValue(0.0F);
+    rgbw[ 0 ] = rgbw[ 1 ] = rgbw[ 2 ] = rgbw[ 3 ] = 0;
+    setSeekBars();
     deviceAddress.setText("--:--:--:--:--:--");
     connectionState.setText(getActivity().getResources().getString(R.string.disconnected));
     isSerial.setText(getActivity().getResources().getString(R.string.no_serial));
@@ -481,7 +584,9 @@ public class DirectControlFragment extends AppFragment
     }
   }
 
-
+  /**
+   * Wenn sich da was geändert hat :-)
+   */
   private void onProgressChanged()
   {
     if( timeToSend < System.currentTimeMillis() && mainService != null )
@@ -520,5 +625,8 @@ public class DirectControlFragment extends AppFragment
     {
       Log.w(TAG, "new orientation is UNKNOWN");
     }
+    changeLayoutOrientation(newConfig.orientation);
+    setGUIContent();
+    setSeekBars();
   }
 }

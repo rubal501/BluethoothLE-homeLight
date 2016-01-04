@@ -3,7 +3,7 @@
  *      project: ANDROID                                                      *
  *      module: btlehomelight                                                 *
  *      class: ColorPicker                                                    *
- *      date: 2016-01-03                                                      *
+ *      date: 2016-01-04                                                      *
  *                                                                            *
  *      Copyright (C) 2016  Dirk Marciniak                                    *
  *                                                                            *
@@ -53,11 +53,11 @@ public class ColorPicker extends View
   /**
    * Display Parameter in Prozent
    */
-  private final        int     paramOuterPadding     = 2; //** outer padding of the whole color picker view
-  private final        int     paramInnerPadding     = 5; //** distance between value slider wheel and inner color wheel
-  private final        int     paramValueSliderWidth = 16; //** width of the value slider
-  private final        int     paramArrowPointerSize = 4; //** size of the arrow pointer; set to 0 to hide the pointer
-  private final        float[] oldColorHSV           = new float[]{0f, 0f, 1f};
+  private final int     paramOuterPadding     = 1; //** outer padding of the whole color picker view
+  private final int     paramInnerPadding     = 4; //** distance between value slider wheel and inner color wheel
+  private final int     paramValueSliderWidth = 8; //** width of the value slider
+  private final int     paramArrowPointerSize = 4; //** size of the arrow pointer; set to 0 to hide the pointer
+  private final float[] oldColorHSV           = new float[]{0f, 0f, 1f};
   private Paint                   colorWheelPaint;
   private Paint                   valueSliderPaint;
   private Paint                   colorViewPaint;

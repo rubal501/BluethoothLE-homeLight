@@ -1,25 +1,25 @@
 /******************************************************************************
- * *
- * project: ANDROID                                                      *
- * module: btlehomelight                                                 *
- * class: ColorSelectFragment                                            *
- * date: 2016-01-03                                                      *
- * *
- * Copyright (C) 2016  Dirk Marciniak                                    *
- * *
- * This program is free software: you can redistribute it and/or modify  *
- * it under the terms of the GNU General Public License as published by  *
- * the Free Software Foundation, either version 3 of the License, or     *
- * (at your option) any later version.                                   *
- * *
- * This program is distributed in the hope that it will be useful,       *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- * GNU General Public License for more details.                          *
- * *
- * You should have received a copy of the GNU General Public License     *
- * along with this program.  If not, see <http://www.gnu.org/licenses/   *
- * *
+ *                                                                            *
+ *      project: ANDROID                                                      *
+ *      module: btlehomelight                                                 *
+ *      class: ColorSelectFragment                                            *
+ *      date: 2016-01-04                                                      *
+ *                                                                            *
+ *      Copyright (C) 2016  Dirk Marciniak                                    *
+ *                                                                            *
+ *      This program is free software: you can redistribute it and/or modify  *
+ *      it under the terms of the GNU General Public License as published by  *
+ *      the Free Software Foundation, either version 3 of the License, or     *
+ *      (at your option) any later version.                                   *
+ *                                                                            *
+ *      This program is distributed in the hope that it will be useful,       *
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *      GNU General Public License for more details.                          *
+ *                                                                            *
+ *      You should have received a copy of the GNU General Public License     *
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ *                                                                            *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight.fragments;
@@ -57,6 +57,7 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
   private int          currColor;
   private ColorPicker  picker;
   private ToggleButton calToggleButton;
+  private Boolean isRGBW;
 
   public ColorSelectFragment()
   {
@@ -123,7 +124,9 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
       Log.e(TAG, "Application is not type of AppServices");
       mainService = null;
     }
-
+    //
+    // die richtige Orientierung erfragen
+    //
     if( getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE )
     {
       if( BuildConfig.DEBUG )
@@ -141,24 +144,8 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
       resId = R.layout.fragment_colors_wheel_port;
     }
     View rootView = inflater.inflate(resId, container, false);
-    picker = ( ColorPicker ) rootView.findViewById(R.id.colorPicker);
-    calToggleButton = ( ToggleButton ) rootView.findViewById(R.id.RGBWToggleButton);
-    //
-    // Farbe setzen (Voreinstellung)
-    //
-    picker.setColor(0xFFFFFF);
-    calToggleButton.setChecked(true);
-    //
-    // Change Listener setzen
-    //
-    picker.setOnColorChangedListener(this);
-    picker.setOnColorSelectedListener(this);
-    calToggleButton.setOnClickListener(this);
-    //
-    // "alte" Farbe nicht setzen/anzeigen
-    //
-    setColorPropertysFromConfig();
-    setHasOptionsMenu(true);
+    isRGBW = true;
+    prepareRootView(rootView);
     if( BuildConfig.DEBUG )
     {
       Log.v(TAG, "onCreateView...OK");
@@ -166,11 +153,18 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     return (rootView);
   }
 
+  /**
+   * Wenn sich die Ausrichtung geändert hat
+   *
+   * @param orientation die Ausrichtung des gerätes
+   */
   private void changeLayoutOrientation(int orientation)
   {
     int          resId;
     LinearLayout rootView;
     LinearLayout tempView;
+    LinearLayout buttonsLayout;
+    LinearLayout colorPickerLayout;
 
     if( orientation == Configuration.ORIENTATION_LANDSCAPE )
     {
@@ -198,20 +192,37 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     rootView.setOrientation(orientation);
     // neue Resource laden (wegen der Dimensionen, ist dort leicher definierbar
     tempView = ( LinearLayout ) getActivity().getLayoutInflater().inflate(resId, ( ViewGroup ) rootView.getParent(), false);
-    picker = ( ColorPicker ) tempView.findViewById(R.id.colorPicker);
-    calToggleButton = ( ToggleButton ) tempView.findViewById(R.id.RGBWToggleButton);
+    colorPickerLayout = ( LinearLayout ) tempView.findViewById(R.id.colorPickerLayout);
+    buttonsLayout = ( LinearLayout ) tempView.findViewById(R.id.buttonsLayout);
     //
-    // Vies in das Layout einfügen
+    // Views in das Layout einfügen
     //
     tempView.removeAllViews();
     tempView.invalidate();
-    rootView.addView(picker);
-    rootView.addView(calToggleButton);
+    rootView.addView(colorPickerLayout);
+    rootView.addView(buttonsLayout);
+    prepareRootView(rootView);
+    rootView.invalidate();
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "changeLayoutOrientation...OK");
+    }
+  }
+
+  /**
+   * Zeiger (Referenzen) und Callbacks vorbereiten
+   *
+   * @param rootView das root view
+   */
+  private void prepareRootView(View rootView)
+  {
+    picker = ( ColorPicker ) rootView.findViewById(R.id.colorPicker);
+    calToggleButton = ( ToggleButton ) rootView.findViewById(R.id.RGBWToggleButton);
     //
     // Farbe setzen (Voreinstellung)
     //
     picker.setColor(0xFFFFFF);
-    calToggleButton.setChecked(true);
+    calToggleButton.setChecked(isRGBW);
     //
     // Change Listener setzen
     //
@@ -223,11 +234,6 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     //
     setColorPropertysFromConfig();
     setHasOptionsMenu(true);
-
-    if( BuildConfig.DEBUG )
-    {
-      Log.v(TAG, "changeLayoutOrientation...OK");
-    }
   }
 
   private void setColorPropertysFromConfig()
@@ -440,7 +446,6 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
       rgbw[2] = pm[2];
       rgbw[3] = pm[3];
       setColorWheel();
-      //mainService.askModulForRGBW();
     }
   }
 
@@ -472,7 +477,6 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     changeLayoutOrientation(newConfig.orientation);
     // die Farbe auch wieder einstellen!
     picker.setColor(currColor);
-    (( IMainAppServices ) getActivity()).switchToFragment(ProjectConst.PAGE_COLOR_CIRCLE);
   }
 
 
@@ -560,6 +564,7 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
       {
         if( (( ToggleButton ) clickedView).isChecked() )
         {
+          isRGBW = true;
           if( BuildConfig.DEBUG )
           {
             Log.i(TAG, "Button CHECKED");
@@ -567,6 +572,7 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
         }
         else
         {
+          isRGBW = false;
           if( BuildConfig.DEBUG )
           {
             Log.i(TAG, "Button UNCHECKED");

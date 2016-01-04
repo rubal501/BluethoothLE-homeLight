@@ -4,7 +4,7 @@
   ~      project: ANDROID                                                     ~
   ~      module: btlehomelight                                                ~
   ~      class: strings.xml                                                   ~
-  ~      date: 2016-01-03                                                     ~
+  ~      date: 2016-01-04                                                     ~
   ~                                                                           ~
   ~      Copyright (C) 2016  Dirk Marciniak                                   ~
   ~                                                                           ~
@@ -60,6 +60,9 @@
   <string name="green_slide">Grün</string>
   <string name="blue_slide">Blau</string>
   <string name="white_slide">Weiß</string>
+
+  <!-- color wheel fragment -->
+  <string name="color_wheel_save_color">Merken!</string>
 
   <!-- Helligkeit-Only schirm -->
   <string name="brigtness_header">Helligkeit(weiß)</string>

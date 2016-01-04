@@ -17,6 +17,8 @@
 #define PWM_GREEN           6
 #define PWM_BLUE            9
 #define PWM_WHITE           10
+// RGB invertieren (bei gemeinsamer Anode muss das sein)
+#define RGBINVERSE          1 
 //
 // Software UART Ports
 //

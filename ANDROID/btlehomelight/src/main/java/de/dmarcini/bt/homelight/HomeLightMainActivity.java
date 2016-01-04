@@ -1,25 +1,25 @@
 /******************************************************************************
- * *
- * project: ANDROID                                                      *
- * module: btlehomelight                                                 *
- * class: HomeLightMainActivity                                          *
- * date: 2016-01-03                                                      *
- * *
- * Copyright (C) 2016  Dirk Marciniak                                    *
- * *
- * This program is free software: you can redistribute it and/or modify  *
- * it under the terms of the GNU General Public License as published by  *
- * the Free Software Foundation, either version 3 of the License, or     *
- * (at your option) any later version.                                   *
- * *
- * This program is distributed in the hope that it will be useful,       *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- * GNU General Public License for more details.                          *
- * *
- * You should have received a copy of the GNU General Public License     *
- * along with this program.  If not, see <http://www.gnu.org/licenses/   *
- * *
+ *                                                                            *
+ *      project: ANDROID                                                      *
+ *      module: btlehomelight                                                 *
+ *      class: HomeLightMainActivity                                          *
+ *      date: 2016-01-04                                                      *
+ *                                                                            *
+ *      Copyright (C) 2016  Dirk Marciniak                                    *
+ *                                                                            *
+ *      This program is free software: you can redistribute it and/or modify  *
+ *      it under the terms of the GNU General Public License as published by  *
+ *      the Free Software Foundation, either version 3 of the License, or     *
+ *      (at your option) any later version.                                   *
+ *                                                                            *
+ *      This program is distributed in the hope that it will be useful,       *
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *      GNU General Public License for more details.                          *
+ *                                                                            *
+ *      You should have received a copy of the GNU General Public License     *
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ *                                                                            *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight;
@@ -46,8 +46,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
@@ -64,6 +62,7 @@ import de.dmarcini.bt.homelight.utils.HM10GattAttributes;
 import de.dmarcini.bt.homelight.utils.ProjectConst;
 import de.dmarcini.bt.homelight.utils.SelectPagesAdapter;
 
+//TODO: onlinestatus für jede Seite übernehmen
 public class HomeLightMainActivity extends AppCompatActivity implements IMainAppServices, ViewPager.OnPageChangeListener
 {
   private static final String               TAG          = HomeLightMainActivity.class.getSimpleName();
@@ -569,7 +568,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   /**
    * Iteriere durch die gefundenen Servivces des entfernten Gerätes und finde UART Service
    *
-   * @param gattServices
+   * @param gattServices Liste von services
    */
   private void reconGattServices(List<BluetoothGattService> gattServices)
   {
@@ -577,9 +576,9 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     {
       return;
     }
-    String                             uuid                 = null;
+    String uuid;
     String                             unknownServiceString = getResources().getString(R.string.ble_unknown_service);
-    ArrayList<HashMap<String, String>> gattServiceData      = new ArrayList<HashMap<String, String>>();
+    //ArrayList<HashMap<String, String>> gattServiceData      = new ArrayList<>();
 
 
     //
@@ -587,14 +586,14 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     for( BluetoothGattService gattService : gattServices )
     {
-      HashMap<String, String> currentServiceData = new HashMap<String, String>();
       uuid = gattService.getUuid().toString();
-      currentServiceData.put(ProjectConst.LIST_NAME, HM10GattAttributes.lookup(uuid, unknownServiceString));
+      //HashMap<String, String> currentServiceData = new HashMap<>();
+      //currentServiceData.put(ProjectConst.LIST_NAME, HM10GattAttributes.lookup(uuid, unknownServiceString));
 
       //
       // Gibt es den UART Servive, dann gib Bescheid!
       //
-      if( HM10GattAttributes.lookup(uuid, unknownServiceString) == "HM 10 Serial" )
+      if( HM10GattAttributes.lookup(uuid, unknownServiceString).equals("HM 10 Serial") )
       {
         btConfig.setIsUART(true);
       }
@@ -602,8 +601,8 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       {
         btConfig.setIsUART(false);
       }
-      currentServiceData.put(ProjectConst.LIST_UUID, uuid);
-      gattServiceData.add(currentServiceData);
+      //currentServiceData.put(ProjectConst.LIST_UUID, uuid);
+      //gattServiceData.add(currentServiceData);
 
       // get characteristic when UUID matches RX/TX UUID
       btConfig.setCharacteristicTX(gattService.getCharacteristic(ProjectConst.UUID_HM_RX_TX));

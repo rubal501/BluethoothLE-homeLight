@@ -4,7 +4,7 @@
   ~      project: ANDROID                                                     ~
   ~      module: btlehomelight                                                ~
   ~      class: fragment_colors_wheel_land.xml                                ~
-  ~      date: 2016-01-03                                                     ~
+  ~      date: 2016-01-04                                                     ~
   ~                                                                           ~
   ~      Copyright (C) 2016  Dirk Marciniak                                   ~
   ~                                                                           ~
@@ -31,25 +31,48 @@
     android:orientation="horizontal"
     >
 
-  <de.dmarcini.bt.homelight.views.ColorPicker
+  <LinearLayout
+      android:id="@+id/colorPickerLayout"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:orientation="vertical">
+
+    <de.dmarcini.bt.homelight.views.ColorPicker
       android:id="@+id/colorPicker"
-      android:layout_width="0dp"
+      android:layout_width="wrap_content"
       android:layout_height="fill_parent"
       android:layout_gravity="center"
       android:layout_weight="1.0"/>
 
-  <ToggleButton
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/buttonsLayout"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="fill_parent"
+      android:layout_height="match_parent"
+      android:layout_gravity="right"
+      android:orientation="vertical">
+
+    <ToggleButton
       android:id="@+id/RGBWToggleButton"
-      android:layout_width="wrap_content"
+      android:layout_width="fill_parent"
       android:layout_height="60dp"
-      android:layout_gravity="center_vertical"
-      android:layout_marginTop="40dp"
+      android:layout_marginTop="20dp"
       android:contentDescription="RGBW Mischung"
       android:labelFor="@id/RGBWToggleButton"
-      android:minWidth="160dp"
+      android:minWidth="180dp"
       android:text="RGBW"
-      android:textOff="nur RGB"
+      android:textOff="RGB"
       android:textOn="RGBW"/>
 
+    <Button
+        android:id="@+id/colorWheelSaveColorButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="@string/color_wheel_save_color"/>
 
+  </LinearLayout>
 </LinearLayout>

@@ -37,17 +37,29 @@ void LEDSet::init( EEPROMConfig& cfg )
 
 void LEDSet::setBrightnessOff()
 {
+  #ifdef RGBINVERSE
+  analogWrite( PWM_RED, 0xff );
+  analogWrite( PWM_GREEN, 0xff );
+  analogWrite( PWM_BLUE, 0xff );
+  #else
   analogWrite( PWM_RED, 0 );
   analogWrite( PWM_GREEN, 0 );
   analogWrite( PWM_BLUE, 0 );
+  #endif
   analogWrite( PWM_WHITE, 0 );
 }
 
 void LEDSet::setBrightnessFromConfig( EEPROMConfig& cfg )
 {
+  #ifdef RGBINVERSE
+  analogWrite( PWM_RED, 0xff - cfg.getCalRed() );
+  analogWrite( PWM_GREEN, 0xff - cfg.getCalGreen() );
+  analogWrite( PWM_BLUE, 0xff - cfg.getCalBlue() );
+  #else
   analogWrite( PWM_RED, cfg.getCalRed() );
   analogWrite( PWM_GREEN, cfg.getCalGreen() );
   analogWrite( PWM_BLUE, cfg.getCalBlue() );
+  #endif
   analogWrite( PWM_WHITE, cfg.getCalWhite() );
 }
 
@@ -88,9 +100,15 @@ void LEDSet::setBrightness( EEPROMConfig& cfg, const byte *vals )
     cfg.setCalBlue(Bo);
     cfg.setCalWhite(Wo);
     // anzeigen
+    #ifdef RGBINVERSE
+    analogWrite(PWM_RED, 0xff - (int)Ro );
+    analogWrite(PWM_GREEN, 0xff - (int)Go );
+    analogWrite(PWM_BLUE, 0xff - (int)Bo );
+    #else
     analogWrite(PWM_RED, (int)Ro );
     analogWrite(PWM_GREEN, (int)Go );
     analogWrite(PWM_BLUE, (int)Bo );
+    #endif
     analogWrite(PWM_WHITE, (int)Wo );
   }
   else
@@ -101,9 +119,15 @@ void LEDSet::setBrightness( EEPROMConfig& cfg, const byte *vals )
     cfg.setCalBlue(Bi);
     cfg.setCalWhite(Wi);
     // anzeigen
+    #ifdef RGBINVERSE
+    analogWrite(PWM_RED, 0xff - (int)Ri );
+    analogWrite(PWM_GREEN, 0xff - (int)Gi );
+    analogWrite(PWM_BLUE, 0xff - (int)Bi );
+    #else
     analogWrite(PWM_RED, (int)Ri );
     analogWrite(PWM_GREEN, (int)Gi );
     analogWrite(PWM_BLUE, (int)Bi );
+    #endif
     analogWrite(PWM_WHITE, (int)Wi );
   }
 }

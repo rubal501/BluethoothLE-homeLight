@@ -4,7 +4,7 @@
   ~      project: ANDROID                                                     ~
   ~      module: btlehomelight                                                ~
   ~      class: colors.xml                                                    ~
-  ~      date: 2016-01-03                                                     ~
+  ~      date: 2016-01-04                                                     ~
   ~                                                                           ~
   ~      Copyright (C) 2016  Dirk Marciniak                                   ~
   ~                                                                           ~
@@ -26,7 +26,7 @@
 <resources>
   <color name="colorPrimary">#262731</color>
   <color name="colorPrimaryDark">#303F9F</color>
-  <color name="colorAccent">#05a9f5</color>
+  <color name="colorAccent">#cc0378</color>
   <color name="primary_material_dark_actionbar">#01146c</color>
   <color name="primary_material_dark">#212121</color>
   <color name="foreground_material_dark">#ffffff</color>
