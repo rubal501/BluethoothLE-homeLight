@@ -3,7 +3,7 @@
  *      project: ANDROID                                                      *
  *      module: btlehomelight                                                 *
  *      class: DirectControlFragment                                          *
- *      date: 2016-01-04                                                      *
+ *      date: 2016-01-05                                                      *
  *                                                                            *
  *      Copyright (C) 2016  Dirk Marciniak                                    *
  *                                                                            *
@@ -103,7 +103,7 @@ public class DirectControlFragment extends AppFragment
     fragment.setArguments(args);
     if( BuildConfig.DEBUG )
     {
-      Log.v(TAG, String.format(Locale.ENGLISH, "DirectControlFragment.newInstance(%04d)", sectionNumber));
+      Log.v(TAG, String.format(Locale.ENGLISH, "%s.newInstance(%04d)", TAG, sectionNumber));
     }
     return fragment;
   }

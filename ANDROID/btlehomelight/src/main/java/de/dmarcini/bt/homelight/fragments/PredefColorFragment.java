@@ -2,7 +2,7 @@
  *                                                                            *
  *      project: ANDROID                                                      *
  *      module: btlehomelight                                                 *
- *      class: DummyFragment                                                  *
+ *      class: PredefColorFragment                                            *
  *      date: 2016-01-05                                                      *
  *                                                                            *
  *      Copyright (C) 2016  Dirk Marciniak                                    *
@@ -46,11 +46,11 @@ import de.dmarcini.bt.homelight.utils.ProjectConst;
 /**
  * Created by dmarc on 22.08.2015.
  */
-public class DummyFragment extends AppFragment
+public class PredefColorFragment extends AppFragment
 {
-  private static final String TAG = DummyFragment.class.getSimpleName();
+  private static final String TAG = PredefColorFragment.class.getSimpleName();
 
-  public DummyFragment()
+  public PredefColorFragment()
   {
   }
 
@@ -58,9 +58,9 @@ public class DummyFragment extends AppFragment
    * Returns a new instance of this fragment for the given section
    * number.
    */
-  public static DummyFragment newInstance(int sectionNumber, BluetoothModulConfig btConfig)
+  public static PredefColorFragment newInstance(int sectionNumber, BluetoothModulConfig btConfig)
   {
-    DummyFragment fragment = new DummyFragment();
+    PredefColorFragment fragment = new PredefColorFragment();
     fragment.setBlutethoothConfig(btConfig);
     Bundle args = new Bundle();
     args.putInt(ProjectConst.ARG_SECTION_NUMBER, sectionNumber);

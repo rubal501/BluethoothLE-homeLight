@@ -3,7 +3,7 @@
  *      project: ANDROID                                                      *
  *      module: btlehomelight                                                 *
  *      class: ColorSelectFragment                                            *
- *      date: 2016-01-04                                                      *
+ *      date: 2016-01-05                                                      *
  *                                                                            *
  *      Copyright (C) 2016  Dirk Marciniak                                    *
  *                                                                            *
@@ -95,7 +95,7 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     fragment.setArguments(args);
     if( BuildConfig.DEBUG )
     {
-      Log.v(TAG, String.format(Locale.ENGLISH, "ColorSelectFragment.newInstance(%04d)", sectionNumber));
+      Log.v(TAG, String.format(Locale.ENGLISH, "%s.newInstance(%04d)", TAG, sectionNumber));
     }
     return fragment;
   }
@@ -232,11 +232,11 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     //
     // "alte" Farbe nicht setzen/anzeigen
     //
-    setColorPropertysFromConfig();
+    setPickerPropertysFromConfig();
     setHasOptionsMenu(true);
   }
 
-  private void setColorPropertysFromConfig()
+  private void setPickerPropertysFromConfig()
   {
     if( btConfig != null && btConfig.isConnected() )
     {
@@ -328,7 +328,7 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     //
     // GUI für verbundenes Gerät einrichten
     //
-    setColorPropertysFromConfig();
+    setPickerPropertysFromConfig();
   }
 
   @Override
@@ -337,7 +337,7 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     //
     // GUI für getrenntes Gerät einrichten
     //
-    setColorPropertysFromConfig();
+    setPickerPropertysFromConfig();
   }
 
   @Override
