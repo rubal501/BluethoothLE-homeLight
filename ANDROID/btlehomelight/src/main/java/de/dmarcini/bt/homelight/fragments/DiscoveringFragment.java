@@ -3,7 +3,7 @@
  *      project: ANDROID                                                      *
  *      module: btlehomelight                                                 *
  *      class: DiscoveringFragment                                            *
- *      date: 2016-01-05                                                      *
+ *      date: 2016-01-08                                                      *
  *                                                                            *
  *      Copyright (C) 2016  Dirk Marciniak                                    *
  *                                                                            *
@@ -24,9 +24,12 @@
 
 package de.dmarcini.bt.homelight.fragments;
 
+import android.app.DialogFragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattService;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,10 +58,11 @@ import de.dmarcini.bt.homelight.utils.ProjectConst;
 
 /**
  * Created by dmarc on 22.08.2015.
+ * TODO: Löschen der Suchliste und des letzen verbundenen Devices viel LONG Click oder Menü
  */
 public class DiscoveringFragment extends AppFragment implements AdapterView.OnItemClickListener, View.OnClickListener
 {
-  private static final String TAG = DiscoveringFragment.class.getSimpleName();
+  private static String TAG = DiscoveringFragment.class.getSimpleName();
   private ListView        discoverListView;
   private Button          scanButton;
   private ProgressBar     scanProgress;
@@ -85,25 +89,7 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
 
   public DiscoveringFragment()
   {
-    Bundle args;
-    int    pos;
-
-    try
-    {
-      args = getArguments();
-      if( args != null )
-      {
-        pos = args.getInt(ProjectConst.ARG_SECTION_NUMBER, 0);
-        if( BuildConfig.DEBUG )
-        {
-          Log.v(TAG, String.format(Locale.ENGLISH, "Konstructor: id is %04d", pos));
-        }
-      }
-    }
-    catch( NullPointerException ex )
-    {
-      Log.e(TAG, "Konstructor: " + ex.getLocalizedMessage());
-    }
+    super();
   }
 
   /**
@@ -132,12 +118,14 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
   {
+    SharedPreferences pref;
+    //
     if( BuildConfig.DEBUG )
     {
       Log.v(TAG, "onCreateView...");
     }
     //
-    // Objekte generieren udn finden
+    // Objekte generieren und finden
     //
     View rootView = inflater.inflate(R.layout.fragment_home_discover, container, false);
     discoverListView = ( ListView ) rootView.findViewById(R.id.discoverList);
@@ -148,6 +136,14 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     discoverListView.setAdapter(mBTLEDeviceListAdapter);
     discoverListView.setOnItemClickListener(this);
     scanButton.setOnClickListener(this);
+    //
+    // Letzes verbundenes Device lesen
+    //
+    pref = getActivity().getSharedPreferences(ProjectConst.COLOR_PREFS, Context.MODE_PRIVATE);
+    if( pref.getString(ProjectConst.KEY_LAST_BT_DEVICE, null) != null )
+    {
+      mBTLEDeviceListAdapter.addDevice(btConfig.getBluethoothAdapter().getRemoteDevice(pref.getString(ProjectConst.KEY_LAST_BT_DEVICE, "-")));
+    }
     setHasOptionsMenu(true);
     prepareHeader();
     if( BuildConfig.DEBUG )
@@ -410,6 +406,28 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     prepareHeader();
     // TODO: ist das Ding verbunden, kann er nicht suchen
     // zeige das dem User
+  }
+
+  /**
+   * Der Dialog hat eine Positive Antwort
+   *
+   * @param frag Das Fragment( der Dialog )
+   */
+  @Override
+  public void onPositiveDialogFragment(DialogFragment frag)
+  {
+
+  }
+
+  /**
+   * Der Dialog hat eine Negative Antwort
+   *
+   * @param frag Das Fragment( der Dialog )
+   */
+  @Override
+  public void onNegativeDialogFragment(DialogFragment frag)
+  {
+
   }
 
   @Override

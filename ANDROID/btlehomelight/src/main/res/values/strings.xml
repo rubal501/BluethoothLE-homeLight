@@ -4,7 +4,7 @@
   ~      project: ANDROID                                                     ~
   ~      module: btlehomelight                                                ~
   ~      class: strings.xml                                                   ~
-  ~      date: 2016-01-04                                                     ~
+  ~      date: 2016-01-08                                                     ~
   ~                                                                           ~
   ~      Copyright (C) 2016  Dirk Marciniak                                   ~
   ~                                                                           ~
@@ -27,6 +27,12 @@
   <string name="app_name">BT Home Light</string>
   <string name="action_settings">Settings</string>
   <string name="section_format">Hello World from section: %1$d</string>
+  <string name="dummy_text">dummy</string>
+
+  <string name="color_name_red">Rot</string>
+  <string name="color_name_green">Grün</string>
+  <string name="color_name_blue">Blau</string>
+  <string name="color_name_white">Weiß</string>
 
   <!-- HomeLightMainActivity -->
   <string name="ble_not_supported">BT 4.0 nicht unterstützt!</string>
@@ -67,4 +73,11 @@
   <!-- Helligkeit-Only schirm -->
   <string name="brigtness_header">Helligkeit(weiß)</string>
   <string name="brigtness_header_vals" format="raw">Helligkeit: %02d </string>
+  <string name="predef_headline">Vordefinierte Farben</string>
+
+  <!-- Farbe speichern Dialog -->
+  <string name="color_dialog_headline">Farbe sichern</string>
+  <string name="color_dialog_save_button">Sichern</string>
+  <string name="color_dialog_cancel_button">Abbruch</string>
+
 </resources>

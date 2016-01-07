@@ -3,7 +3,7 @@
  *      project: ANDROID                                                      *
  *      module: btlehomelight                                                 *
  *      class: BrightnessOnlyFragment                                         *
- *      date: 2016-01-05                                                      *
+ *      date: 2016-01-08                                                      *
  *                                                                            *
  *      Copyright (C) 2016  Dirk Marciniak                                    *
  *                                                                            *
@@ -24,6 +24,7 @@
 
 package de.dmarcini.bt.homelight.fragments;
 
+import android.app.DialogFragment;
 import android.bluetooth.BluetoothGattService;
 import android.os.Bundle;
 import android.util.Log;
@@ -52,7 +53,7 @@ import de.dmarcini.bt.homelight.utils.ProjectConst;
  */
 public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnValueChangedListener
 {
-  private static final String TAG        = BrightnessOnlyFragment.class.getSimpleName();
+  private static String TAG = BrightnessOnlyFragment.class.getSimpleName();
   private              int    brightness = 0;
   private ValueBar brightnessSeekBar;
   private TextView brightnessHeaderTextView;
@@ -60,28 +61,7 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
 
   public BrightnessOnlyFragment()
   {
-    Bundle args;
-    int    pos;
-
-    try
-    {
-      args = getArguments();
-      if( args != null )
-      {
-        pos = args.getInt(ProjectConst.ARG_SECTION_NUMBER, 0);
-        if( BuildConfig.DEBUG )
-        {
-          Log.v(TAG, String.format(Locale.ENGLISH, "Konstructor: id is %04d", pos));
-        }
-      }
-    }
-    catch( NullPointerException ex )
-    {
-      if( BuildConfig.DEBUG )
-      {
-        Log.e(TAG, "Konstructor: " + ex.getLocalizedMessage());
-      }
-    }
+    super();
   }
 
   /**
@@ -278,6 +258,28 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
       setSeekBar();
       //mainService.askModulForRGBW();
     }
+  }
+
+  /**
+   * Der Dialog hat eine Positive Antwort
+   *
+   * @param frag Das Fragment( der Dialog )
+   */
+  @Override
+  public void onPositiveDialogFragment(DialogFragment frag)
+  {
+
+  }
+
+  /**
+   * Der Dialog hat eine Negative Antwort
+   *
+   * @param frag Das Fragment( der Dialog )
+   */
+  @Override
+  public void onNegativeDialogFragment(DialogFragment frag)
+  {
+
   }
 
   private void setSeekBar(String[] param)

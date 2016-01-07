@@ -3,7 +3,7 @@
  *      project: ANDROID                                                      *
  *      module: btlehomelight                                                 *
  *      class: HomeLightMainActivity                                          *
- *      date: 2016-01-04                                                      *
+ *      date: 2016-01-08                                                      *
  *                                                                            *
  *      Copyright (C) 2016  Dirk Marciniak                                    *
  *                                                                            *
@@ -25,6 +25,7 @@
 package de.dmarcini.bt.homelight;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
@@ -34,6 +35,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -42,6 +44,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.Toast;
 
@@ -53,6 +56,7 @@ import java.util.regex.Pattern;
 
 import de.dmarcini.bt.homelight.fragments.AppFragment;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
+import de.dmarcini.bt.homelight.interrfaces.INoticeDialogListener;
 import de.dmarcini.bt.homelight.service.BluetoothLowEnergyService;
 import de.dmarcini.bt.homelight.utils.BTReaderThread;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
@@ -63,7 +67,7 @@ import de.dmarcini.bt.homelight.utils.ProjectConst;
 import de.dmarcini.bt.homelight.utils.SelectPagesAdapter;
 
 //TODO: onlinestatus für jede Seite übernehmen
-public class HomeLightMainActivity extends AppCompatActivity implements IMainAppServices, ViewPager.OnPageChangeListener
+public class HomeLightMainActivity extends AppCompatActivity implements IMainAppServices, INoticeDialogListener, ViewPager.OnPageChangeListener
 {
   private static final String               TAG          = HomeLightMainActivity.class.getSimpleName();
   final                IntentFilter         intentFilter = new IntentFilter();
@@ -185,9 +189,26 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
         {
           handler.onBTConnected();
-          askModulForType();
-          askModulForRGBW();
-          askModulForName();
+          try
+          {
+            askModulForName();
+            Thread.sleep(150);
+            askModulForType();
+            Thread.sleep(150);
+            askModulForRGBW();
+            Thread.sleep(150);
+          }
+          catch( InterruptedException e )
+          {
+            Log.e(TAG, "error while Thread.sleep()...");
+          }
+          //
+          // sichere, welches BT Device als letztes verbunden war
+          //
+          SharedPreferences pref = getSharedPreferences(ProjectConst.COLOR_PREFS, Context.MODE_PRIVATE);
+          SharedPreferences.Editor editor = pref.edit();
+          editor.putString(ProjectConst.KEY_LAST_BT_DEVICE, btConfig.getDeviceAddress());
+          editor.commit();
         }
       }
       else if( BluetoothLowEnergyService.ACTION_DATA_AVAILABLE.equals(action) )
@@ -290,9 +311,9 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
           {
             Log.v(TAG, "Modul type recived! <" + data + ">");
           }
-          if( param.length == 2 && param[1] != null )
+          if( param.length == 2 && param[ 1 ] != null )
           {
-            btConfig.setModuleType( param[1]);
+            btConfig.setModuleType(param[ 1 ]);
           }
           return (null);
 
@@ -304,9 +325,9 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
           {
             Log.v(TAG, "Modul name recived! <" + data + ">");
           }
-          if( param.length == 2 && param[1] != null )
+          if( param.length == 2 && param[ 1 ] != null )
           {
-            btConfig.setModuleName( param[1]);
+            btConfig.setModuleName(param[ 1 ]);
           }
           return (null);
 
@@ -448,6 +469,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       @Override
       public void onClick(View view)
       {
+        view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         setModulOnOff();
         //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
       }
@@ -760,6 +782,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     {
       Log.v(TAG, String.format(Locale.ENGLISH, "page %02d selected", position));
     }
+    mViewPager.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
     //
     // Gib dem Fragment order, dass es selektiert wurde
     //
@@ -798,6 +821,20 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         Log.w(TAG, "new orientation is UNKNOWN");
       }
     }
+  }
+
+  @Override
+  public void onDialogPositiveClick(DialogFragment dialog)
+  {
+    AppFragment handler = ( AppFragment ) (( SelectPagesAdapter ) (mViewPager.getAdapter())).getItem(mViewPager.getCurrentItem());
+    handler.onPositiveDialogFragment(dialog);
+  }
+
+  @Override
+  public void onDialogNegativeClick(DialogFragment dialog)
+  {
+    AppFragment handler = ( AppFragment ) (( SelectPagesAdapter ) (mViewPager.getAdapter())).getItem(mViewPager.getCurrentItem());
+    handler.onNegativeDialogFragment(dialog);
   }
 
   /**

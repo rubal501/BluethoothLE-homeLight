@@ -3,7 +3,7 @@
  *      project: ANDROID                                                      *
  *      module: btlehomelight                                                 *
  *      class: ProjectConst                                                   *
- *      date: 2016-01-04                                                      *
+ *      date: 2016-01-08                                                      *
  *                                                                            *
  *      Copyright (C) 2016  Dirk Marciniak                                    *
  *                                                                            *
@@ -32,13 +32,28 @@ import java.util.UUID;
 public class ProjectConst
 {
   //
+  // Preferenzen Name FARBEN
+  //
+  public static final String COLOR_PREFS           = "BTLE_COLOR_PREFS";
+  //
+  // Einstellungen fuer vordefinierte Farben in den Präferenzen
+  //
+  public static final String KEY_PREDEF_COLOR_01   = "predefColor01";
+  public static final String KEY_PREDEF_COLOR_02   = "predefColor02";
+  public static final String KEY_PREDEF_COLOR_03   = "predefColor03";
+  public static final String KEY_PREDEF_COLOR_04   = "predefColor04";
+  public static final String KEY_PREDEF_COLOR_05   = "predefColor05";
+  public static final String KEY_PREDEF_COLOR_06   = "predefColor06";
+  public static final String KEY_LAST_BT_DEVICE    = "lastBTDevice";
+  //
   // zuerst definiere die Seitennummern
   //
   public static final int    PAGE_DISCOVERING      = 0;
   public static final int    PAGE_DIRECT_CONTROL   = 1;
   public static final int    PAGE_COLOR_CIRCLE     = 2;
   public static final int    PAGE_BRIGHTNESS_ONLY  = 3;
-  public static final int    PAGE_COUNT            = 4;
+  public static final int    PAGE_PREDEF_COLORS = 4;
+  public static final int    PAGE_COUNT         = 5;
   //
   // dahin wechseln, wenn Verbindung aufgebaut ist
   //
@@ -56,46 +71,43 @@ public class ProjectConst
   //
   public static final int    REQUEST_ENABLE_BT     = 1;
   //
-  // Für die Fragmente definierter ARG Name
+  // Für die Fragmente Argumentbezeichnungen
   //
-  public static final String ARG_SECTION_NUMBER    = "section_number";
-  //
-  // Kennzeichnug für Argumente
-  //
-  public static final String LIST_NAME             = "NAME";
-  public static final String LIST_UUID             = "UUID";
+  public static final String ARG_SECTION_NUMBER = "section_number";
+  public static final String ARG_COLOR_LIST     = "color_list";
+  public static final String ARG_PREVIEW_COLOR  = "preview_color";
   //
   // Der Modultyp mit dem ich mich verbinden will
   //
-  public static final String MY_MODULTYPE          = "DM_RGBW";
+  public static final String MY_MODULTYPE       = "DM_RGBW";
   //
   // Steuerzeichen für Übertragungsprotokoll
   //
-  public static final String STX                   = new String(new byte[]{0x02});
-  public static final String ETX                   = new String(new byte[]{0x03});
-  public static final byte   BSTX                  = 0x02;
-  public static final byte   BETX                  = 0x03;
+  public static final String STX                = new String(new byte[]{0x02});
+  public static final String ETX                = new String(new byte[]{0x03});
+  public static final byte   BSTX               = 0x02;
+  public static final byte   BETX               = 0x03;
   //
   // Kommandos für Arduino
   // ACHTUNG: Version mit Scetch vergleichen!
   //
-  public static final byte   C_UNKNOWN             = -1;
-  public static final byte   C_ASKTYP              = 0x00; // Modultyp erfragen
-  public static final byte   C_ASKNAME             = 0x01; // Modul name erfragen
-  public static final byte   C_ASKRGBW             = 0x02; // RGBW aktuell erfragen
-  public static final byte   C_SETCOLOR            = 0x03; // Farbe DIREKT RGBW setzen
-  public static final byte   C_SETCALRGB           = 0x04; // Farbe als RGB senden, Modul kalibriert zu RGBW
-  public static final byte   C_ONOFF               = -2;
+  public static final byte   C_UNKNOWN          = -1;
+  public static final byte   C_ASKTYP           = 0x00; // Modultyp erfragen
+  public static final byte   C_ASKNAME          = 0x01; // Modul name erfragen
+  public static final byte   C_ASKRGBW          = 0x02; // RGBW aktuell erfragen
+  public static final byte   C_SETCOLOR         = 0x03; // Farbe DIREKT RGBW setzen
+  public static final byte   C_SETCALRGB        = 0x04; // Farbe als RGB senden, Modul kalibriert zu RGBW
+  public static final byte   C_ONOFF            = -2;
   //
   // Länge der Kommandoketten für Farbe
   //
-  public static final int    C_ASKRGB_LEN          = 5;
+  public static final int    C_ASKRGB_LEN       = 5;
   //
   // Zeit bis zum Senden neuer RGBW Werte, wenn der User kontinuierlich schiebt
   //
-  public static final long   TIMEDIFF_TO_SEND      = 100L;
+  public static final long   TIMEDIFF_TO_SEND   = 100L;
   //
   // Suchpattern für Kommando
   //
-  public static final String KOMANDPATTERN         = "\\d{2}(\\:.*)?";
+  public static final String KOMANDPATTERN      = "\\d{2}(\\:.*)?";
 }

@@ -4,7 +4,7 @@
   ~      project: ANDROID                                                     ~
   ~      module: btlehomelight                                                ~
   ~      class: fragment_predef_colors.xml                                    ~
-  ~      date: 2016-01-05                                                     ~
+  ~      date: 2016-01-08                                                     ~
   ~                                                                           ~
   ~      Copyright (C) 2016  Dirk Marciniak                                   ~
   ~                                                                           ~
@@ -54,20 +54,28 @@
       <Button
           android:id="@+id/predefRedButton"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_height="fill_parent"
           android:layout_column="0"
           android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
           android:layout_weight="0.5"
-          android:backgroundTint="#ff0000"/>
+          android:background="#ff0000"
+          android:padding="6dp"
+          android:text="@string/color_name_red"
+          android:textColor="@color/colorAccent"/>
 
       <Button
           android:id="@+id/predefGreenButton"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_height="fill_parent"
           android:layout_column="1"
           android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
           android:layout_weight="0.5"
-          android:backgroundTint="#00ff00"/>
+          android:background="#00ff00"
+          android:padding="6dp"
+          android:text="@string/color_name_green"
+          android:textColor="@color/colorAccent"/>
     </TableRow>
 
     <TableRow
@@ -79,19 +87,27 @@
       <Button
           android:id="@+id/predefBlueButton"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_height="fill_parent"
           android:layout_column="0"
           android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
           android:layout_weight="0.5"
-          android:backgroundTint="#ff0000ff"/>
+          android:background="#ff0000ff"
+          android:padding="6dp"
+          android:text="@string/color_name_blue"
+          android:textColor="@color/colorAccent"/>
 
       <Button
           android:id="@+id/predefWhiteButton"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_height="fill_parent"
           android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
           android:layout_weight="0.5"
-          android:backgroundTint="#ffffffff"/>
+          android:background="#ffffffff"
+          android:padding="6dp"
+          android:text="@string/color_name_white"
+          android:textColor="@color/colorAccent"/>
     </TableRow>
 
     <TableRow
@@ -103,20 +119,30 @@
       <Button
           android:id="@+id/predefUserButton01"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_height="fill_parent"
           android:layout_column="0"
           android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
           android:layout_weight="0.5"
-          android:backgroundTint="#ff888888"/>
+          android:background="#ff888888"
+          android:padding="6dp"
+          android:text="#01"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:textColor="@color/colorAccent"/>
 
       <Button
           android:id="@+id/predefUserButton02"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_height="fill_parent"
           android:layout_column="1"
           android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
           android:layout_weight="0.5"
-          android:backgroundTint="#ff888888"/>
+          android:background="#ff888888"
+          android:padding="6dp"
+          android:text="#02"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:textColor="@color/colorAccent"/>
     </TableRow>
 
     <TableRow
@@ -128,20 +154,30 @@
       <Button
           android:id="@+id/predefUserButton03"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_height="fill_parent"
           android:layout_column="0"
           android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
           android:layout_weight="0.5"
-          android:backgroundTint="#ff888888"/>
+          android:background="#ff888888"
+          android:padding="6dp"
+          android:text="#03"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:textColor="@color/colorAccent"/>
 
       <Button
           android:id="@+id/predefUserButton04"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_height="fill_parent"
           android:layout_column="1"
           android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
           android:layout_weight="0.5"
-          android:backgroundTint="#ff888888"/>
+          android:background="#ff888888"
+          android:padding="6dp"
+          android:text="#04"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:textColor="@color/colorAccent"/>
     </TableRow>
 
     <TableRow
@@ -153,20 +189,30 @@
       <Button
           android:id="@+id/predefUserButton05"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_height="fill_parent"
           android:layout_column="0"
           android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
           android:layout_weight="0.5"
-          android:backgroundTint="#ff888888"/>
+          android:background="#ff888888"
+          android:padding="6dp"
+          android:text="#05"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:textColor="@color/colorAccent"/>
 
       <Button
           android:id="@+id/predefUserButton06"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_height="fill_parent"
           android:layout_column="1"
           android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
           android:layout_weight="0.5"
-          android:backgroundTint="#ff888888"/>
+          android:background="#ff888888"
+          android:padding="6dp"
+          android:text="#06"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:textColor="@color/colorAccent"/>
     </TableRow>
   </TableLayout>
 

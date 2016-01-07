@@ -3,7 +3,7 @@
  *      project: ANDROID                                                      *
  *      module: btlehomelight                                                 *
  *      class: DummyFragment                                                  *
- *      date: 2016-01-05                                                      *
+ *      date: 2016-01-08                                                      *
  *                                                                            *
  *      Copyright (C) 2016  Dirk Marciniak                                    *
  *                                                                            *
@@ -24,6 +24,7 @@
 
 package de.dmarcini.bt.homelight.fragments;
 
+import android.app.DialogFragment;
 import android.bluetooth.BluetoothGattService;
 import android.os.Bundle;
 import android.util.Log;
@@ -48,10 +49,11 @@ import de.dmarcini.bt.homelight.utils.ProjectConst;
  */
 public class DummyFragment extends AppFragment
 {
-  private static final String TAG = DummyFragment.class.getSimpleName();
+  private static String TAG = DummyFragment.class.getSimpleName();
 
   public DummyFragment()
   {
+    super();
   }
 
   /**
@@ -156,6 +158,28 @@ public class DummyFragment extends AppFragment
   public void onPageSelected()
   {
     Log.d(TAG, "Page DUMMY was selected");
+  }
+
+  /**
+   * Der Dialog hat eine Positive Antwort
+   *
+   * @param frag Das Fragment( der Dialog )
+   */
+  @Override
+  public void onPositiveDialogFragment(DialogFragment frag)
+  {
+
+  }
+
+  /**
+   * Der Dialog hat eine Negative Antwort
+   *
+   * @param frag Das Fragment( der Dialog )
+   */
+  @Override
+  public void onNegativeDialogFragment(DialogFragment frag)
+  {
+
   }
 
 }
