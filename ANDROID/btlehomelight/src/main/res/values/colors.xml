@@ -33,4 +33,7 @@
   <color name="primary_text_default_material_dark">#b0fefe</color>
   <color name="predefColorChangeBackground">#a0ffffff</color>
   <color name="background_material_dark">#101010</color>
+
+  <color name="valuebar_holo_pointer_color">#60ffffff</color>
+  <color name="valuebar_holo_pointer_br_color">#80ff0000</color>
 </resources>

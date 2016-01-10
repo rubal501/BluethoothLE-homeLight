@@ -3,7 +3,7 @@
  *      project: ANDROID                                                      *
  *      module: btlehomelight                                                 *
  *      class: DirectControlFragment                                          *
- *      date: 2016-01-08                                                      *
+ *      date: 2016-01-10                                                      *
  *                                                                            *
  *      Copyright (C) 2016  Dirk Marciniak                                    *
  *                                                                            *
@@ -34,6 +34,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -54,7 +55,7 @@ import de.dmarcini.bt.homelight.utils.ProjectConst;
 /**
  * Created by dmarc on 22.08.2015.
  */
-public class DirectControlFragment extends AppFragment
+public class DirectControlFragment extends AppFragment implements View.OnTouchListener
 {
   private static String TAG = DirectControlFragment.class.getSimpleName();
   private TextView deviceAddress;
@@ -233,6 +234,20 @@ public class DirectControlFragment extends AppFragment
     seekGreen.setColor(Color.GREEN);
     seekBlue.setColor(Color.BLUE);
     seekWhite.setColor(Color.WHITE);
+    //
+    // Farbe des Pointers setzen
+    //
+    seekRed.setBarPointerHaloPaintColor(getResources().getColor(R.color.valuebar_holo_pointer_color));
+    seekGreen.setBarPointerHaloPaintColor(getResources().getColor(R.color.valuebar_holo_pointer_color));
+    seekBlue.setBarPointerHaloPaintColor(getResources().getColor(R.color.valuebar_holo_pointer_color));
+    seekWhite.setBarPointerHaloPaintColor(getResources().getColor(R.color.valuebar_holo_pointer_color));
+    //
+    // onTouchListener (um mitzugekommen, wann das schieben zuende ist)
+    //
+    seekRed.setOnTouchListener(this);
+    seekGreen.setOnTouchListener(this);
+    seekBlue.setOnTouchListener(this);
+    seekWhite.setOnTouchListener(this);
     //
     // On Change Listener setzen
     //
@@ -519,6 +534,7 @@ public class DirectControlFragment extends AppFragment
     }
 
   }
+
   @Override
   public void onServiceDisconnected()
   {
@@ -630,5 +646,36 @@ public class DirectControlFragment extends AppFragment
     changeLayoutOrientation(newConfig.orientation);
     setGUIContent();
     setSeekBars();
+  }
+
+  /**
+   * Called when a touch event is dispatched to a view. This allows listeners to
+   * get a chance to respond before the target view.
+   *
+   * @param v     The view the touch event has been dispatched to.
+   * @param event The MotionEvent object containing full information about
+   *              the event.
+   * @return True if the listener has consumed the event, false otherwise.
+   */
+  @Override
+  public boolean onTouch(View v, MotionEvent event)
+  {
+    switch( event.getAction() )
+    {
+      //
+      // finger vom Slider genommen -> senden
+      //
+      case MotionEvent.ACTION_UP:
+        //
+        // Mal wieder zum Contoller senden!
+        //
+        mainService.setModulRawRGBW(rgbw);
+        //
+        // Neue Deadline setzen
+        //
+        timeToSend = System.currentTimeMillis() + ProjectConst.TIMEDIFF_TO_SEND;
+        break;
+    }
+    return false;
   }
 }

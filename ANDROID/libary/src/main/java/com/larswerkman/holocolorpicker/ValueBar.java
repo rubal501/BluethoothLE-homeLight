@@ -1,18 +1,26 @@
-/*
- * Copyright 2012 Lars Werkman
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+/******************************************************************************
+ *                                                                            *
+ *      project: ANDROID                                                      *
+ *      module: libary                                                        *
+ *      class: ValueBar                                                       *
+ *      date: 2016-01-10                                                      *
+ *                                                                            *
+ *      Copyright (C) 2016  Dirk Marciniak                                    *
+ *                                                                            *
+ *      This program is free software: you can redistribute it and/or modify  *
+ *      it under the terms of the GNU General Public License as published by  *
+ *      the Free Software Foundation, either version 3 of the License, or     *
+ *      (at your option) any later version.                                   *
+ *                                                                            *
+ *      This program is distributed in the hope that it will be useful,       *
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *      GNU General Public License for more details.                          *
+ *                                                                            *
+ *      You should have received a copy of the GNU General Public License     *
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ *                                                                            *
+ ******************************************************************************/
 
 package com.larswerkman.holocolorpicker;
 
@@ -31,8 +39,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.larswerkman.holocolorpicker.R;
-
 public class ValueBar extends View
 {
 
@@ -49,67 +55,55 @@ public class ValueBar extends View
    */
   private static final boolean ORIENTATION_HORIZONTAL = true;
   private static final boolean ORIENTATION_VERTICAL   = false;
-
-  /**
-   * defeult color for HALO Picker (DM)
-   */
-  private int mBarPointerHaloPaintColor = 0x50000000;
   /**
    * Default orientation of the bar.
    */
-  private static final boolean ORIENTATION_DEFAULT = ORIENTATION_HORIZONTAL;
-
+  private static final boolean ORIENTATION_DEFAULT       = ORIENTATION_HORIZONTAL;
+  /**
+   * defeult color for HALO Picker (DM)
+   */
+  private              int     mBarPointerHaloPaintColor = 0x50000000;
   /**
    * The thickness of the bar.
    */
-  private int mBarThickness;
-
+  private int   mBarThickness;
   /**
    * The length of the bar.
    */
-  private int mBarLength;
-  private int mPreferredBarLength;
-
+  private int   mBarLength;
+  private int   mPreferredBarLength;
   /**
    * The radius of the pointer.
    */
-  private int mBarPointerRadius;
-
+  private int   mBarPointerRadius;
   /**
    * The radius of the halo of the pointer.
    */
-  private int mBarPointerHaloRadius;
-
+  private int   mBarPointerHaloRadius;
   /**
    * The position of the pointer on the bar.
    */
-  private int mBarPointerPosition;
-
+  private int   mBarPointerPosition;
   /**
    * {@code Paint} instance used to draw the bar.
    */
   private Paint mBarPaint;
-
   /**
    * {@code Paint} instance used to draw the pointer.
    */
   private Paint mBarPointerPaint;
-
   /**
    * {@code Paint} instance used to draw the halo of the pointer.
    */
   private Paint mBarPointerHaloPaint;
-
   /**
    * The rectangle enclosing the bar.
    */
   private RectF mBarRect = new RectF();
-
   /**
    * {@code Shader} instance used to fill the shader of the paint.
    */
-  private Shader shader;
-
+  private Shader  shader;
   /**
    * {@code true} if the user clicked on the pointer to start the move mode. <br>
    * {@code false} once the user stops touching the screen.
@@ -117,48 +111,40 @@ public class ValueBar extends View
    * @see #onTouchEvent(android.view.MotionEvent)
    */
   private boolean mIsMovingPointer;
-
   /**
    * The ARGB value of the currently selected color.
    */
-  private int mColor;
-
+  private int     mColor;
   /**
    * An array of floats that can be build into a {@code Color} <br>
    * Where we can extract the color from.
    */
   private float[] mHSVColor = new float[ 3 ];
-
   /**
    * Factor used to calculate the position to the Opacity on the bar.
    */
   private float mPosToSatFactor;
-
   /**
    * Factor used to calculate the Opacity to the postion on the bar.
    */
   private float mSatToPosFactor;
-
   /**
    * {@code ColorPicker} instance used to control the ColorPicker.
    */
   private ColorPicker mPicker = null;
-
   /**
    * Used to toggle orientation between vertical and horizontal.
    */
-  private boolean mOrientation;
-
+  private boolean                mOrientation;
   /**
    * Interface and listener so that changes in ValueBar are sent
    * to the host activity/fragment
    */
   private OnValueChangedListener onValueChangedListener;
-
   /**
    * Value of the latest entry of the onValueChangedListener.
    */
-  private int oldChangedListenerValue;
+  private int                    oldChangedListenerValue;
 
   public ValueBar(Context context)
   {
@@ -176,6 +162,17 @@ public class ValueBar extends View
   {
     super(context, attrs, defStyle);
     init(attrs, defStyle);
+  }
+
+  public int getBarPointerHaloPaintColor()
+  {
+    return mBarPointerHaloPaintColor;
+  }
+
+  public void setBarPointerHaloPaintColor(int mBarPointerHaloPaintColor)
+  {
+    this.mBarPointerHaloPaintColor = mBarPointerHaloPaintColor;
+    mBarPointerHaloPaint.setColor(this.mBarPointerHaloPaintColor);
   }
 
   public OnValueChangedListener getOnValueChangedListener()
@@ -425,7 +422,6 @@ public class ValueBar extends View
     return true;
   }
 
-  ;
 
   /**
    * Set the pointer on the bar. With the opacity value.
@@ -462,7 +458,7 @@ public class ValueBar extends View
       coord = mBarLength;
     }
     mColor = Color.HSVToColor(new float[]{
-        mHSVColor[ 0 ], mHSVColor[ 1 ], ( float ) (1 - (mPosToSatFactor * coord))
+        mHSVColor[ 0 ], mHSVColor[ 1 ], 1 - (mPosToSatFactor * coord)
     });
   }
 
@@ -559,6 +555,6 @@ public class ValueBar extends View
 
   public interface OnValueChangedListener
   {
-    public void onValueChanged(int value);
+    void onValueChanged(int value);
   }
 }
