@@ -3,7 +3,7 @@
  *      project: ANDROID                                                      *
  *      module: btlehomelight                                                 *
  *      class: ProjectConst                                                   *
- *      date: 2016-01-08                                                      *
+ *      date: 2016-01-10                                                      *
  *                                                                            *
  *      Copyright (C) 2016  Dirk Marciniak                                    *
  *                                                                            *
@@ -76,6 +76,7 @@ public class ProjectConst
   public static final String ARG_SECTION_NUMBER = "section_number";
   public static final String ARG_COLOR_LIST     = "color_list";
   public static final String ARG_PREVIEW_COLOR  = "preview_color";
+  public static final String ARG_PREDEF_NUMBER  = "predef_number";
   //
   // Der Modultyp mit dem ich mich verbinden will
   //

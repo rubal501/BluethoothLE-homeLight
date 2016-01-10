@@ -3,7 +3,7 @@
  *      project: ANDROID                                                      *
  *      module: btlehomelight                                                 *
  *      class: ColorSelectFragment                                            *
- *      date: 2016-01-08                                                      *
+ *      date: 2016-01-10                                                      *
  *                                                                            *
  *      Copyright (C) 2016  Dirk Marciniak                                    *
  *                                                                            *
@@ -686,7 +686,7 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
         arg.putInt(ProjectConst.ARG_PREVIEW_COLOR, currColor);
         ColorPrefSaveDialog colDi = new ColorPrefSaveDialog();
         colDi.setArguments(arg);
-        colDi.show(getActivity().getFragmentManager(), "selectDeviceForExport");
+        colDi.show(getActivity().getFragmentManager(), "savePredefColor");
     }
   }
 }

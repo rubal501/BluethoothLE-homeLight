@@ -3,7 +3,7 @@
  *      project: ANDROID                                                      *
  *      module: btlehomelight                                                 *
  *      class: PredefColorFragment                                            *
- *      date: 2016-01-08                                                      *
+ *      date: 2016-01-10                                                      *
  *                                                                            *
  *      Copyright (C) 2016  Dirk Marciniak                                    *
  *                                                                            *
@@ -45,6 +45,7 @@ import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.R;
+import de.dmarcini.bt.homelight.dialogs.ColorPrefChangeDialog;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
 import de.dmarcini.bt.homelight.utils.ProjectConst;
@@ -127,6 +128,7 @@ public class PredefColorFragment extends AppFragment implements View.OnClickList
     {
       userButtons[ i ].setOnClickListener(this);
       userButtons[ i ].setOnLongClickListener(this);
+      userButtons[ i ].setTag(new Integer(i)); // Gib dem Button seine ID-Nummer für die App mit
     }
     // Fertich!
     return (rootView);
@@ -284,7 +286,22 @@ public class PredefColorFragment extends AppFragment implements View.OnClickList
   @Override
   public void onPositiveDialogFragment(DialogFragment frag)
   {
+    int prefColorNumber = -1;
+    int newColor;
 
+    if( frag instanceof ColorPrefChangeDialog )
+    {
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, "dialog has changed predefined color...");
+      }
+      prefColorNumber = (( ColorPrefChangeDialog ) frag).getPredefColorNumber();
+      newColor = (( ColorPrefChangeDialog ) frag).getSettedColor();
+      if( prefColorNumber > -1 || prefColorNumber < 6 )
+      {
+        userButtons[ prefColorNumber ].setBackgroundColor(newColor);
+      }
+    }
   }
 
   /**
@@ -320,15 +337,35 @@ public class PredefColorFragment extends AppFragment implements View.OnClickList
   /**
    * Button lange gehalten wärend des Clickens
    *
-   * @param colorButton Der Knopf, welcher gedrückt war
+   * @param clickedView Der Knopf, welcher gedrückt war
    * @return true if the callback consumed the long click, false otherwise.
    */
   @Override
-  public boolean onLongClick(View colorButton)
+  public boolean onLongClick(View clickedView)
   {
-    colorButton.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-    // TODO: Farbwähler Dialog öffnen
-    Log.v(TAG, "button LONG clicked");
+    clickedView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+    //
+    // Ist das ein Button, hat er einen Tag mit Index CCD_BUTTON_TAGID und ist dieser Integer
+    //
+    if( clickedView instanceof Button && clickedView.getTag() != null && clickedView.getTag() instanceof Integer )
+    {
+      Integer val = ( Integer ) clickedView.getTag();
+      // Ist der Wert bestimmt?
+      if( val > -1 )
+      {
+        if( BuildConfig.DEBUG )
+        {
+          Log.i(TAG, "Button predef color clicked");
+        }
+        ColorPrefChangeDialog colDi = new ColorPrefChangeDialog();
+        Bundle arg = new Bundle();
+        arg.putInt(ProjectConst.ARG_PREVIEW_COLOR, (( ColorDrawable ) clickedView.getBackground()).getColor());
+        arg.putInt(ProjectConst.ARG_PREDEF_NUMBER, val);
+        colDi.setArguments(arg);
+        colDi.show(getActivity().getFragmentManager(), "changePredefColor");
+      }
+    }
+
     return false;
   }
 

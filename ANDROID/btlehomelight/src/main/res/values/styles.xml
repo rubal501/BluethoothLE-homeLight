@@ -4,7 +4,7 @@
   ~      project: ANDROID                                                     ~
   ~      module: btlehomelight                                                ~
   ~      class: styles.xml                                                    ~
-  ~      date: 2016-01-03                                                     ~
+  ~      date: 2016-01-10                                                     ~
   ~                                                                           ~
   ~      Copyright (C) 2016  Dirk Marciniak                                   ~
   ~                                                                           ~
@@ -32,6 +32,7 @@
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
+    <item name="android:colorBackground">@color/background_material_dark</item>
   </style>
 
   <style name="AppTheme.NoActionBar">

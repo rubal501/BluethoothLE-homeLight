@@ -4,7 +4,7 @@
   ~      project: ANDROID                                                     ~
   ~      module: btlehomelight                                                ~
   ~      class: strings.xml                                                   ~
-  ~      date: 2016-01-08                                                     ~
+  ~      date: 2016-01-10                                                     ~
   ~                                                                           ~
   ~      Copyright (C) 2016  Dirk Marciniak                                   ~
   ~                                                                           ~
@@ -82,5 +82,8 @@
   <string name="color_dialog_headline">Farbe sichern</string>
   <string name="color_dialog_save_button">Sichern</string>
   <string name="color_dialog_cancel_button">Abbruch</string>
+
+  <!-- Farbe für Voreinstellung ändern Dialog -->
+  <string name="color_change_dialog_headline" format="raw">Farbe #%02d</string>
 
 </resources>

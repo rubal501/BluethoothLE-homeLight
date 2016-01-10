@@ -4,7 +4,7 @@
   ~      project: ANDROID                                                     ~
   ~      module: btlehomelight                                                ~
   ~      class: fragment_predef_colors.xml                                    ~
-  ~      date: 2016-01-08                                                     ~
+  ~      date: 2016-01-10                                                     ~
   ~                                                                           ~
   ~      Copyright (C) 2016  Dirk Marciniak                                   ~
   ~                                                                           ~
@@ -62,7 +62,7 @@
           android:background="#ff0000"
           android:padding="6dp"
           android:text="@string/color_name_red"
-          android:textColor="@color/colorAccent"/>
+          android:textColor="@color/colorPrimary"/>
 
       <Button
           android:id="@+id/predefGreenButton"

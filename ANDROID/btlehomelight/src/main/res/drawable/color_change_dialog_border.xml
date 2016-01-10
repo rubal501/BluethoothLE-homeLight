@@ -3,7 +3,7 @@
   ~                                                                           ~
   ~      project: ANDROID                                                     ~
   ~      module: btlehomelight                                                ~
-  ~      class: colors.xml                                                    ~
+  ~      class: color_change_dialog_border.xml                                ~
   ~      date: 2016-01-10                                                     ~
   ~                                                                           ~
   ~      Copyright (C) 2016  Dirk Marciniak                                   ~
@@ -23,14 +23,9 @@
   ~                                                                           ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<resources>
-  <color name="colorPrimary">#000000</color>
-  <color name="colorPrimaryDark">#303F9F</color>
-  <color name="colorAccent">#cc0378</color>
-  <color name="primary_material_dark_actionbar">#01146c</color>
-  <color name="primary_material_dark">#212121</color>
-  <color name="foreground_material_dark">#ffffff</color>
-  <color name="primary_text_default_material_dark">#b0fefe</color>
-  <color name="predefColorChangeBackground">#a0ffffff</color>
-  <color name="background_material_dark">#101010</color>
-</resources>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+       android:shape="rectangle">
+  <stroke
+      android:width="5dip"
+      android:color="@android:color/white"/>
+</shape>
