@@ -28,9 +28,9 @@
     package="de.dmarcini.bt.homelight"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <uses-sdk
+  <!--uses-sdk
       android:minSdkVersion="19"
-      android:targetSdkVersion="19"/>
+      android:targetSdkVersion="21"/-->
 
   <uses-feature
       android:name="android.hardware.bluetooth_le"

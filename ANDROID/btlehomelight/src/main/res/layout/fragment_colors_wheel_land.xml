@@ -63,16 +63,17 @@
       android:contentDescription="RGBW Mischung"
       android:labelFor="@id/RGBWToggleButton"
       android:minWidth="180dp"
-      android:text="RGBW"
-      android:textOff="RGB"
-      android:textOn="RGBW"/>
+      android:text="@string/color_wheel_toggle_button_text"
+      android:textOff="@string/color_wheel_toggle_button_text_off"
+      android:textOn="@string/color_wheel_toggle_button_text_on"/>
 
     <Button
+        style="?android:attr/buttonBarButtonStyle"
         android:id="@+id/colorWheelSaveColorButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:text="@string/color_wheel_save_color"/>
+        android:text="@string/color_wheel_save_color_button_text"/>
 
   </LinearLayout>
 </LinearLayout>

@@ -48,7 +48,7 @@
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="@string/label_device_address"
+          android:text="@string/direct_control_label_device_address"
           android:textSize="18sp"/>
 
       <Space
@@ -71,7 +71,7 @@
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="@string/label_state"
+          android:text="@string/direct_control_label_state"
           android:textSize="18sp"/>
 
       <Space
@@ -82,7 +82,7 @@
           android:id="@+id/connectionState"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="@string/disconnected"
+          android:text="@string/direct_control_disconnected"
           android:textSize="18sp"/>
     </LinearLayout>
 
@@ -92,7 +92,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_marginStart="10dp"
-        android:text="@string/is_serial"
+        android:text="@string/direct_control_is_serial"
         android:textSize="18sp"/>
 
   </LinearLayout>

@@ -53,7 +53,7 @@
       android:layout_toEndOf="@+id/arrayListColorView"
       android:layout_toRightOf="@+id/arrayListColorView"
       android:paddingStart="25dp"
-      android:text="@string/dummy_text"/>
+      android:text="@string/app_dummy_text"/>
   <!-- android:textAppearance="@style/menuTextAppearance" /-->
 
 </RelativeLayout>

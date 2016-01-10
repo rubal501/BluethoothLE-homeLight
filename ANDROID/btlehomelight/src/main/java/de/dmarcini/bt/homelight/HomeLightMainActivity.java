@@ -423,7 +423,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     if( !getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE) )
     {
-      Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
+      Toast.makeText(this, R.string.main_ble_not_supported, Toast.LENGTH_SHORT).show();
       finish();
     }
     //
@@ -436,7 +436,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     if( btConfig.getBluethoothAdapter() == null )
     {
-      Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
+      Toast.makeText(this, R.string.main_ble_not_supported, Toast.LENGTH_SHORT).show();
       finish();
       return;
     }
@@ -599,7 +599,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       return;
     }
     String uuid;
-    String                             unknownServiceString = getResources().getString(R.string.ble_unknown_service);
+    String                             unknownServiceString = getResources().getString(R.string.main_ble_unknown_service);
     //ArrayList<HashMap<String, String>> gattServiceData      = new ArrayList<>();
 
 

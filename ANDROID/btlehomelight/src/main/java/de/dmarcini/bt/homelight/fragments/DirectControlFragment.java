@@ -502,20 +502,20 @@ public class DirectControlFragment extends AppFragment
 
     if( btConfig.isUART() )
     {
-      isSerial.setText(getActivity().getResources().getString(R.string.is_serial));
+      isSerial.setText(getActivity().getResources().getString(R.string.direct_control_is_serial));
     }
     else
     {
-      isSerial.setText(getActivity().getResources().getString(R.string.no_serial));
+      isSerial.setText(getActivity().getResources().getString(R.string.direct_control_no_serial));
     }
 
     if( btConfig.isConnected() )
     {
-      connectionState.setText(getActivity().getResources().getString(R.string.connected));
+      connectionState.setText(getActivity().getResources().getString(R.string.direct_control_connected));
     }
     else
     {
-      connectionState.setText(getActivity().getResources().getString(R.string.disconnected));
+      connectionState.setText(getActivity().getResources().getString(R.string.direct_control_disconnected));
     }
 
   }
@@ -533,8 +533,8 @@ public class DirectControlFragment extends AppFragment
     rgbw[ 0 ] = rgbw[ 1 ] = rgbw[ 2 ] = rgbw[ 3 ] = 0;
     setSeekBars();
     deviceAddress.setText("--:--:--:--:--:--");
-    connectionState.setText(getActivity().getResources().getString(R.string.disconnected));
-    isSerial.setText(getActivity().getResources().getString(R.string.no_serial));
+    connectionState.setText(getActivity().getResources().getString(R.string.direct_control_disconnected));
+    isSerial.setText(getActivity().getResources().getString(R.string.direct_control_no_serial));
   }
 
   @Override

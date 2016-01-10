@@ -38,7 +38,7 @@ android {
     defaultConfig {
         applicationId "de.dmarcini.bt.homelight"
         minSdkVersion 19
-        targetSdkVersion 19
+        targetSdkVersion 21
         versionCode 1
         versionName '0.1'
         signingConfig signingConfigs.defaultDirk
