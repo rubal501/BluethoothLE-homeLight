@@ -51,6 +51,10 @@ public class ValueBar extends View
   private static final boolean ORIENTATION_VERTICAL   = false;
 
   /**
+   * defeult color for HALO Picker (DM)
+   */
+  private int mBarPointerHaloPaintColor = 0x50000000;
+  /**
    * Default orientation of the bar.
    */
   private static final boolean ORIENTATION_DEFAULT = ORIENTATION_HORIZONTAL;
@@ -204,8 +208,13 @@ public class ValueBar extends View
     mBarPointerPosition = mBarPointerHaloRadius;
 
     mBarPointerHaloPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    mBarPointerHaloPaint.setColor(Color.BLACK);
-    mBarPointerHaloPaint.setAlpha(0x50);
+    //
+    // DM: knfigurable color for my project
+    //
+    mBarPointerHaloPaint.setColor(mBarPointerHaloPaintColor);
+
+    //mBarPointerHaloPaint.setColor(Color.BLACK);
+    //mBarPointerHaloPaint.setAlpha(0x50);
 
     mBarPointerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     mBarPointerPaint.setColor(0xff81ff00);
