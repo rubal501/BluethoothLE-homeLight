@@ -49,7 +49,7 @@ import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
-import de.dmarcini.bt.homelight.utils.ProjectConst;
+import de.dmarcini.bt.homelight.ProjectConst;
 
 
 /**
@@ -301,6 +301,8 @@ public class DirectControlFragment extends AppFragment implements View.OnTouchLi
     {
       Log.v(TAG, "onCreateOptionsMenu...");
     }
+    //MenuInflater inflater = getActivity().getMenuInflater();
+    inflater.inflate(R.menu.menu_direct_control_fragment, menu);
   }
 
   @Override
@@ -323,12 +325,8 @@ public class DirectControlFragment extends AppFragment implements View.OnTouchLi
     }
     switch( item.getItemId() )
     {
-      case R.id.menu_scan:
-        //mLeDeviceListAdapter.clear();
-        //scanLeDevice(true);
-        break;
-      case R.id.menu_stop:
-        //scanLeDevice(false);
+      case R.id.menu_preferences:
+        // TODO: Preferences Activity aufrufen
         break;
     }
     return super.onOptionsItemSelected(item);

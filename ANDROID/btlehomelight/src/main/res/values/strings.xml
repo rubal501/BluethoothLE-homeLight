@@ -37,9 +37,7 @@
   <string name="main_ble_unknown_service">unbekannter Service</string>
 
   <!-- Main Menu -->
-  <string name="menu_refresh">erneuern...</string>
-  <string name="menu_scan">suchen...</string>
-  <string name="menu_stop">suche beenden.</string>
+  <string name="menu_preferences">Einstellungen...</string>
 
   <!-- Discovering Fragment -->
   <string name="discovering_no_data">Kein Gerät verfügbar</string>
@@ -85,5 +83,13 @@
 
   <!-- Farbe für Voreinstellung ändern Dialog -->
   <string name="color_change_dialog_headline" format="raw">Farbe #%02d</string>
+
+  <!-- Programmeinstellungen -->
+  <string name="preference_system_headline">Programmeinstellungen</string>
+  <string name="preference_system_direct_control">Direkte Ansteuerung</string>
+  <string name="preference_system_direct_control_summary_on">Direkte Steuerung AN</string>
+  <string name="preference_system_direct_control_summary_off">Direkte Steuerung AUS</string>
+  <string name="preference_system_direct_control_switch_on">zeigen</string>
+  <string name="preference_system_direct_control_switch_off">vergbergen</string>
 
 </resources>

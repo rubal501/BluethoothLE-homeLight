@@ -51,7 +51,7 @@ import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.dialogs.ColorPrefSaveDialog;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
-import de.dmarcini.bt.homelight.utils.ProjectConst;
+import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.views.ColorPicker;
 
 
@@ -266,16 +266,16 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     {
       Log.v(TAG, "onOptionsItemSelected...");
     }
-    switch( item.getItemId() )
-    {
-      case R.id.menu_scan:
-        //mLeDeviceListAdapter.clear();
-        //scanLeDevice(true);
-        break;
-      case R.id.menu_stop:
-        //scanLeDevice(false);
-        break;
-    }
+//    switch( item.getItemId() )
+//    {
+//      case R.id.menu_scan:
+//        //mLeDeviceListAdapter.clear();
+//        //scanLeDevice(true);
+//        break;
+//      case R.id.menu_stop:
+//        //scanLeDevice(false);
+//        break;
+//    }
     return super.onOptionsItemSelected(item);
   }
 

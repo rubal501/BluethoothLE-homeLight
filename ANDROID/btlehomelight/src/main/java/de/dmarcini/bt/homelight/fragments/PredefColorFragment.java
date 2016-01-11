@@ -48,7 +48,7 @@ import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.dialogs.ColorPrefChangeDialog;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
-import de.dmarcini.bt.homelight.utils.ProjectConst;
+import de.dmarcini.bt.homelight.ProjectConst;
 
 
 /**

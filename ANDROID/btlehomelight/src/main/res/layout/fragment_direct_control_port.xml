@@ -101,7 +101,8 @@
       android:id="@+id/sliderLayout"
       android:layout_width="match_parent"
       android:layout_height="fill_parent"
-      android:orientation="horizontal">
+      android:orientation="horizontal"
+      android:layout_marginBottom="40dp">
 
     <com.larswerkman.holocolorpicker.ValueBar
         android:id="@+id/redValueBar"

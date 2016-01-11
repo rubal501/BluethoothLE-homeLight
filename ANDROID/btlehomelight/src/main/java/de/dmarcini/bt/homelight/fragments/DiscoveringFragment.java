@@ -53,7 +53,7 @@ import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BTLEListAdapter;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
-import de.dmarcini.bt.homelight.utils.ProjectConst;
+import de.dmarcini.bt.homelight.ProjectConst;
 
 
 /**
@@ -140,8 +140,9 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     // Letzes verbundenes Device lesen
     //
     pref = getActivity().getSharedPreferences(ProjectConst.COLOR_PREFS, Context.MODE_PRIVATE);
-    if( pref.getString(ProjectConst.KEY_LAST_BT_DEVICE, null) != null )
+    if( (pref.getString(ProjectConst.KEY_LAST_BT_DEVICE, null) != null) && (pref.getString(ProjectConst.KEY_LAST_BT_NAME, null) != null))
     {
+      // TODO: Name des Gerätes noch einbringen
       mBTLEDeviceListAdapter.addDevice(btConfig.getBluethoothAdapter().getRemoteDevice(pref.getString(ProjectConst.KEY_LAST_BT_DEVICE, "-")));
     }
     setHasOptionsMenu(true);
@@ -162,16 +163,16 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     }
     inflater.inflate(R.menu.menu_home_light_main, menu);
     //
-    if( !mScanning )
-    {
-      menu.findItem(R.id.menu_stop).setVisible(false);
-      menu.findItem(R.id.menu_scan).setVisible(true);
-    }
-    else
-    {
-      menu.findItem(R.id.menu_stop).setVisible(true);
-      menu.findItem(R.id.menu_scan).setVisible(false);
-    }
+//    if( !mScanning )
+//    {
+//      menu.findItem(R.id.menu_stop).setVisible(false);
+//      menu.findItem(R.id.menu_scan).setVisible(true);
+//    }
+//    else
+//    {
+//      menu.findItem(R.id.menu_stop).setVisible(true);
+//      menu.findItem(R.id.menu_scan).setVisible(false);
+//    }
     prepareHeader();
   }
 
@@ -214,14 +215,14 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
   @Override
   public boolean onOptionsItemSelected(MenuItem item)
   {
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "onOptionsItemSelected...");
+    }
     switch( item.getItemId() )
     {
-      case R.id.menu_scan:
-        mBTLEDeviceListAdapter.clear();
-        scanBTLEDevice(true);
-        break;
-      case R.id.menu_stop:
-        scanBTLEDevice(false);
+      case R.id.menu_preferences:
+        // TODO: Preferences Activity aufrufen
         break;
     }
     return super.onOptionsItemSelected(item);

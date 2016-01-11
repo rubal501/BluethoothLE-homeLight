@@ -1,9 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~                                                                           ~
   ~      project: ANDROID                                                     ~
   ~      module: btlehomelight                                                ~
-  ~      class: menu_home_light_main.xml                                      ~
-  ~      date: 2016-01-03                                                     ~
+  ~      class: system_prop.xml                                               ~
+  ~      date: 2016-01-10                                                     ~
   ~                                                                           ~
   ~      Copyright (C) 2016  Dirk Marciniak                                   ~
   ~                                                                           ~
@@ -22,16 +23,23 @@
   ~                                                                           ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:tools="http://schemas.android.com/tools"
-      tools:context="de.dmarcini.bt.homelight.HomeLightMainActivity">
-
-  <item
-      android:id="@+id/menu_preferences"
-      android:orderInCategory="100"
-      android:icon="@drawable/ic_launcher"
-      android:title="@string/menu_preferences"/>
-</menu>
+<PreferenceScreen android:id="@+id/conf_prog_preferencescreen"
+                  xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:title="@string/preference_system_headline">
 
 
+  <PreferenceCategory android:key="keySystemDirectControl"
+      android:title="@string/preference_system_direct_control">
+  <SwitchPreference
+  android:defaultValue="true"
+      android:key="keySystemDirectControlSwitch"
+      android:summaryOff="@string/preference_system_direct_control_summary_off"
+      android:summaryOn="@string/preference_system_direct_control_summary_on"
+      android:switchTextOff="@string/preference_system_direct_control_switch_off"
+      android:switchTextOn="@string/preference_system_direct_control_switch_on"
+      android:title="@string/app_dummy_text" />
+
+  </PreferenceCategory>
+
+</PreferenceScreen>
 
