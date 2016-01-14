@@ -30,6 +30,7 @@
 #define C_ASKRGBW       0x02                          // Frage nach RGBW im Modul
 #define C_SETCOLOR      0x03                          // Vom Meister Farbe, unkalibriert, direkte Anzeige mit Speichern
 #define C_SETCALRGB     0x04                          // Vom Meister, setze RGB,  Modul konvertiert zu RGBW
+#define C_SETNAME       0x05                          // Vom Meister, stze neuen Modulnamen (und sichere den)
 #define C_ONOFF         0xfe                          // AUS, oder wenn alles auf 0 ist EIN
 
 
@@ -45,7 +46,7 @@ public:
 	CommandParser();
 	~CommandParser();
   static byte parseCommand( String& kdoString, byte* kdo  );      // Parse das Kommando
-
+  static String getModuleName(String& btInputString ); // Gib den ModulnamenString zurück
 protected:
 private:
 	CommandParser( const CommandParser &c );

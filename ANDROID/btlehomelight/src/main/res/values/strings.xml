@@ -37,13 +37,12 @@
   <string name="main_ble_unknown_service">unbekannter Service</string>
 
   <!-- Main Menu -->
-  <string name="menu_refresh">erneuern...</string>
-  <string name="menu_scan">suchen...</string>
-  <string name="menu_stop">suche beenden.</string>
+  <string name="menu_preferences">Einstellungen...</string>
 
   <!-- Discovering Fragment -->
   <string name="discovering_no_data">Kein Gerät verfügbar</string>
-  <string name="discovering_headline">Suche Gerät</string>
+  <string name="discovering_headline_search">Suche Gerät</string>
+  <string name="discovering_headline_devices">Geräte</string>
   <string name="discovering_scan">suchen...</string>
   <string name="discovering_stop">suche beenden.</string>
   <string name="discovering_disconnect">trennen</string>
@@ -65,6 +64,16 @@
   <string name="direct_control_blue_slide">Blau</string>
   <string name="direct_control_white_slide">Weiß</string>
 
+  <!-- System Einstellungen Keys NICHT LOKALISIEREN! -->
+  <string name="pref_sys_cat_direct_control">keySystemDirectControlCat</string>
+  <string name="pref_sys_cat_on_connect">keySystemOnConnectCat</string>
+  <string name="pref_sys_cat_debugging">keySystemDebuggingCat</string>
+  <string name="pref_sys_showpage_direct">keySystemDirectControlSwitch</string>
+  <string name="pref_sys_jump_to_page_on_connect">keySystemJumpToDefaultPageOnConnect</string>
+  <string name="pref_sys_page_on_connect">KeySystemJumpToPageNumberOnConnect</string>
+  <string name="pref_sys_debugging_stat">keySystemDebuggingStatus</string>
+
+
   <!-- Color wheel fragment -->
   <string name="color_wheel_save_color_button_text">In Voreinstellungen merken!</string>
   <string name="color_wheel_toggle_button_text">RGBW</string>
@@ -85,5 +94,26 @@
 
   <!-- Farbe für Voreinstellung ändern Dialog -->
   <string name="color_change_dialog_headline" format="raw">Farbe #%02d</string>
+
+  <!-- Programmeinstellungen -->
+  <string name="pref_sys_headline">Programmeinstellungen</string>
+  <!-- cat direct control -->
+  <string name="pref_sys_direct_control">Direkte Ansteuerung</string>
+  <string name="pref_sys_direct_control_summary_on">Direkte Steuerung AN</string>
+  <string name="pref_sys_direct_control_summary_off">Direkte Steuerung AUS</string>
+  <string name="pref_sys_direct_control_switch_on">zeigen</string>
+  <string name="pref_sys_direct_control_switch_off">vergbergen</string>
+  <!-- cat on connect -->
+  <string name="pref_system_on_connect">Beim Verbinden</string>
+  <string name="pref_sys_on_connect_summary_on">Springe zur default Seite</string>
+  <string name="pref_sys_on_connect_summary_off">Keine weitere Aktion</string>
+  <string name="pref_sys_on_connect_switch_on">springen</string>
+  <string name="pref_sys_on_connect_switch_off">-</string>
+  <!-- Einstellunge fürs debugging -->
+  <string name="pref_sys_debugging">Debugging Einstellungen</string>
+  <string name="pref_sys_debug_summary_on">Springe zur default Seite</string>
+  <string name="pref_sys_debug_summary_off">Keine weitere Aktion</string>
+  <string name="pref_sys_debug_switch_on">springen</string>
+  <string name="pref_sys_debug_switch_off">-</string>
 
 </resources>

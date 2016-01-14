@@ -43,7 +43,7 @@ import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.interrfaces.INoticeDialogListener;
-import de.dmarcini.bt.homelight.utils.ProjectConst;
+import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.views.ColorPicker;
 
 /**

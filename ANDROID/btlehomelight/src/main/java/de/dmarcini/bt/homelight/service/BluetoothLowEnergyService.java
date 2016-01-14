@@ -45,7 +45,7 @@ import java.util.UUID;
 
 import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.utils.HM10GattAttributes;
-import de.dmarcini.bt.homelight.utils.ProjectConst;
+import de.dmarcini.bt.homelight.ProjectConst;
 
 /**
  * Service for managing connection and data communication with a GATT server hosted on a

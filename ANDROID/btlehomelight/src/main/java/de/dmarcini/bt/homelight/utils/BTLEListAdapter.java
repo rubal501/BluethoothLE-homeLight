@@ -31,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -42,7 +43,8 @@ import de.dmarcini.bt.homelight.R;
 // Adapter for holding devices found through scanning.
 public class BTLEListAdapter extends BaseAdapter
 {
-  private static final String TAG = BTLEListAdapter.class.getSimpleName();
+  private static final String          TAG             = BTLEListAdapter.class.getSimpleName();
+  private              BluetoothDevice connectedDevice = null;
   private ArrayList<BluetoothDevice> mLeDevices;
   private LayoutInflater             mInflator;
 
@@ -53,6 +55,26 @@ public class BTLEListAdapter extends BaseAdapter
     mLeDevices.clear();
     mInflator = act.getLayoutInflater();
   }
+
+
+  /**
+   * Setze das Gerät mit der Adresse connectedDevice auf "verbunden"
+   *
+   * @param connectedDevice das verbundene Gerät
+   */
+  public void setConnectedDevice(BluetoothDevice connectedDevice)
+  {
+    for( int i = 0; i < getCount(); i++ )
+    {
+      if( connectedDevice.equals( getDevice(i)) )
+      {
+        this.connectedDevice = getDevice(i);
+        return;
+      }
+    }
+    this.connectedDevice = null;
+  }
+
 
   public void addDevice(BluetoothDevice device)
   {
@@ -74,6 +96,7 @@ public class BTLEListAdapter extends BaseAdapter
   public void clear()
   {
     mLeDevices.clear();
+    this.connectedDevice = null;
   }
 
   @Override
@@ -95,24 +118,25 @@ public class BTLEListAdapter extends BaseAdapter
   }
 
   @Override
-  public View getView(int i, View view, ViewGroup viewGroup)
+  public View getView(int position, View itemView, ViewGroup viewGroup)
   {
     ViewHolder viewHolder;
     // General ListView optimization code.
-    if( view == null )
+    if( itemView == null )
     {
-      view = mInflator.inflate(R.layout.listitem_device, null);
+      itemView = mInflator.inflate(R.layout.listitem_device, null);
       viewHolder = new ViewHolder();
-      viewHolder.deviceAddress = ( TextView ) view.findViewById(R.id.device_address);
-      viewHolder.deviceName = ( TextView ) view.findViewById(R.id.device_name);
-      view.setTag(viewHolder);
+      viewHolder.deviceAddress = ( TextView ) itemView.findViewById(R.id.device_address);
+      viewHolder.deviceName = ( TextView ) itemView.findViewById(R.id.device_name);
+      viewHolder.connectedView = ( ImageView ) itemView.findViewById(R.id.connectedView);
+      itemView.setTag(viewHolder);
     }
     else
     {
-      viewHolder = ( ViewHolder ) view.getTag();
+      viewHolder = ( ViewHolder ) itemView.getTag();
     }
 
-    BluetoothDevice device     = mLeDevices.get(i);
+    BluetoothDevice device     = mLeDevices.get(position);
     final String    deviceName = device.getName();
     if( deviceName != null && deviceName.length() > 0 )
     {
@@ -123,13 +147,24 @@ public class BTLEListAdapter extends BaseAdapter
       viewHolder.deviceName.setText(R.string.unknown_device);
     }
     viewHolder.deviceAddress.setText(device.getAddress());
-
-    return view;
+    //
+    // Wenn das Gerät als verbunden gekennzeichnet ist, BLAUES Logo nehmen
+    //
+    if( device.equals(connectedDevice) )
+    {
+      viewHolder.connectedView.setImageResource(R.drawable.ic_bluetooth_connected_blue_48dp);
+    }
+    else
+    {
+      viewHolder.connectedView.setImageResource(R.drawable.ic_bluetooth_white_48dp);
+    }
+    return itemView;
   }
 }
 
 class ViewHolder
 {
-  TextView deviceName;
-  TextView deviceAddress;
+  ImageView connectedView;
+  TextView  deviceName;
+  TextView  deviceAddress;
 }

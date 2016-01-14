@@ -36,7 +36,7 @@ import java.util.Locale;
 import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
-import de.dmarcini.bt.homelight.utils.ProjectConst;
+import de.dmarcini.bt.homelight.ProjectConst;
 
 /**
  * Created by dmarc on 24.12.2015.

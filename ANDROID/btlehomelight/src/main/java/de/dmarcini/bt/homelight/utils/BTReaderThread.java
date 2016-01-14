@@ -32,6 +32,7 @@ import java.util.Locale;
 import java.util.Vector;
 
 import de.dmarcini.bt.homelight.BuildConfig;
+import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.exceptions.BufferOverflowException;
 
 /**
