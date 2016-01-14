@@ -4,7 +4,7 @@
   ~      project: ANDROID                                                     ~
   ~      module: btlehomelight                                                ~
   ~      class: strings.xml                                                   ~
-  ~      date: 2016-01-10                                                     ~
+  ~      date: 2016-01-14                                                     ~
   ~                                                                           ~
   ~      Copyright (C) 2016  Dirk Marciniak                                   ~
   ~                                                                           ~
@@ -73,7 +73,6 @@
   <string name="pref_sys_page_on_connect">KeySystemJumpToPageNumberOnConnect</string>
   <string name="pref_sys_debugging_stat">keySystemDebuggingStatus</string>
 
-
   <!-- Color wheel fragment -->
   <string name="color_wheel_save_color_button_text">In Voreinstellungen merken!</string>
   <string name="color_wheel_toggle_button_text">RGBW</string>
@@ -94,6 +93,11 @@
 
   <!-- Farbe für Voreinstellung ändern Dialog -->
   <string name="color_change_dialog_headline" format="raw">Farbe #%02d</string>
+
+  <!-- Name des Modules ändern Dialog -->
+  <string name="module_name_change_headline">Name des BT Modules ändern</string>
+  <string name="module_name_change_ok_button">Name ändern</string>
+  <string name="module_name_change_cancel_button">Abbruch</string>
 
   <!-- Programmeinstellungen -->
   <string name="pref_sys_headline">Programmeinstellungen</string>
