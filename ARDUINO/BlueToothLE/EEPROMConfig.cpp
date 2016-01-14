@@ -61,7 +61,7 @@ void EEPROMConfig::loadConfig()
 }
 
 //
-// Teste, ob es die richtige Vewrsion ist
+// Teste, ob es die richtige Version ist
 //
 int EEPROMConfig::checkVersion()
 { 

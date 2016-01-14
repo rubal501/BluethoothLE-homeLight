@@ -34,7 +34,7 @@ byte CommandParser::parseCommand( String& kdoString, byte* kdo )
   //
   // initialisieren und ersten Abschnitt erstellen
   kdoString.toCharArray(buffer, kdoString.length()+1, 0 );
-  // splitte das Kommando in seien Abschnitte
+  // splitte das Kommando in seine Abschnitte
   ptr = strtok( buffer, delimiter);
 
   while(ptr != NULL)
@@ -55,7 +55,33 @@ byte CommandParser::parseCommand( String& kdoString, byte* kdo )
   return( kdo[0] );
 }
 
-
+/************************************************************************/
+/* Gib aus dem Stgring den Modulnamen zurück                            */
+/************************************************************************/
+String CommandParser::getModuleName(String& btInputString )
+{
+  char *ptr;
+  char buffer[btInputString.length()+2];
+  char delimiter[] PROGMEM = ":";
+  //
+  // initialisieren und ersten Abschnitt erstellen
+  //
+  btInputString.toCharArray(buffer, btInputString.length()+1, 0 );
+  // splitte in seine Abschnitte
+  ptr = strtok( buffer, delimiter);
+  // der Erste Abschnitt ist das Kommando, wenig interessant hier
+  if(ptr != NULL)
+  {
+    // Der zweite Abschnitt sollte der _Name sein
+    ptr = strtok(NULL, delimiter);
+    if( ptr != NULL )
+    {
+      // jetzt habe ich den Namen
+      return( String(ptr) );
+    }
+  }
+  return( String() );    
+}
 
 
 

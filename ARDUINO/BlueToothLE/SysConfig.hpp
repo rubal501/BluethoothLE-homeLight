@@ -33,6 +33,10 @@ public:
   //
   static void SystemInit( SoftwareSerial& comm, Communication& myComm, EEPROMConfig& cfg  );
   //
+  // Setzte den Modulnamen
+  //
+  static void setModuleName( SoftwareSerial& mySerial, Communication& myComm, EEPROMConfig& theConfig, String name );
+  //
   // setze die PWM Frequenzen nach meinen Bedürfnissen
   //
   static void setPwmFrequency(int pin, int divisor);

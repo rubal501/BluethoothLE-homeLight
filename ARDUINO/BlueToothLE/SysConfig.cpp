@@ -101,8 +101,7 @@ void SysConfig::SystemInit( SoftwareSerial& mySerial, Communication& myComm, EEP
   //
   // Modulname setzen
   //
-  String mName = "AT+NAME" + theConfig.getModuleName();
-  myComm.sendCommand( mySerial, mName );
+  setModuleName( mySerial, myComm, theConfig, theConfig.getModuleName() );
   //
   // Version erfragen
   //
@@ -117,6 +116,26 @@ void SysConfig::SystemInit( SoftwareSerial& mySerial, Communication& myComm, EEP
   myComm.sendCommand( mySerial, "AT+MODE0" ); 
 }
 
+//
+// Setze im Modul den Modulnamen
+//
+void SysConfig::setModuleName( SoftwareSerial& mySerial, Communication& myComm, EEPROMConfig& theConfig, String name )
+{
+  String mName;
+  //
+  // Neuer Name oder Name aus der Configuration?
+  //
+  if( name == theConfig.getModuleName() )
+  {
+    // Neuer Name
+    theConfig.setModuleName( name );
+  }
+  mName = "AT+NAME" + name;
+  //
+  // Modulname setzen
+  //
+  myComm.sendCommand( mySerial, mName );
+}
 
 /**
  * Divides a given PWM pin frequency by a divisor.

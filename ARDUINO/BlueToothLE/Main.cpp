@@ -144,7 +144,23 @@ void loop()
         saveTime = millis() + SAVEDELAY;
         break;
 
-
+      // Setzte den Modulnamen
+      case C_SETNAME:
+        #ifdef DEBUG
+        Serial.println("Modulname setzen..." );
+        #endif
+        paramString = CommandParser::getModuleName(btInputString);
+        if( paramString != NULL && paramString.length() > 2 )
+        {
+          SysConfig::setModuleName( mySerial, *myComm, theConfig, paramString );
+          #ifdef DEBUG
+          Serial.println("Modulname setzen: " + paramString );
+          #endif
+          // in frühestens 2 Sekunden sichern
+          saveTime = millis() + SAVEDELAY;
+        }
+        break;
+      
       // der AN/AUS Schalter 
       case C_ONOFF:
         if( isLightsOFF )
@@ -169,8 +185,7 @@ void loop()
         //nix verstehen meister!
         Serial.println("NIX VERSTEHEN..." );
         break;
-    }
-    
+    } 
   }
   
   //
