@@ -31,8 +31,10 @@ const int baudRateVal = DESTBAUDRATE_VAL;
 String btInputString="";
 unsigned long saveTime = 0L;
 unsigned long eepromShutoffTime = 0L;
+unsigned long onlineTestTime = 0L;
 const unsigned long SAVEDELAY = 2500L;
 const unsigned long BEAMDELAY = 250L;
+const unsigned long ONLINETEST_DELAY = 300L;
 boolean isOnline = false;
 boolean isLightsOFF = false;
 
@@ -96,7 +98,6 @@ void loop()
   {
     // Zeilenende, das war ein Kommando?
     cmd = CommandParser::parseCommand( btInputString, kdo );
-    btInputString = "";
     switch( cmd )
     { 
       // Frage nach dem Modultyp 0x00 
@@ -150,12 +151,15 @@ void loop()
         Serial.println("Modulname setzen..." );
         #endif
         paramString = CommandParser::getModuleName(btInputString);
-        if( paramString != NULL && paramString.length() > 2 )
+        if( paramString.length() > 2 )
         {
           SysConfig::setModuleName( mySerial, *myComm, theConfig, paramString );
           #ifdef DEBUG
           Serial.println("Modulname setzen: " + paramString );
           #endif
+          theConfig.saveConfig();
+          // Das Modul neu starten....
+          SysConfig::restartBTModul( mySerial, *myComm );
           // in frühestens 2 Sekunden sichern
           saveTime = millis() + SAVEDELAY;
         }
@@ -186,6 +190,7 @@ void loop()
         Serial.println("NIX VERSTEHEN..." );
         break;
     } 
+    btInputString = "";
   }
   
   //
@@ -201,6 +206,9 @@ void loop()
       saveTime = 0L;
     }
   }
+  //
+  // Die LED zur Anzeige des EEPROM schreibens AUS
+  //
   if( eepromShutoffTime > 0L )
   {
     // EEPROM Leuchte aus
@@ -208,9 +216,41 @@ void loop()
     {
       digitalWrite(ONLINE_PIN, LOW );
       eepromShutoffTime = 0L;
-    }
-    
+    }    
   }
+  //
+  // ab und an schauen, ob das Modul den Onlinestatus
+  // verändert hat
+  //
+  if( onlineTestTime < millis() )
+  {
+    if( digitalRead(ONLINE_PIN) == HIGH )
+    {
+      //
+      // Modul ist ONLINE
+      //
+      if( !isOnline )
+      {
+        // Status verändert
+        Serial.println("Modul ging ONLINE");
+        isOnline = true;
+      }
+    }
+    else
+    {
+      //
+      // Modul ist OFFLINE
+      //
+      if( isOnline )
+      {
+        // Status verändert
+        Serial.println("Modul ging OFFLINE");
+        isOnline = false;
+      }
+    }
+    onlineTestTime = millis() + ONLINETEST_DELAY;    
+  }
+  //
   if(Serial.available()) 
   {
     mySerial.write(Serial.read());

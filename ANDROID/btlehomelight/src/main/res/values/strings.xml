@@ -4,7 +4,7 @@
   ~      project: ANDROID                                                     ~
   ~      module: btlehomelight                                                ~
   ~      class: strings.xml                                                   ~
-  ~      date: 2016-01-10                                                     ~
+  ~      date: 2016-01-15                                                     ~
   ~                                                                           ~
   ~      Copyright (C) 2016  Dirk Marciniak                                   ~
   ~                                                                           ~
@@ -72,7 +72,8 @@
   <string name="pref_sys_jump_to_page_on_connect">keySystemJumpToDefaultPageOnConnect</string>
   <string name="pref_sys_page_on_connect">KeySystemJumpToPageNumberOnConnect</string>
   <string name="pref_sys_debugging_stat">keySystemDebuggingStatus</string>
-
+  <string name="pref_sys_lastConnectedDeviceAddr">keySystemLastConnectedDeviceAddr</string>
+  <string name="pref_sys_lastConnectedDeviceName">keySystemLastConnectedDeviceName</string>
 
   <!-- Color wheel fragment -->
   <string name="color_wheel_save_color_button_text">In Voreinstellungen merken!</string>
@@ -95,25 +96,33 @@
   <!-- Farbe für Voreinstellung ändern Dialog -->
   <string name="color_change_dialog_headline" format="raw">Farbe #%02d</string>
 
+  <!-- Name des Modules ändern Dialog -->
+  <string name="module_name_change_headline">Name des BT Modules ändern</string>
+  <string name="module_name_change_ok_button">Name ändern</string>
+  <string name="module_name_change_cancel_button">Abbruch</string>
+
   <!-- Programmeinstellungen -->
   <string name="pref_sys_headline">Programmeinstellungen</string>
   <!-- cat direct control -->
-  <string name="pref_sys_direct_control">Direkte Ansteuerung</string>
-  <string name="pref_sys_direct_control_summary_on">Direkte Steuerung AN</string>
-  <string name="pref_sys_direct_control_summary_off">Direkte Steuerung AUS</string>
-  <string name="pref_sys_direct_control_switch_on">zeigen</string>
-  <string name="pref_sys_direct_control_switch_off">vergbergen</string>
+  <string name="pref_sys_pages_control">Seiten anzeigen</string>
+  <string name="pref_sys_pages_direct_control_head">Seite für Direkte Ansteuerung</string>
+  <string name="pref_sys_pages_direct_control_summary_on">Direkte Steuerung AN</string>
+  <string name="pref_sys_pages_direct_control_summary_off">Direkte Steuerung AUS</string>
+  <string name="pref_sys_pages_direct_control_switch_on">zeigen</string>
+  <string name="pref_sys_pages_direct_control_switch_off">vergbergen</string>
   <!-- cat on connect -->
   <string name="pref_system_on_connect">Beim Verbinden</string>
-  <string name="pref_sys_on_connect_summary_on">Springe zur default Seite</string>
-  <string name="pref_sys_on_connect_summary_off">Keine weitere Aktion</string>
-  <string name="pref_sys_on_connect_switch_on">springen</string>
-  <string name="pref_sys_on_connect_switch_off">-</string>
-  <!-- Einstellunge fürs debugging -->
+  <string name="pref_sys_on_connect_jump_header">Zur Vorgabeseite</string>
+  <string name="pref_sys_on_connect_jump_summary_on">Springe zur Vorgabeseite</string>
+  <string name="pref_sys_on_connect_jump_summary_off">Keine weitere Aktion</string>
+  <string name="pref_sys_on_connect_jump_switch_on">springen</string>
+  <string name="pref_sys_on_connect_jump_switch_off">-</string>
+  <!-- cat Einstellunge fürs debugging -->
   <string name="pref_sys_debugging">Debugging Einstellungen</string>
-  <string name="pref_sys_debug_summary_on">Springe zur default Seite</string>
-  <string name="pref_sys_debug_summary_off">Keine weitere Aktion</string>
-  <string name="pref_sys_debug_switch_on">springen</string>
-  <string name="pref_sys_debug_switch_off">-</string>
+  <string name="pref_sys_debugging_header">Debugging</string>
+  <string name="pref_sys_debug_summary_on">Debugging Ausgaben EIN</string>
+  <string name="pref_sys_debug_summary_off">Keine Debugging Ausgaben</string>
+  <string name="pref_sys_debug_switch_on">EIN</string>
+  <string name="pref_sys_debug_switch_off">AUS</string>
 
 </resources>

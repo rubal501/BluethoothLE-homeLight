@@ -4,7 +4,7 @@
   ~      project: ANDROID                                                     ~
   ~      module: btlehomelight                                                ~
   ~      class: system_prop.xml                                               ~
-  ~      date: 2016-01-10                                                     ~
+  ~      date: 2016-01-15                                                     ~
   ~                                                                           ~
   ~      Copyright (C) 2016  Dirk Marciniak                                   ~
   ~                                                                           ~
@@ -31,15 +31,16 @@
 
   <PreferenceCategory
       android:key="@string/pref_sys_cat_direct_control"
-      android:title="@string/pref_sys_direct_control">
+      android:title="@string/pref_sys_pages_control">
+
     <SwitchPreference
         android:defaultValue="true"
         android:key="@string/pref_sys_showpage_direct"
-        android:summaryOff="@string/pref_sys_direct_control_summary_off"
-        android:summaryOn="@string/pref_sys_direct_control_summary_on"
-        android:switchTextOff="@string/pref_sys_direct_control_switch_off"
-        android:switchTextOn="@string/pref_sys_direct_control_switch_on"
-        android:title="@string/app_dummy_text"/>
+        android:summaryOff="@string/pref_sys_pages_direct_control_summary_off"
+        android:summaryOn="@string/pref_sys_pages_direct_control_summary_on"
+        android:switchTextOff="@string/pref_sys_pages_direct_control_switch_off"
+        android:switchTextOn="@string/pref_sys_pages_direct_control_switch_on"
+        android:title="@string/pref_sys_pages_direct_control_head"/>
 
   </PreferenceCategory>
 
@@ -50,11 +51,11 @@
   <SwitchPreference
       android:defaultValue="true"
       android:key="@string/pref_sys_jump_to_page_on_connect"
-      android:summaryOff="@string/pref_sys_on_connect_summary_off"
-      android:summaryOn="@string/pref_sys_on_connect_summary_on"
-      android:switchTextOff="@string/pref_sys_on_connect_switch_off"
-      android:switchTextOn="@string/pref_sys_on_connect_switch_on"
-      android:title="@string/app_dummy_text"/>
+      android:summaryOff="@string/pref_sys_on_connect_jump_summary_off"
+      android:summaryOn="@string/pref_sys_on_connect_jump_summary_on"
+      android:switchTextOff="@string/pref_sys_on_connect_jump_switch_off"
+      android:switchTextOn="@string/pref_sys_on_connect_jump_switch_on"
+      android:title="@string/pref_sys_on_connect_jump_header"/>
   </PreferenceCategory>
 
   <PreferenceCategory
@@ -68,7 +69,7 @@
         android:summaryOn="@string/pref_sys_debug_summary_on"
         android:switchTextOff="@string/pref_sys_debug_switch_off"
         android:switchTextOn="@string/pref_sys_debug_switch_on"
-        android:title="@string/app_dummy_text"/>
+        android:title="@string/pref_sys_debugging_header"/>
   </PreferenceCategory>
 
 

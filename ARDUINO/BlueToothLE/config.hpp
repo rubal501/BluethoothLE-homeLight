@@ -30,7 +30,7 @@
 #define ONLINE_PIN          12
 #define RESET_PIN           7
 //
-// PIN zur Sifgnalisierung
+// PIN zur Signalisierung
 //
 #define EEPROM_PIN          13
  

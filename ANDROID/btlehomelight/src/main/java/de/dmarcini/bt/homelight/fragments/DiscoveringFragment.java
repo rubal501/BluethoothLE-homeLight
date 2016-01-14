@@ -1,25 +1,25 @@
 /******************************************************************************
- * *
- * project: ANDROID                                                      *
- * module: btlehomelight                                                 *
- * class: DiscoveringFragment                                            *
- * date: 2016-01-08                                                      *
- * *
- * Copyright (C) 2016  Dirk Marciniak                                    *
- * *
- * This program is free software: you can redistribute it and/or modify  *
- * it under the terms of the GNU General Public License as published by  *
- * the Free Software Foundation, either version 3 of the License, or     *
- * (at your option) any later version.                                   *
- * *
- * This program is distributed in the hope that it will be useful,       *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- * GNU General Public License for more details.                          *
- * *
- * You should have received a copy of the GNU General Public License     *
- * along with this program.  If not, see <http://www.gnu.org/licenses/   *
- * *
+ *                                                                            *
+ *      project: ANDROID                                                      *
+ *      module: btlehomelight                                                 *
+ *      class: DiscoveringFragment                                            *
+ *      date: 2016-01-15                                                      *
+ *                                                                            *
+ *      Copyright (C) 2016  Dirk Marciniak                                    *
+ *                                                                            *
+ *      This program is free software: you can redistribute it and/or modify  *
+ *      it under the terms of the GNU General Public License as published by  *
+ *      the Free Software Foundation, either version 3 of the License, or     *
+ *      (at your option) any later version.                                   *
+ *                                                                            *
+ *      This program is distributed in the hope that it will be useful,       *
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *      GNU General Public License for more details.                          *
+ *                                                                            *
+ *      You should have received a copy of the GNU General Public License     *
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ *                                                                            *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight.fragments;
@@ -57,6 +57,7 @@ import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.SystemPrefActivity;
+import de.dmarcini.bt.homelight.dialogs.EditModuleNameDialogFragment;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BTLEListAdapter;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
@@ -65,22 +66,21 @@ import de.dmarcini.bt.homelight.utils.HomeLightSysConfig;
 
 /**
  * Das Fragment für die Gerätewahl
- *
  */
 public class DiscoveringFragment extends AppFragment implements AdapterView.OnItemClickListener, View.OnClickListener, AdapterView.OnItemLongClickListener
 {
-  private static String TAG = DiscoveringFragment.class.getSimpleName();
+  //
+  //TODO: Liste beim Scannen erneuern, behalten und bei onResume die Liste füllen
+  //
+  private static final ArrayList<BluetoothDevice> foundDevices = new ArrayList<>();
+  private static       String                     TAG          = DiscoveringFragment.class.getSimpleName();
   private ListView        discoverListView;
   private Button          scanButton;
   private ProgressBar     scanProgress;
   private TextView        listHeadline;
   private BTLEListAdapter mBTLEDeviceListAdapter;
+  private boolean isAttached;
   private Handler mHandler = new Handler();
-  //
-  //TODO: Liste beim Scannen erneuern, behalten und bei onResume die Liste füllen
-  //
-  private static final ArrayList<BluetoothDevice> foundDevices = new ArrayList<>();
-
   private boolean mScanning;
   private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback()
   {
@@ -93,9 +93,9 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
         @Override
         public void run()
         {
+          foundDevices.add(device);
           mBTLEDeviceListAdapter.addDevice(device);
           mBTLEDeviceListAdapter.notifyDataSetChanged();
-          foundDevices.add(device);
         }
       });
     }
@@ -104,6 +104,7 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
   public DiscoveringFragment()
   {
     super();
+    isAttached = false;
   }
 
   /**
@@ -127,6 +128,20 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
   private void setBlutethoothConfig(BluetoothModulConfig btConfig)
   {
     this.btConfig = btConfig;
+  }
+
+  @Override
+  public void onAttach(Context ctx)
+  {
+    super.onAttach(ctx);
+    isAttached = true;
+  }
+
+  @Override
+  public void onDetach()
+  {
+    super.onDetach();
+    isAttached = false;
   }
 
   @Override
@@ -155,11 +170,12 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     //
     // Letzes verbundenes Device lesen
     //
+    HomeLightSysConfig.getLastConnectedDeviceAddr();
     pref = getActivity().getSharedPreferences(ProjectConst.COLOR_PREFS, Context.MODE_PRIVATE);
-    if( (pref.getString(ProjectConst.KEY_LAST_BT_DEVICE, null) != null) && (pref.getString(ProjectConst.KEY_LAST_BT_NAME, null) != null) )
+    if( (HomeLightSysConfig.getLastConnectedDeviceAddr() != null) && (HomeLightSysConfig.getLastConnectedDeviceName() != null) )
     {
       // TODO: Name des Gerätes noch einbringen
-      mBTLEDeviceListAdapter.addDevice(btConfig.getBluethoothAdapter().getRemoteDevice(pref.getString(ProjectConst.KEY_LAST_BT_DEVICE, "-")));
+      mBTLEDeviceListAdapter.addDevice(btConfig.getBluethoothAdapter().getRemoteDevice(HomeLightSysConfig.getLastConnectedDeviceAddr()));
     }
     setHasOptionsMenu(true);
     prepareHeader();
@@ -178,17 +194,6 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
       Log.v(TAG, "onCreateOptionsMenu...");
     }
     inflater.inflate(R.menu.menu_home_light_main, menu);
-    //
-//    if( !mScanning )
-//    {
-//      menu.findItem(R.id.menu_stop).setVisible(false);
-//      menu.findItem(R.id.menu_scan).setVisible(true);
-//    }
-//    else
-//    {
-//      menu.findItem(R.id.menu_stop).setVisible(true);
-//      menu.findItem(R.id.menu_scan).setVisible(false);
-//    }
     prepareHeader();
   }
 
@@ -197,6 +202,10 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
    */
   private void prepareHeader()
   {
+    if( !isAttached )
+    {
+      return;
+    }
     if( (btConfig != null) && (btConfig.isConnected()) )
     {
       // Verbunden
@@ -236,13 +245,12 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
         //
         // die Gretchenrage: ist das Gerät verbunden?
         //
-        if( btConfig != null && btConfig.isConnected() && btConfig.getDeviceAddress().equals( dev.getAddress()))
+        if( btConfig != null && btConfig.isConnected() && btConfig.getDeviceAddress().equals(dev.getAddress()) )
         {
           mBTLEDeviceListAdapter.setConnectedDevice(dev);
         }
       }
       discoverListView.setAdapter(mBTLEDeviceListAdapter);
-      //discoverListView.invalidate();
     }
   }
 
@@ -265,12 +273,17 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
         // TODO: Preferences Activity aufrufen
         Log.v(TAG, "onOptionsItemSelected, preferences call...");
         Intent intent = new Intent(getActivity(), SystemPrefActivity.class);
-        getActivity().startActivityForResult(intent, ProjectConst.REQUEST_SYS_PREFS );
+        getActivity().startActivityForResult(intent, ProjectConst.REQUEST_SYS_PREFS);
         break;
     }
     return super.onOptionsItemSelected(item);
   }
 
+  /**
+   * starte oder beende das Scannen nach BTLE Geräten
+   *
+   * @param enable starten oder beenden
+   */
   private void scanBTLEDevice(final boolean enable)
   {
     if( enable )
@@ -414,7 +427,7 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
       //
       // zur Vorzugsseite wechseln, wenn erwünscht und möglich
       //
-      if( HomeLightSysConfig.isJumpToDefaultPageOnConnect())
+      if( HomeLightSysConfig.isJumpToDefaultPageOnConnect() )
       {
         if( HomeLightSysConfig.getDefaultPageOnConnect() != -1 )
         {
@@ -469,7 +482,28 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
   @Override
   public void onPositiveDialogFragment(DialogFragment frag)
   {
-
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "positive answer...");
+    }
+    if( frag instanceof EditModuleNameDialogFragment )
+    {
+      // Das ist der Dialog, erfrage den Neuen Namen
+      String newModuleName = (( EditModuleNameDialogFragment ) frag).getModuleName();
+      if( (btConfig != null) && (newModuleName != btConfig.getModuleName()) )
+      {
+        Log.i(TAG, "try set new module name...");
+        (( IMainAppServices ) getActivity()).setModuleName(newModuleName);
+        // Nach einer Wartezeit Verbindung trennen!
+        discoverListView.postDelayed(new Runnable()
+        {
+          public void run()
+          {
+            btConfig.getBluetoothService().disconnect();
+          }
+        }, 1200);
+      }
+    }
   }
 
   /**
@@ -535,10 +569,10 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
    * Implementers can call getItemAtPosition(position) if they need to access
    * the data associated with the selected item.
    *
-   * @param parent   The AbsListView where the click happened
-   * @param clickedView     The view within the AbsListView that was clicked
-   * @param position The position of the view in the list
-   * @param id       The row id of the item that was clicked
+   * @param parent      The AbsListView where the click happened
+   * @param clickedView The view within the AbsListView that was clicked
+   * @param position    The position of the view in the list
+   * @param id          The row id of the item that was clicked
    * @return true if the callback consumed the long click, false otherwise
    */
   @Override
@@ -551,16 +585,30 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     final BluetoothDevice device = mBTLEDeviceListAdapter.getDevice(position);
     if( device == null )
     {
-      return(true);
+      return (true);
     }
     //
     // Jepp, hier ist ein BT Device
     //
-    Log.v(TAG, String.format(Locale.ENGLISH, "device <%s>, named <%s> found pn ops %d", device.getAddress(), device.getName(), position));
     if( BuildConfig.DEBUG )
     {
-      Log.v(TAG, String.format(Locale.ENGLISH, "propertys for device %s...", device.getAddress()));
+      Log.v(TAG, String.format(Locale.ENGLISH, "device <%s>, named <%s> found pn ops %d", device.getAddress(), device.getName(), position));
     }
-    return false;
+    //
+    // ist das selektierte Gerät auch online?
+    //
+    if( btConfig != null && btConfig.isConnected() && btConfig.getDeviceAddress().equals(device.getAddress()) )
+    {
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, String.format(Locale.ENGLISH, "propertys for device %s...", device.getAddress()));
+      }
+      EditModuleNameDialogFragment frag = new EditModuleNameDialogFragment();
+      Bundle args = new Bundle();
+      args.putString(ProjectConst.ARG_MODULE_NAME, device.getName());
+      frag.setArguments(args);
+      frag.show(getActivity().getFragmentManager(), "changeModuleName");
+    }
+    return (true);
   }
 }
