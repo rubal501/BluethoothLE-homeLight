@@ -106,6 +106,7 @@ public class ProjectConst
   public static final byte   C_ASKRGBW            = 0x02; // RGBW aktuell erfragen
   public static final byte   C_SETCOLOR           = 0x03; // Farbe DIREKT RGBW setzen
   public static final byte   C_SETCALRGB          = 0x04; // Farbe als RGB senden, Modul kalibriert zu RGBW
+  public static final byte   C_SETNAME            = 0x05; // Name des Moduls setzen (und speichern)
   public static final byte   C_ONOFF              = -2;
   //
   // Länge der Kommandoketten für Farbe

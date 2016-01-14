@@ -1,25 +1,25 @@
 /******************************************************************************
- *                                                                            *
- *      project: ANDROID                                                      *
- *      module: btlehomelight                                                 *
- *      class: HomeLightMainActivity                                          *
- *      date: 2016-01-08                                                      *
- *                                                                            *
- *      Copyright (C) 2016  Dirk Marciniak                                    *
- *                                                                            *
- *      This program is free software: you can redistribute it and/or modify  *
- *      it under the terms of the GNU General Public License as published by  *
- *      the Free Software Foundation, either version 3 of the License, or     *
- *      (at your option) any later version.                                   *
- *                                                                            *
- *      This program is distributed in the hope that it will be useful,       *
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *      GNU General Public License for more details.                          *
- *                                                                            *
- *      You should have received a copy of the GNU General Public License     *
- *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
- *                                                                            *
+ * *
+ * project: ANDROID                                                      *
+ * module: btlehomelight                                                 *
+ * class: HomeLightMainActivity                                          *
+ * date: 2016-01-08                                                      *
+ * *
+ * Copyright (C) 2016  Dirk Marciniak                                    *
+ * *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ * *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ * *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ * *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight;
@@ -40,6 +40,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -63,7 +64,7 @@ import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
 import de.dmarcini.bt.homelight.utils.CircularByteBuffer;
 import de.dmarcini.bt.homelight.utils.CmdQueueThread;
 import de.dmarcini.bt.homelight.utils.HM10GattAttributes;
-import de.dmarcini.bt.homelight.utils.ProjectConst;
+import de.dmarcini.bt.homelight.utils.HomeLightSysConfig;
 import de.dmarcini.bt.homelight.utils.SelectPagesAdapter;
 
 //TODO: onlinestatus für jede Seite übernehmen
@@ -74,6 +75,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   private final        CircularByteBuffer   ringBuffer   = new CircularByteBuffer(1024);
   private final        Vector<String>       recCmdQueue  = new Vector<>();
   private final        short[]              rgbw         = new short[ ProjectConst.C_ASKRGB_LEN - 1 ];
+  SelectPagesAdapter pagerAdapter;
   private              BluetoothModulConfig btConfig     = new BluetoothModulConfig();
   private BTReaderThread readerThread;
   private CmdQueueThread cmdTread;
@@ -95,7 +97,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       }
       // Automatically connects to the device upon successful start-up initialization.
       btConfig.getBluetoothService().connect(btConfig.getDeviceAddress());
-      AppFragment handler = ( AppFragment ) (( SelectPagesAdapter ) (mViewPager.getAdapter())).getItem(mViewPager.getCurrentItem());
+      AppFragment handler = ( AppFragment ) pagerAdapter.getItem(mViewPager.getCurrentItem());
       handler.onServiceConnected();
     }
 
@@ -103,7 +105,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     public void onServiceDisconnected(ComponentName componentName)
     {
       btConfig.setBluetoothService(null);
-      AppFragment handler = ( AppFragment ) (( SelectPagesAdapter ) (mViewPager.getAdapter())).getItem(mViewPager.getCurrentItem());
+      AppFragment handler = ( AppFragment ) pagerAdapter.getItem(mViewPager.getCurrentItem());
       handler.onServiceDisconnected();
     }
   };
@@ -123,7 +125,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     public void onReceive(Context context, Intent intent)
     {
       final String action  = intent.getAction();
-      AppFragment  handler = ( AppFragment ) (( SelectPagesAdapter ) (mViewPager.getAdapter())).getItem(mViewPager.getCurrentItem());
+      AppFragment  handler = ( AppFragment ) pagerAdapter.getItem(mViewPager.getCurrentItem());
       //
       if( BluetoothLowEnergyService.ACTION_GATT_CONNECTED.equals(action) )
       {
@@ -203,12 +205,12 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
             Log.e(TAG, "error while Thread.sleep()...");
           }
           //
-          // sichere, welches BT Device als letztes verbunden war
+          // sichere , welches BT Device als letztes verbunden war
           //
           SharedPreferences pref = getSharedPreferences(ProjectConst.COLOR_PREFS, Context.MODE_PRIVATE);
           SharedPreferences.Editor editor = pref.edit();
           editor.putString(ProjectConst.KEY_LAST_BT_DEVICE, btConfig.getDeviceAddress());
-          editor.commit();
+          editor.apply();
         }
       }
       else if( BluetoothLowEnergyService.ACTION_DATA_AVAILABLE.equals(action) )
@@ -254,7 +256,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       //
       // finde das aktuelle Fragment und sende die Nachricht
       //
-      AppFragment handler = ( AppFragment ) (( SelectPagesAdapter ) (mViewPager.getAdapter())).getItem(mViewPager.getCurrentItem());
+      AppFragment handler = ( AppFragment ) pagerAdapter.getItem(mViewPager.getCurrentItem());
       if( null != (data = onBTDataAvaiable(cmd)) )
       {
         handler.onBTDataAvaiable(data);
@@ -409,14 +411,6 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     {
       Log.e(TAG, "D E B U G Version");
     }
-    //
-    // erzeuge INTENT Filter für BT
-    //
-    intentFilter.addAction(BluetoothLowEnergyService.ACTION_GATT_CONNECTED);
-    intentFilter.addAction(BluetoothLowEnergyService.ACTION_GATT_DISCONNECTED);
-    intentFilter.addAction(BluetoothLowEnergyService.ACTION_GATT_SERVICES_DISCOVERED);
-    intentFilter.addAction(BluetoothLowEnergyService.ACTION_DATA_AVAILABLE);
-
     //##############################################################################################
     //
     // Ist Bluethooth LE (4.0) unterstützt?
@@ -432,7 +426,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     final BluetoothManager bluetoothManager = ( BluetoothManager ) getSystemService(Context.BLUETOOTH_SERVICE);
     btConfig.setBluetoothAdapter(bluetoothManager.getAdapter());
     //
-    // ISt ein BT Adapter vorhanden?
+    // Ist ein BT Adapter vorhanden?
     //
     if( btConfig.getBluethoothAdapter() == null )
     {
@@ -441,19 +435,9 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       return;
     }
     //
-    // Broadcast Reciver für andere Fragmente zugänglich machen
+    // Systemeinstellungen einlesen
     //
-    btConfig.setGattUpdateReceiver(mGattUpdateReceiver);
-
-    //##############################################################################################
-    //
-    // Erzeuge einen Select-Adapter zur Erzeugung und Rückgabe der angeforderten Fragmente
-    //
-    SelectPagesAdapter mSectionsPagerAdapter = new SelectPagesAdapter(getSupportFragmentManager(), getApplicationContext(), btConfig);
-    // Initialisiere den Pager mit dem Adapter
-    mViewPager = ( ViewPager ) findViewById(R.id.container);
-    mViewPager.setAdapter(mSectionsPagerAdapter);
-    mViewPager.addOnPageChangeListener(this);
+    HomeLightSysConfig.readSysPrefs(getResources(), PreferenceManager.getDefaultSharedPreferences(this));
     //
     // Kommando-Queue Tread aktivieren
     //
@@ -474,15 +458,58 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
       }
     });
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "erzeuge Application...OK");
+    }
+  }
+
+  @Override
+  protected void onStop()
+  {
+    super.onStop();
+    try
+    {
+      //
+      // BT Verbindung trennen
+      //
+      btConfig.getBluetoothService().disconnect();
+    }
+    catch( NullPointerException ex )
+    {
+      Log.e(TAG, "onStop: Oups, Null Pointer....");
+    }
+  }
+
+  @Override
+  protected void onStart()
+  {
+    super.onStart();
+    //
+    // erzeuge INTENT Filter für BT
+    //
+    intentFilter.addAction(BluetoothLowEnergyService.ACTION_GATT_CONNECTED);
+    intentFilter.addAction(BluetoothLowEnergyService.ACTION_GATT_DISCONNECTED);
+    intentFilter.addAction(BluetoothLowEnergyService.ACTION_GATT_SERVICES_DISCOVERED);
+    intentFilter.addAction(BluetoothLowEnergyService.ACTION_DATA_AVAILABLE);
+    //##############################################################################################
+    //
+    // Erzeuge einen Select-Adapter zur Erzeugung und Rückgabe der angeforderten Fragmente
+    //
+    pagerAdapter = new SelectPagesAdapter(getSupportFragmentManager(), getApplicationContext(), btConfig);
+    // Initialisiere den Pager mit dem Adapter
+    mViewPager = ( ViewPager ) findViewById(R.id.container);
+    mViewPager.setAdapter(pagerAdapter);
+    mViewPager.addOnPageChangeListener(this);
+    //
+    // Broadcast Reciver für andere Fragmente zugänglich machen
+    //
+    btConfig.setGattUpdateReceiver(mGattUpdateReceiver);
     //
     // Der Service muss noch gestartet werden
     //
     Intent gattServiceIntent = new Intent(this, BluetoothLowEnergyService.class);
     bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-    if( BuildConfig.DEBUG )
-    {
-      Log.v(TAG, "erzeuge Application...OK");
-    }
   }
 
   @Override
@@ -509,6 +536,10 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     {
       Log.v(TAG, "onResume()");
     }
+    //
+    // Systemeinstellungen einlesen
+    //
+    HomeLightSysConfig.readSysPrefs(getResources(), PreferenceManager.getDefaultSharedPreferences(this));
     //
     // Stelle sicher, dass der BT Adapter aktiviert wurde
     // erzeuge einen Intend (eine Absicht) und schicke diese an das System
@@ -546,22 +577,34 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     // Das Ergebnis der Anfrage an den Geneigten User zum Einschaklten der BT Schnittstelle
     //
-    if( requestCode == ProjectConst.REQUEST_ENABLE_BT )
+    switch( requestCode )
     {
-      switch( resultCode )
-      {
-        case Activity.RESULT_CANCELED:
-          finish();
-          return;
+      case ProjectConst.REQUEST_ENABLE_BT:
+        switch( resultCode )
+        {
+          case Activity.RESULT_CANCELED:
+            finish();
+            return;
 
-        case Activity.RESULT_OK:
-          tryReconnectToDevice();
-          break;
+          case Activity.RESULT_OK:
+            tryReconnectToDevice();
+            break;
 
-        default:
-          finish();
-          return;
-      }
+          default:
+            finish();
+            return;
+        }
+        break;
+
+      case ProjectConst.REQUEST_SYS_PREFS:
+        Intent intent = getIntent();
+        overridePendingTransition(0, 0);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(intent);
+        break;
+
     }
     //
     // nix für mich
@@ -599,7 +642,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       return;
     }
     String uuid;
-    String                             unknownServiceString = getResources().getString(R.string.main_ble_unknown_service);
+    String unknownServiceString = getResources().getString(R.string.main_ble_unknown_service);
     //ArrayList<HashMap<String, String>> gattServiceData      = new ArrayList<>();
 
 
@@ -690,15 +733,15 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     kommandoString = String.format(Locale.ENGLISH, "%s%02X:%02X:%02X:%02X:%02X%s", ProjectConst.STX, ProjectConst.C_SETCOLOR, rgbw[ 0 ], rgbw[ 1 ], rgbw[ 2 ], rgbw[ 3 ], ProjectConst.ETX);
     Log.d(TAG, "send set RGBW =" + kommandoString);
-    if( sendKdoToModule(kommandoString))
+    if( sendKdoToModule(kommandoString) )
     {
       //
       // der Wert ist ja dann im Modul gespeichert (hoffe ich)
       //
-      this.rgbw[0] = rgbw[0];
-      this.rgbw[1] = rgbw[1];
-      this.rgbw[2] = rgbw[2];
-      this.rgbw[3] = rgbw[3];
+      this.rgbw[ 0 ] = rgbw[ 0 ];
+      this.rgbw[ 1 ] = rgbw[ 1 ];
+      this.rgbw[ 2 ] = rgbw[ 2 ];
+      this.rgbw[ 3 ] = rgbw[ 3 ];
     }
   }
 
@@ -716,15 +759,15 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     kommandoString = String.format(Locale.ENGLISH, "%s%02X:%02X:%02X:%02X:%02X%s", ProjectConst.STX, ProjectConst.C_SETCALRGB, rgbw[ 0 ], rgbw[ 1 ], rgbw[ 2 ], 0, ProjectConst.ETX);
     Log.d(TAG, "send set RGBW =" + kommandoString);
-    if( sendKdoToModule(kommandoString))
+    if( sendKdoToModule(kommandoString) )
     {
       //
       // der Wert ist ja dann im Modul gespeichert (hoffe ich)
       //
-      this.rgbw[0] = rgbw[0];
-      this.rgbw[1] = rgbw[1];
-      this.rgbw[2] = rgbw[2];
-      this.rgbw[3] = 0;
+      this.rgbw[ 0 ] = rgbw[ 0 ];
+      this.rgbw[ 1 ] = rgbw[ 1 ];
+      this.rgbw[ 2 ] = rgbw[ 2 ];
+      this.rgbw[ 3 ] = 0;
     }
   }
 
@@ -743,7 +786,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   @Override
   public short[] getModulRGBW()
   {
-    return( rgbw );
+    return (rgbw);
   }
 
   /**
@@ -760,12 +803,12 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       btConfig.getBluetoothService().writeCharacteristic(btConfig.getCharacteristicTX());
       btConfig.getBluetoothService().setCharacteristicNotification(btConfig.getCharacteristicRX(), true);
       Log.d(TAG, "send OK");
-      return( true );
+      return (true);
     }
     else
     {
       Log.w(TAG, "send NOT OK, not connected?");
-      return( false );
+      return (false);
     }
   }
 
@@ -786,7 +829,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     // Gib dem Fragment order, dass es selektiert wurde
     //
-    AppFragment handler = ( AppFragment ) (( SelectPagesAdapter ) (mViewPager.getAdapter())).getItem(mViewPager.getCurrentItem());
+    AppFragment handler = ( AppFragment ) pagerAdapter.getItem(mViewPager.getCurrentItem());
     handler.onPageSelected();
   }
 
@@ -826,14 +869,14 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   @Override
   public void onDialogPositiveClick(DialogFragment dialog)
   {
-    AppFragment handler = ( AppFragment ) (( SelectPagesAdapter ) (mViewPager.getAdapter())).getItem(mViewPager.getCurrentItem());
+    AppFragment handler = ( AppFragment ) pagerAdapter.getItem(mViewPager.getCurrentItem());
     handler.onPositiveDialogFragment(dialog);
   }
 
   @Override
   public void onDialogNegativeClick(DialogFragment dialog)
   {
-    AppFragment handler = ( AppFragment ) (( SelectPagesAdapter ) (mViewPager.getAdapter())).getItem(mViewPager.getCurrentItem());
+    AppFragment handler = ( AppFragment ) pagerAdapter.getItem(mViewPager.getCurrentItem());
     handler.onNegativeDialogFragment(dialog);
   }
 

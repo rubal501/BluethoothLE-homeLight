@@ -1,25 +1,25 @@
 /******************************************************************************
- *                                                                            *
- *      project: ANDROID                                                      *
- *      module: btlehomelight                                                 *
- *      class: DiscoveringFragment                                            *
- *      date: 2016-01-08                                                      *
- *                                                                            *
- *      Copyright (C) 2016  Dirk Marciniak                                    *
- *                                                                            *
- *      This program is free software: you can redistribute it and/or modify  *
- *      it under the terms of the GNU General Public License as published by  *
- *      the Free Software Foundation, either version 3 of the License, or     *
- *      (at your option) any later version.                                   *
- *                                                                            *
- *      This program is distributed in the hope that it will be useful,       *
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *      GNU General Public License for more details.                          *
- *                                                                            *
- *      You should have received a copy of the GNU General Public License     *
- *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
- *                                                                            *
+ * *
+ * project: ANDROID                                                      *
+ * module: btlehomelight                                                 *
+ * class: DiscoveringFragment                                            *
+ * date: 2016-01-08                                                      *
+ * *
+ * Copyright (C) 2016  Dirk Marciniak                                    *
+ * *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ * *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ * *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ * *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight.fragments;
@@ -29,11 +29,13 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,30 +46,41 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
+import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.R;
+import de.dmarcini.bt.homelight.SystemPrefActivity;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BTLEListAdapter;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
-import de.dmarcini.bt.homelight.ProjectConst;
+import de.dmarcini.bt.homelight.utils.HomeLightSysConfig;
 
 
 /**
- * Created by dmarc on 22.08.2015.
- * TODO: Löschen der Suchliste und des letzen verbundenen Devices viel LONG Click oder Menü
+ * Das Fragment für die Gerätewahl
+ *
  */
-public class DiscoveringFragment extends AppFragment implements AdapterView.OnItemClickListener, View.OnClickListener
+public class DiscoveringFragment extends AppFragment implements AdapterView.OnItemClickListener, View.OnClickListener, AdapterView.OnItemLongClickListener
 {
   private static String TAG = DiscoveringFragment.class.getSimpleName();
   private ListView        discoverListView;
   private Button          scanButton;
   private ProgressBar     scanProgress;
+  private TextView        listHeadline;
   private BTLEListAdapter mBTLEDeviceListAdapter;
   private Handler mHandler = new Handler();
+  //
+  //TODO: Liste beim Scannen erneuern, behalten und bei onResume die Liste füllen
+  //
+  private static final ArrayList<BluetoothDevice> foundDevices = new ArrayList<>();
+
   private boolean mScanning;
   private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback()
   {
@@ -82,6 +95,7 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
         {
           mBTLEDeviceListAdapter.addDevice(device);
           mBTLEDeviceListAdapter.notifyDataSetChanged();
+          foundDevices.add(device);
         }
       });
     }
@@ -129,18 +143,20 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     //
     View rootView = inflater.inflate(R.layout.fragment_home_discover, container, false);
     discoverListView = ( ListView ) rootView.findViewById(R.id.discoverList);
+    listHeadline = ( TextView ) rootView.findViewById(R.id.discoverHeadLine);
     scanButton = ( Button ) rootView.findViewById(R.id.scanButton);
     scanProgress = ( ProgressBar ) rootView.findViewById(R.id.scanProgress);
     //
     mBTLEDeviceListAdapter = new BTLEListAdapter(getActivity());
     discoverListView.setAdapter(mBTLEDeviceListAdapter);
     discoverListView.setOnItemClickListener(this);
+    discoverListView.setOnItemLongClickListener(this);
     scanButton.setOnClickListener(this);
     //
     // Letzes verbundenes Device lesen
     //
     pref = getActivity().getSharedPreferences(ProjectConst.COLOR_PREFS, Context.MODE_PRIVATE);
-    if( (pref.getString(ProjectConst.KEY_LAST_BT_DEVICE, null) != null) && (pref.getString(ProjectConst.KEY_LAST_BT_NAME, null) != null))
+    if( (pref.getString(ProjectConst.KEY_LAST_BT_DEVICE, null) != null) && (pref.getString(ProjectConst.KEY_LAST_BT_NAME, null) != null) )
     {
       // TODO: Name des Gerätes noch einbringen
       mBTLEDeviceListAdapter.addDevice(btConfig.getBluethoothAdapter().getRemoteDevice(pref.getString(ProjectConst.KEY_LAST_BT_DEVICE, "-")));
@@ -183,15 +199,14 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
   {
     if( (btConfig != null) && (btConfig.isConnected()) )
     {
+      // Verbunden
+      listHeadline.setText(getResources().getString(R.string.discovering_headline_devices));
       scanButton.setText(getResources().getString(R.string.discovering_disconnect));
-      if( mBTLEDeviceListAdapter != null )
-      {
-        mBTLEDeviceListAdapter.clear();
-      }
       scanProgress.setVisibility(View.INVISIBLE);
     }
     else
     {
+      listHeadline.setText(getResources().getString(R.string.discovering_headline_search));
       if( mScanning )
       {
         scanButton.setText(getResources().getString(R.string.discovering_stop));
@@ -202,7 +217,32 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
         scanButton.setText(getResources().getString(R.string.discovering_scan));
         scanProgress.setVisibility(View.INVISIBLE);
       }
-
+    }
+    //
+    // Die Liste mit den bekannten Geräten füllen
+    //
+    if( mBTLEDeviceListAdapter != null )
+    {
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, "fill device list adapter....");
+      }
+      mBTLEDeviceListAdapter.clear();
+      Iterator<BluetoothDevice> it = foundDevices.iterator();
+      while( it.hasNext() )
+      {
+        BluetoothDevice dev = it.next();
+        mBTLEDeviceListAdapter.addDevice(dev);
+        //
+        // die Gretchenrage: ist das Gerät verbunden?
+        //
+        if( btConfig != null && btConfig.isConnected() && btConfig.getDeviceAddress().equals( dev.getAddress()))
+        {
+          mBTLEDeviceListAdapter.setConnectedDevice(dev);
+        }
+      }
+      discoverListView.setAdapter(mBTLEDeviceListAdapter);
+      //discoverListView.invalidate();
     }
   }
 
@@ -223,6 +263,9 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     {
       case R.id.menu_preferences:
         // TODO: Preferences Activity aufrufen
+        Log.v(TAG, "onOptionsItemSelected, preferences call...");
+        Intent intent = new Intent(getActivity(), SystemPrefActivity.class);
+        getActivity().startActivityForResult(intent, ProjectConst.REQUEST_SYS_PREFS );
         break;
     }
     return super.onOptionsItemSelected(item);
@@ -250,6 +293,7 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
       }, ProjectConst.SCAN_PERIOD);
 
       mScanning = true;
+      foundDevices.clear();
       btConfig.getBluethoothAdapter().startLeScan(mLeScanCallback);
       prepareHeader();
     }
@@ -267,8 +311,11 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
   }
 
   @Override
-  public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+  public void onItemClick(AdapterView<?> parent, View clickedView, int position, long id)
   {
+    // Feedback geben
+    clickedView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+    //
     final BluetoothDevice device = mBTLEDeviceListAdapter.getDevice(position);
     if( device == null )
     {
@@ -332,6 +379,7 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     {
       Log.v(TAG, "onResume()");
     }
+    prepareHeader();
   }
 
   @Override
@@ -364,9 +412,15 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
     {
       //
-      // zur Vorzugsseite wechseln
+      // zur Vorzugsseite wechseln, wenn erwünscht und möglich
       //
-      (( IMainAppServices ) getActivity()).switchToFragment(ProjectConst.DEFAULT_CONNECT_PAGE);
+      if( HomeLightSysConfig.isJumpToDefaultPageOnConnect())
+      {
+        if( HomeLightSysConfig.getDefaultPageOnConnect() != -1 )
+        {
+          (( IMainAppServices ) getActivity()).switchToFragment(HomeLightSysConfig.getDefaultPageOnConnect());
+        }
+      }
     }
   }
 
@@ -405,8 +459,6 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
       Log.v(TAG, "Page DISCOVERING was selected");
     }
     prepareHeader();
-    // TODO: ist das Ding verbunden, kann er nicht suchen
-    // zeige das dem User
   }
 
   /**
@@ -432,13 +484,15 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
   }
 
   @Override
-  public void onClick(View view)
+  public void onClick(View clickedView)
   {
     //
     // Checke mal, ob das was für mich ist
     //
-    if( view instanceof Button && view.equals(scanButton) )
+    if( clickedView instanceof Button && clickedView.equals(scanButton) )
     {
+      // Feedback geben
+      clickedView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
       if( btConfig.isConnected() )
       {
         btConfig.getBluetoothService().disconnect();
@@ -474,4 +528,39 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     }
   }
 
+  /**
+   * Callback method to be invoked when an item in this view has been
+   * clicked and held.
+   * <p/>
+   * Implementers can call getItemAtPosition(position) if they need to access
+   * the data associated with the selected item.
+   *
+   * @param parent   The AbsListView where the click happened
+   * @param clickedView     The view within the AbsListView that was clicked
+   * @param position The position of the view in the list
+   * @param id       The row id of the item that was clicked
+   * @return true if the callback consumed the long click, false otherwise
+   */
+  @Override
+  public boolean onItemLongClick(AdapterView<?> parent, View clickedView, int position, long id)
+  {
+    Log.v(TAG, String.format(Locale.ENGLISH, "long click on view pos: %d", position));
+    // Feedback geben
+    clickedView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+    //
+    final BluetoothDevice device = mBTLEDeviceListAdapter.getDevice(position);
+    if( device == null )
+    {
+      return(true);
+    }
+    //
+    // Jepp, hier ist ein BT Device
+    //
+    Log.v(TAG, String.format(Locale.ENGLISH, "device <%s>, named <%s> found pn ops %d", device.getAddress(), device.getName(), position));
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, String.format(Locale.ENGLISH, "propertys for device %s...", device.getAddress()));
+    }
+    return false;
+  }
 }

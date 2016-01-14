@@ -1,25 +1,25 @@
 /******************************************************************************
- *                                                                            *
- *      project: ANDROID                                                      *
- *      module: btlehomelight                                                 *
- *      class: SelectPagesAdapter                                             *
- *      date: 2016-01-08                                                      *
- *                                                                            *
- *      Copyright (C) 2016  Dirk Marciniak                                    *
- *                                                                            *
- *      This program is free software: you can redistribute it and/or modify  *
- *      it under the terms of the GNU General Public License as published by  *
- *      the Free Software Foundation, either version 3 of the License, or     *
- *      (at your option) any later version.                                   *
- *                                                                            *
- *      This program is distributed in the hope that it will be useful,       *
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *      GNU General Public License for more details.                          *
- *                                                                            *
- *      You should have received a copy of the GNU General Public License     *
- *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
- *                                                                            *
+ * *
+ * project: ANDROID                                                      *
+ * module: btlehomelight                                                 *
+ * class: SelectPagesAdapter                                             *
+ * date: 2016-01-08                                                      *
+ * *
+ * Copyright (C) 2016  Dirk Marciniak                                    *
+ * *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ * *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ * *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ * *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight.utils;
@@ -34,6 +34,7 @@ import android.util.Log;
 import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
+import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.fragments.BrightnessOnlyFragment;
 import de.dmarcini.bt.homelight.fragments.ColorSelectFragment;
@@ -43,8 +44,9 @@ import de.dmarcini.bt.homelight.fragments.PredefColorFragment;
 
 
 /**
- * Created by dmarc on 22.08.2015.
+ * Ein Adapter zur Verwaltung der Seiten
  */
+//public class SelectPagesAdapter extends FragmentStatePagerAdapter
 public class SelectPagesAdapter extends FragmentPagerAdapter
 {
   private static final String   TAG              = SelectPagesAdapter.class.getSimpleName();
@@ -139,13 +141,39 @@ public class SelectPagesAdapter extends FragmentPagerAdapter
   public CharSequence getPageTitle(int position)
   {
     Locale l = Locale.getDefault();
-    switch( position )
-    {
-      case 0:
-        return ctx.getString(R.string.discovering_headline).toUpperCase(l);
-      case 1:
-      default:
-        return ctx.getString(R.string.app_name).toUpperCase(l);
-    }
+    return ctx.getString(R.string.app_name).toUpperCase(l);
   }
+
+//  public void destroyAllItem() {
+//    int mPosition = mViewPager.getCurrentItem();
+//    int mPositionMax = mViewPager.getCurrentItem()+1;
+//    if (TABLE.size() > 0 && mPosition < TABLE.size()) {
+//      if (mPosition > 0) {
+//        mPosition--;
+//      }
+//
+//      for (int i = mPosition; i < mPositionMax; i++) {
+//        try {
+//          Object objectobject = this.instantiateItem(mViewPager, TABLE.get(i).intValue());
+//          if (objectobject != null)
+//            destroyItem(mViewPager, TABLE.get(i).intValue(), objectobject);
+//        } catch (Exception e) {
+//          Log.i(TAG, "no more Fragment in FragmentPagerAdapter");
+//        }
+//      }
+//    }
+//  }
+//
+//  @Override
+//  public void destroyItem(ViewGroup container, int position, Object object) {
+//    super.destroyItem(container, position, object);
+//
+//    if (position <= getCount()) {
+//      FragmentManager manager = ((Fragment) object).getFragmentManager();
+//      FragmentTransaction trans = manager.beginTransaction();
+//      trans.remove((Fragment) object);
+//      trans.commit();
+//    }
+//  }
 }
+

@@ -50,7 +50,7 @@
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="4dp"
-        android:text="@string/discovering_headline"
+        android:text="@string/discovering_headline_search"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/colorAccent"
         android:textStyle="bold"/>

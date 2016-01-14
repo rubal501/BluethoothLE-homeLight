@@ -23,23 +23,56 @@
   ~                                                                           ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<PreferenceScreen android:id="@+id/conf_prog_preferencescreen"
-                  xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:title="@string/preference_system_headline">
+<PreferenceScreen
+    android:id="@+id/conf_prog_preferencescreen"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/pref_sys_headline">
 
 
-  <PreferenceCategory android:key="keySystemDirectControl"
-      android:title="@string/preference_system_direct_control">
-  <SwitchPreference
-  android:defaultValue="true"
-      android:key="keySystemDirectControlSwitch"
-      android:summaryOff="@string/preference_system_direct_control_summary_off"
-      android:summaryOn="@string/preference_system_direct_control_summary_on"
-      android:switchTextOff="@string/preference_system_direct_control_switch_off"
-      android:switchTextOn="@string/preference_system_direct_control_switch_on"
-      android:title="@string/app_dummy_text" />
+  <PreferenceCategory
+      android:key="@string/pref_sys_cat_direct_control"
+      android:title="@string/pref_sys_direct_control">
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/pref_sys_showpage_direct"
+        android:summaryOff="@string/pref_sys_direct_control_summary_off"
+        android:summaryOn="@string/pref_sys_direct_control_summary_on"
+        android:switchTextOff="@string/pref_sys_direct_control_switch_off"
+        android:switchTextOn="@string/pref_sys_direct_control_switch_on"
+        android:title="@string/app_dummy_text"/>
 
   </PreferenceCategory>
+
+  <PreferenceCategory
+      android:key="@string/pref_sys_cat_on_connect"
+      android:title="@string/pref_system_on_connect">
+
+  <SwitchPreference
+      android:defaultValue="true"
+      android:key="@string/pref_sys_jump_to_page_on_connect"
+      android:summaryOff="@string/pref_sys_on_connect_summary_off"
+      android:summaryOn="@string/pref_sys_on_connect_summary_on"
+      android:switchTextOff="@string/pref_sys_on_connect_switch_off"
+      android:switchTextOn="@string/pref_sys_on_connect_switch_on"
+      android:title="@string/app_dummy_text"/>
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:key="@string/pref_sys_cat_debugging"
+      android:title="@string/pref_sys_debugging">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_sys_debugging_stat"
+        android:summaryOff="@string/pref_sys_debug_summary_off"
+        android:summaryOn="@string/pref_sys_debug_summary_on"
+        android:switchTextOff="@string/pref_sys_debug_switch_off"
+        android:switchTextOn="@string/pref_sys_debug_switch_on"
+        android:title="@string/app_dummy_text"/>
+  </PreferenceCategory>
+
+
+
 
 </PreferenceScreen>
 
