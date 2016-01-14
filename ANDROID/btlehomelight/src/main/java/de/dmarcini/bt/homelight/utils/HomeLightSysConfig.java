@@ -1,25 +1,25 @@
 /******************************************************************************
- * *
- * project: ANDROID                                                      *
- * module: btlehomelight                                                 *
- * class: HomeLightSysConfig                                             *
- * date: 2016-01-14                                                      *
- * *
- * Copyright (C) 2016  Dirk Marciniak                                    *
- * *
- * This program is free software: you can redistribute it and/or modify  *
- * it under the terms of the GNU General Public License as published by  *
- * the Free Software Foundation, either version 3 of the License, or     *
- * (at your option) any later version.                                   *
- * *
- * This program is distributed in the hope that it will be useful,       *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- * GNU General Public License for more details.                          *
- * *
- * You should have received a copy of the GNU General Public License     *
- * along with this program.  If not, see <http://www.gnu.org/licenses/   *
- * *
+ *                                                                            *
+ *      project: ANDROID                                                      *
+ *      module: btlehomelight                                                 *
+ *      class: HomeLightSysConfig                                             *
+ *      date: 2016-01-15                                                      *
+ *                                                                            *
+ *      Copyright (C) 2016  Dirk Marciniak                                    *
+ *                                                                            *
+ *      This program is free software: you can redistribute it and/or modify  *
+ *      it under the terms of the GNU General Public License as published by  *
+ *      the Free Software Foundation, either version 3 of the License, or     *
+ *      (at your option) any later version.                                   *
+ *                                                                            *
+ *      This program is distributed in the hope that it will be useful,       *
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *      GNU General Public License for more details.                          *
+ *                                                                            *
+ *      You should have received a copy of the GNU General Public License     *
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ *                                                                            *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight.utils;
@@ -39,6 +39,28 @@ public final class HomeLightSysConfig
   private static boolean jumpToDefaultPageOnConnect = true;
   private static boolean isAppDebugging             = false;
   private static int     defaultPageOnConnect       = ProjectConst.DEFAULT_CONNECT_PAGE;
+  private static String lastConnectedDeviceAddr = null;
+  private static String lastConnectedDeviceName = null;
+
+  /**
+   * Gib den Namen des zuletzt verbundenen Gerätes zurück
+   *
+   * @return der Name
+   */
+  public static String getLastConnectedDeviceName()
+  {
+    return lastConnectedDeviceName;
+  }
+
+  /**
+   * Gib das zuletzt verbundene Gerät zurück
+   *
+   * @return Das Gerät
+   */
+  public static String getLastConnectedDeviceAddr()
+  {
+    return lastConnectedDeviceAddr;
+  }
 
   /**
    * Welche Seite wird von der Discover Seite aus angezeigt, wenn Gerät verbunden wird
@@ -92,5 +114,7 @@ public final class HomeLightSysConfig
     jumpToDefaultPageOnConnect = pref.getBoolean(res.getString(R.string.pref_sys_jump_to_page_on_connect), true);
     isAppDebugging = pref.getBoolean(res.getString(R.string.pref_sys_debugging_stat), true);
     defaultPageOnConnect = pref.getInt(res.getString(R.string.pref_sys_page_on_connect), ProjectConst.DEFAULT_CONNECT_PAGE);
+    lastConnectedDeviceAddr = pref.getString(res.getString(R.string.pref_sys_lastConnectedDeviceAddr), null);
+    lastConnectedDeviceName = pref.getString(res.getString(R.string.pref_sys_lastConnectedDeviceName), null);
   }
 }
