@@ -51,7 +51,6 @@ byte CommandParser::parseCommand( String& kdoString, byte* kdo )
     // naechsten Abschnitt erstellen
     ptr = strtok(NULL, delimiter);
   }
-  kdoString = "";
   return( kdo[0] );
 }
 
@@ -66,6 +65,7 @@ String CommandParser::getModuleName(String& btInputString )
   //
   // initialisieren und ersten Abschnitt erstellen
   //
+  Serial.println("DEBUG MODULENAME " + btInputString );
   btInputString.toCharArray(buffer, btInputString.length()+1, 0 );
   // splitte in seine Abschnitte
   ptr = strtok( buffer, delimiter);

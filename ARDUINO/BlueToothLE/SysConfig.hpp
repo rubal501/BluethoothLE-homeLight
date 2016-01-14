@@ -40,6 +40,10 @@ public:
   // setze die PWM Frequenzen nach meinen Bedürfnissen
   //
   static void setPwmFrequency(int pin, int divisor);
+  //
+  // Das Modul durch POWER OFF PAUSE ON zurücksetzen zur Übernahme
+  //
+  static void restartBTModul( SoftwareSerial& mySerial, Communication& myComm ); 
 protected:
 private:
 	SysConfig( const SysConfig &c );

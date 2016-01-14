@@ -10,7 +10,7 @@
 #include "config.hpp"
 #include "EEPROMConfig.hpp"
 
-static String verString             = "BLE002";
+static String verString             = "BTLE02";
 const static unsigned int verLength  = 6;
 const static unsigned int CONFIG_START  = 32;
 
@@ -32,7 +32,7 @@ void EEPROMConfig::loadConfig()
   //
   // Wenn die Version stimmt, lade Config aus dem EEPROM
   //
-  if (checkVersion())
+  if (checkVersion() == 1 )
   {  
 #ifdef DEBUG
     Serial.println( "Version ok, lese aus EEPROM..." );
@@ -81,7 +81,7 @@ int EEPROMConfig::checkVersion()
 void EEPROMConfig::initConfig(void)
 {
   unsigned int len = verString.length();
-  char moduleName[10] = {'B','T','L','E', '0', '0', '1', 0, 0, 0 };
+  char moduleName[10] = {'B','T','L','E', 'x', 'x', 'x', 0, 0, 0 };
   
   wasChanged = true;
   //
@@ -277,9 +277,16 @@ void EEPROMConfig::setModuleName(String& mName)
 {
   wasChanged = true;
   
-  for( unsigned int i = 0; (i < 10 && i < mName.length() -1); i++ )
+  for( unsigned int i = 0; i < 10; i++ )
   {
-    storedConfig.moduleName[i] = mName[i];
+    if( i < mName.length() )
+    {
+      storedConfig.moduleName[i] = mName[i];
+    }
+    else
+    {
+      storedConfig.moduleName[i] = 0;
+    }
   }
 }
 

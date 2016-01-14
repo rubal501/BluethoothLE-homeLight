@@ -56,9 +56,9 @@ void SysConfig::SystemInit( SoftwareSerial& mySerial, Communication& myComm, EEP
   // Port für ONLINE Check des BT Moduls
   //
   pinMode( ONLINE_PIN, INPUT ); 
-  digitalWrite(ONLINE_PIN, HIGH ); 
+  //digitalWrite(ONLINE_PIN, HIGH ); 
   //
-  // der RESET-PIN (HIGH ist alles in ordnung)
+  // der RESET-PIN (HIGH ist alles in Ordnung)
   //
   pinMode( RESET_PIN, OUTPUT );
   digitalWrite( RESET_PIN, HIGH );
@@ -92,8 +92,8 @@ void SysConfig::SystemInit( SoftwareSerial& mySerial, Communication& myComm, EEP
   //
   // RESET, saubere Anfangskonfig
   //
-  myComm.sendCommand( mySerial, "AT+RESET" );
-  delay( 1500 );
+  //myComm.sendCommand( mySerial, "AT+RESET" );
+  //delay( 1500 );
   //
   // Statusport-LED ohne blinken
   //
@@ -123,13 +123,9 @@ void SysConfig::setModuleName( SoftwareSerial& mySerial, Communication& myComm, 
 {
   String mName;
   //
-  // Neuer Name oder Name aus der Configuration?
+  // Neuer Name
   //
-  if( name == theConfig.getModuleName() )
-  {
-    // Neuer Name
-    theConfig.setModuleName( name );
-  }
+  theConfig.setModuleName( name );
   mName = "AT+NAME" + name;
   //
   // Modulname setzen
@@ -210,5 +206,27 @@ void SysConfig::setPwmFrequency(int pin, int divisor)
   }
 }
 
-
+/************************************************************************/
+/* Das Modul wird ausgeschaltet, 500 ms gewartet und dann wieder        */
+/* eingeschaltet. Die Funktion bockiert etwas über 6000 ms, die BT      */
+/* Verbindung wird (natürlich) getrennt                                 */
+/************************************************************************/
+void SysConfig::restartBTModul( SoftwareSerial& mySerial, Communication& myComm )
+{
+  Serial.println("BT Modul resetten...");
+  Serial.flush();
+  //
+  // RESET, saubere Anfangskonfig
+  //
+  myComm.sendCommand( mySerial, "AT+RESET" );
+  delay( 1500 );
+  //
+  // Statusport-LED ohne blinken
+  //
+  myComm.sendCommand( mySerial, "AT+PIO11" );
+  //
+  // Völlig herzlos rebooten
+  //
+  //asm volatile ("  jmp 0");
+}
 
