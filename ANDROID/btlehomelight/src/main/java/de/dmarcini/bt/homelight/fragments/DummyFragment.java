@@ -40,6 +40,7 @@ import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.R;
+import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
 import de.dmarcini.bt.homelight.ProjectConst;
 
@@ -158,6 +159,14 @@ public class DummyFragment extends AppFragment
   public void onPageSelected()
   {
     Log.d(TAG, "Page DUMMY was selected");
+    //
+    // Setzte Callback für das Fragment bei der App
+    //
+    if( mainService == null )
+    {
+      mainService = ( IMainAppServices ) getActivity();
+    }
+    mainService.setHandler( this );
   }
 
   /**

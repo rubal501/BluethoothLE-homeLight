@@ -75,8 +75,9 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   private final        CircularByteBuffer   ringBuffer   = new CircularByteBuffer(1024);
   private final        Vector<String>       recCmdQueue  = new Vector<>();
   private final        short[]              rgbw         = new short[ ProjectConst.C_ASKRGB_LEN - 1 ];
-  SelectPagesAdapter pagerAdapter;
   private              BluetoothModulConfig btConfig     = new BluetoothModulConfig();
+  private AppFragment fragmentCallback;
+  private SelectPagesAdapter pagerAdapter;
   private BTReaderThread readerThread;
   private CmdQueueThread cmdTread;
   private ViewPager      mViewPager;
@@ -97,16 +98,20 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       }
       // Automatically connects to the device upon successful start-up initialization.
       btConfig.getBluetoothService().connect(btConfig.getDeviceAddress());
-      AppFragment handler = ( AppFragment ) pagerAdapter.getItem(mViewPager.getCurrentItem());
-      handler.onServiceConnected();
+      if( fragmentCallback != null )
+      {
+        fragmentCallback.onServiceConnected();
+      }
     }
 
     @Override
     public void onServiceDisconnected(ComponentName componentName)
     {
       btConfig.setBluetoothService(null);
-      AppFragment handler = ( AppFragment ) pagerAdapter.getItem(mViewPager.getCurrentItem());
-      handler.onServiceDisconnected();
+      if( fragmentCallback != null )
+      {
+        fragmentCallback.onServiceDisconnected();
+      }
     }
   };
 
@@ -124,8 +129,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     @Override
     public void onReceive(Context context, Intent intent)
     {
-      final String action  = intent.getAction();
-      AppFragment  handler = ( AppFragment ) pagerAdapter.getItem(mViewPager.getCurrentItem());
+      final String action = intent.getAction();
       //
       if( BluetoothLowEnergyService.ACTION_GATT_CONNECTED.equals(action) )
       {
@@ -153,7 +157,10 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         //
         if( btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
         {
-          handler.onBTConnected();
+          if( fragmentCallback != null )
+          {
+            fragmentCallback.onBTConnected();
+          }
           askModulForRGBW();
         }
         invalidateOptionsMenu();
@@ -175,7 +182,10 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         readerThread = null;
         recCmdQueue.clear();
         //
-        handler.onBTDisconnected();
+        if( fragmentCallback != null )
+        {
+          fragmentCallback.onBTDisconnected();
+        }
         invalidateOptionsMenu();
       }
       else if( BluetoothLowEnergyService.ACTION_GATT_SERVICES_DISCOVERED.equals(action) )
@@ -184,13 +194,19 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         // finde die unterstützten Services und Characteristica, ich suche UART
         //
         reconGattServices(btConfig.getBluetoothService().getSupportedGattServices());
-        handler.onBTServicesRecived(btConfig.getBluetoothService().getSupportedGattServices());
+        if( fragmentCallback != null )
+        {
+          fragmentCallback.onBTServicesRecived(btConfig.getBluetoothService().getSupportedGattServices());
+        }
         //
         // sind alle Voraussetzungen erfüllt, um ordentlich zu kommunizieren?
         //
         if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
         {
-          handler.onBTConnected();
+          if( fragmentCallback != null )
+          {
+            fragmentCallback.onBTConnected();
+          }
           try
           {
             askModulForName();
@@ -257,10 +273,12 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       //
       // finde das aktuelle Fragment und sende die Nachricht
       //
-      AppFragment handler = ( AppFragment ) pagerAdapter.getItem(mViewPager.getCurrentItem());
       if( null != (data = onBTDataAvaiable(cmd)) )
       {
-        handler.onBTDataAvaiable(data);
+        if( fragmentCallback != null )
+        {
+          fragmentCallback.onBTDataAvaiable(data);
+        }
       }
     }
   };
@@ -605,7 +623,6 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         overridePendingTransition(0, 0);
         startActivity(intent);
         break;
-
     }
     //
     // nix für mich
@@ -644,18 +661,12 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     }
     String uuid;
     String unknownServiceString = getResources().getString(R.string.main_ble_unknown_service);
-    //ArrayList<HashMap<String, String>> gattServiceData      = new ArrayList<>();
-
-
     //
     // durchsuche die verfügbaren Services
     //
     for( BluetoothGattService gattService : gattServices )
     {
       uuid = gattService.getUuid().toString();
-      //HashMap<String, String> currentServiceData = new HashMap<>();
-      //currentServiceData.put(ProjectConst.LIST_NAME, HM10GattAttributes.lookup(uuid, unknownServiceString));
-
       //
       // Gibt es den UART Servive, dann gib Bescheid!
       //
@@ -667,9 +678,6 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       {
         btConfig.setIsUART(false);
       }
-      //currentServiceData.put(ProjectConst.LIST_UUID, uuid);
-      //gattServiceData.add(currentServiceData);
-
       // get characteristic when UUID matches RX/TX UUID
       btConfig.setCharacteristicTX(gattService.getCharacteristic(ProjectConst.UUID_HM_RX_TX));
       btConfig.setCharacteristicRX(gattService.getCharacteristic(ProjectConst.UUID_HM_RX_TX));
@@ -679,6 +687,17 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       askModulForType();
     }
 
+  }
+
+  /**
+   * Funktion settz bei der MainApp den CallbackHandler für alle Möglichen _Ereignisse
+   *
+   * @param frag Referenz der App
+   */
+  @Override
+  public void setHandler(AppFragment frag)
+  {
+    fragmentCallback = frag;
   }
 
   @Override
@@ -845,7 +864,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     mViewPager.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
     //
     // Gib dem Fragment order, dass es selektiert wurde
-    //
+    // TODO: Hier ist die kritische Stelle
     AppFragment handler = ( AppFragment ) pagerAdapter.getItem(mViewPager.getCurrentItem());
     handler.onPageSelected();
   }
@@ -886,15 +905,19 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   @Override
   public void onDialogPositiveClick(DialogFragment dialog)
   {
-    AppFragment handler = ( AppFragment ) pagerAdapter.getItem(mViewPager.getCurrentItem());
-    handler.onPositiveDialogFragment(dialog);
+    if( fragmentCallback != null )
+    {
+      fragmentCallback.onPositiveDialogFragment( dialog );
+    }
   }
 
   @Override
   public void onDialogNegativeClick(DialogFragment dialog)
   {
-    AppFragment handler = ( AppFragment ) pagerAdapter.getItem(mViewPager.getCurrentItem());
-    handler.onNegativeDialogFragment(dialog);
+    if( fragmentCallback != null )
+    {
+      fragmentCallback.onNegativeDialogFragment( dialog );
+    }
   }
 
   /**

@@ -266,16 +266,6 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     {
       Log.v(TAG, "onOptionsItemSelected...");
     }
-//    switch( item.getItemId() )
-//    {
-//      case R.id.menu_scan:
-//        //mLeDeviceListAdapter.clear();
-//        //scanLeDevice(true);
-//        break;
-//      case R.id.menu_stop:
-//        //scanLeDevice(false);
-//        break;
-//    }
     return super.onOptionsItemSelected(item);
   }
 
@@ -421,6 +411,17 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     {
       Log.v(TAG, "Page COLORSELECT (Weehl) was selected");
     }
+    //
+    // Setzte Callback für das Fragment bei der App
+    //
+    if( mainService == null )
+    {
+      mainService = ( IMainAppServices ) getActivity();
+    }
+    mainService.setHandler( this );
+    //
+    // Wenn Modul verbunden ist, setzte ColorWheel
+    //
     if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
     {
       //

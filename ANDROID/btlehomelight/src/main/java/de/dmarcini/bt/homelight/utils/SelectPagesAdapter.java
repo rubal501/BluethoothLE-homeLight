@@ -28,8 +28,10 @@ package de.dmarcini.bt.homelight.utils;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
+import android.util.SparseArray;
+import android.view.ViewGroup;
 
 import java.util.Locale;
 
@@ -47,13 +49,31 @@ import de.dmarcini.bt.homelight.fragments.PredefColorFragment;
  * Ein Adapter zur Verwaltung der Seiten
  */
 //public class SelectPagesAdapter extends FragmentStatePagerAdapter
-public class SelectPagesAdapter extends FragmentPagerAdapter
+public class SelectPagesAdapter extends FragmentStatePagerAdapter
 {
-  private static final String   TAG              = SelectPagesAdapter.class.getSimpleName();
-  private final        Fragment fragmentsArray[] = new Fragment[ ProjectConst.PAGE_COUNT ];
-  private              Context  ctx              = null;
+  private static final String                TAG                 = SelectPagesAdapter.class.getSimpleName();
+  // Sparse array to keep track of registered fragments in memory
+  private final        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+  private              Context               ctx                 = null;
   private BluetoothModulConfig btConfig;
 
+  /**
+   * Default Konstruktor
+   *
+   * @param fragmentManager
+   */
+  public SelectPagesAdapter(FragmentManager fragmentManager)
+  {
+    super(fragmentManager);
+  }
+
+  /**
+   * Konstruktor mit meinen Parametern
+   *
+   * @param fm       Fragment Manager
+   * @param ctx      Context
+   * @param btConfig die Bluethooth Konfigurationsdaten
+   */
   public SelectPagesAdapter(FragmentManager fm, Context ctx, BluetoothModulConfig btConfig)
   {
     super(fm);
@@ -62,29 +82,31 @@ public class SelectPagesAdapter extends FragmentPagerAdapter
   }
 
   @Override
+  public Object instantiateItem(ViewGroup container, int position)
+  {
+    Fragment fragment = ( Fragment ) super.instantiateItem(container, position);
+    registeredFragments.put(position, fragment);
+    return fragment;
+  }
+
+  // Unregister when the item is inactive
+  @Override
+  public void destroyItem(ViewGroup container, int position, Object object)
+  {
+    registeredFragments.remove(position);
+    super.destroyItem(container, position, object);
+  }
+
+  // Returns the fragment for the position (if instantiated)
+  public Fragment getRegisteredFragment(int position)
+  {
+    return registeredFragments.get(position);
+  }
+
+  @Override
   public Fragment getItem(int position)
   {
-    //
-    // zunächst schauen wir mal, ob das Fragment schon erzeugt wurde
-    //
-    try
-    {
-      if( fragmentsArray[ position ] != null )
-      {
-        //
-        // ich habe das Fragment schon
-        //
-        if( BuildConfig.DEBUG )
-        {
-          Log.v(TAG, "getItem() => recycle Fragment Object");
-        }
-        return (fragmentsArray[ position ]);
-      }
-    }
-    catch( IndexOutOfBoundsException ex )
-    {
-      Log.e(TAG, "getItem() => index to high! IGNORE");
-    }
+    Fragment retFrag;
     //
     // je nach Position gibt es dann eine Instanz eines Fragmentes
     //
@@ -92,39 +114,55 @@ public class SelectPagesAdapter extends FragmentPagerAdapter
     {
       Log.v(TAG, "getItem() => create Fragment Object");
     }
-    try
+    //
+    // erst mal schauen, ob da was vorhanden ist
+    //
+    retFrag = registeredFragments.get(position );
+    switch( position )
     {
-      switch( position )
-      {
-        case ProjectConst.PAGE_DISCOVERING:
-          fragmentsArray[ position ] = DiscoveringFragment.newInstance(position, btConfig);
-          return (fragmentsArray[ position ]);
+      case ProjectConst.PAGE_DISCOVERING:
+        if( retFrag == null  )
+        {
+          retFrag = DiscoveringFragment.newInstance(position, btConfig);
+          registeredFragments.put(position, retFrag);
+        }
+        return (retFrag);
 
-        case ProjectConst.PAGE_DIRECT_CONTROL:
-          fragmentsArray[ position ] = DirectControlFragment.newInstance(position, btConfig);
-          return (fragmentsArray[ position ]);
+      case ProjectConst.PAGE_DIRECT_CONTROL:
+        if( retFrag == null  )
+        {
+          retFrag = DirectControlFragment.newInstance(position, btConfig);
+          registeredFragments.put(position, retFrag);
+        }
+        return (retFrag);
 
-        case ProjectConst.PAGE_COLOR_CIRCLE:
-          fragmentsArray[ position ] = ColorSelectFragment.newInstance(position, btConfig);
-          return (fragmentsArray[ position ]);
+      case ProjectConst.PAGE_COLOR_CIRCLE:
+        if( retFrag == null  )
+        {
+          retFrag = ColorSelectFragment.newInstance(position, btConfig);
+          registeredFragments.put(position, retFrag);
+        }
+        return (retFrag);
 
-        case ProjectConst.PAGE_BRIGHTNESS_ONLY:
-          fragmentsArray[ position ] = BrightnessOnlyFragment.newInstance(position, btConfig);
-          return (fragmentsArray[ position ]);
+      case ProjectConst.PAGE_BRIGHTNESS_ONLY:
+        if( retFrag == null  )
+        {
+          retFrag = BrightnessOnlyFragment.newInstance(position, btConfig);
+          registeredFragments.put(position, retFrag);
+        }
+        return (retFrag);
 
-        case ProjectConst.PAGE_PREDEF_COLORS:
-          fragmentsArray[ position ] = PredefColorFragment.newInstance(position, btConfig);
-          return (fragmentsArray[ position ]);
+      case ProjectConst.PAGE_PREDEF_COLORS:
+        if( retFrag == null  )
+        {
+          retFrag = PredefColorFragment.newInstance(position, btConfig);
+          registeredFragments.put(position, retFrag);
+        }
+        return (retFrag);
 
-        default:
-          Log.e(TAG, "getItem() => position to high! return NULL");
-          return (null);
-      }
-    }
-    catch( IndexOutOfBoundsException ex )
-    {
-      Log.e(TAG, "getItem() => index to high! IGNORE");
-      return (null);
+      default:
+        Log.e(TAG, "getItem() => position to high! return NULL");
+        return (null);
     }
   }
 
@@ -140,40 +178,21 @@ public class SelectPagesAdapter extends FragmentPagerAdapter
   @Override
   public CharSequence getPageTitle(int position)
   {
+    //
+    // Falls ein TOP-Indikator existiert, wird hier der Titel geliefert
+    //
     Locale l = Locale.getDefault();
     return ctx.getString(R.string.app_name).toUpperCase(l);
   }
 
-//  public void destroyAllItem() {
-//    int mPosition = mViewPager.getCurrentItem();
-//    int mPositionMax = mViewPager.getCurrentItem()+1;
-//    if (TABLE.size() > 0 && mPosition < TABLE.size()) {
-//      if (mPosition > 0) {
-//        mPosition--;
-//      }
-//
-//      for (int i = mPosition; i < mPositionMax; i++) {
-//        try {
-//          Object objectobject = this.instantiateItem(mViewPager, TABLE.get(i).intValue());
-//          if (objectobject != null)
-//            destroyItem(mViewPager, TABLE.get(i).intValue(), objectobject);
-//        } catch (Exception e) {
-//          Log.i(TAG, "no more Fragment in FragmentPagerAdapter");
-//        }
-//      }
-//    }
-//  }
-//
-//  @Override
-//  public void destroyItem(ViewGroup container, int position, Object object) {
-//    super.destroyItem(container, position, object);
-//
-//    if (position <= getCount()) {
-//      FragmentManager manager = ((Fragment) object).getFragmentManager();
-//      FragmentTransaction trans = manager.beginTransaction();
-//      trans.remove((Fragment) object);
-//      trans.commit();
-//    }
-//  }
+  /*
+   * We can access the selected page within the ViewPager at any time with the getCurrentItem method which returns the current page:
+   *
+   * vpPager.getCurrentItem(); // --> 2
+   *
+   * The current page can also be changed programmatically with the
+   *
+   * vpPager.setCurrentItem(2)
+   */
 }
 

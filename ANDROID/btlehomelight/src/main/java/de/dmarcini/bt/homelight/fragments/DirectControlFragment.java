@@ -53,7 +53,7 @@ import de.dmarcini.bt.homelight.ProjectConst;
 
 
 /**
- * Created by dmarc on 22.08.2015.
+ * Direkte Helligkeitssteuerung aller Farben, eigentlich nur zum Testen
  */
 public class DirectControlFragment extends AppFragment implements View.OnTouchListener
 {
@@ -558,6 +558,17 @@ public class DirectControlFragment extends AppFragment implements View.OnTouchLi
     {
       Log.v(TAG, "Page DIRECTCONTROL was selected");
     }
+    //
+    // Setzte Callback für das Fragment bei der App
+    //
+    if( mainService == null )
+    {
+      mainService = ( IMainAppServices ) getActivity();
+    }
+    mainService.setHandler( this );
+    //
+    //Wenn Modul verbunden ist, setzte die SeekBars
+    //
     if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
     {
       //

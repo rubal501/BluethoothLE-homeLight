@@ -243,6 +243,17 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
     {
       Log.v(TAG, "Page BRIGHTNESS CONTROL was selected");
     }
+    //
+    // Setzte Callback für das Fragment bei der App
+    //
+    if( mainService == null )
+    {
+      mainService = ( IMainAppServices ) getActivity();
+    }
+    mainService.setHandler( this );
+    //
+    //Wenn Modul verbunden ist, setzte die SeekBar
+    //
     if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
     {
       //
@@ -260,7 +271,6 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
       rgbw[2] = pm[2];
       rgbw[3] = pm[3];
       setSeekBar();
-      //mainService.askModulForRGBW();
     }
   }
 

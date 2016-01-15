@@ -69,9 +69,6 @@ import de.dmarcini.bt.homelight.utils.HomeLightSysConfig;
  */
 public class DiscoveringFragment extends AppFragment implements AdapterView.OnItemClickListener, View.OnClickListener, AdapterView.OnItemLongClickListener
 {
-  //
-  //TODO: Liste beim Scannen erneuern, behalten und bei onResume die Liste füllen
-  //
   private static final ArrayList<BluetoothDevice> foundDevices = new ArrayList<>();
   private static       String                     TAG          = DiscoveringFragment.class.getSimpleName();
   private ListView        discoverListView;
@@ -471,6 +468,14 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     {
       Log.v(TAG, "Page DISCOVERING was selected");
     }
+    //
+    // Setzte Callback für das Fragment bei der App
+    //
+    if( mainService == null )
+    {
+      mainService = ( IMainAppServices ) getActivity();
+    }
+    mainService.setHandler( this );
     prepareHeader();
   }
 

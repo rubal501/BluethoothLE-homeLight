@@ -275,7 +275,15 @@ public class PredefColorFragment extends AppFragment implements View.OnClickList
   @Override
   public void onPageSelected()
   {
-    Log.d(TAG, "Page DUMMY was selected");
+    Log.d(TAG, "Page PREDEFCOLOR was selected");
+    //
+    // Setzte Callback für das Fragment bei der App
+    //
+    if( mainService == null )
+    {
+      mainService = ( IMainAppServices ) getActivity();
+    }
+    mainService.setHandler( this );
   }
 
   /**
@@ -365,7 +373,6 @@ public class PredefColorFragment extends AppFragment implements View.OnClickList
         colDi.show(getActivity().getFragmentManager(), "changePredefColor");
       }
     }
-
     return false;
   }
 

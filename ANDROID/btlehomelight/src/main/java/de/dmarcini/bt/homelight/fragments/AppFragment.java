@@ -34,12 +34,12 @@ import java.util.List;
 import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
+import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
-import de.dmarcini.bt.homelight.ProjectConst;
 
 /**
- * Created by dmarc on 24.12.2015.
+ * die Schablone für Fragmente der App
  */
 public abstract class AppFragment extends Fragment
 {

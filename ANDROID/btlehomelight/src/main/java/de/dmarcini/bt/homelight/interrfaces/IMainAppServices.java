@@ -24,11 +24,20 @@
 
 package de.dmarcini.bt.homelight.interrfaces;
 
+import de.dmarcini.bt.homelight.fragments.AppFragment;
+
 /**
  * Die Main Activity soll dieses Interface implementieren, dann kann man standartisiert auf Services zugreifen
  */
 public interface IMainAppServices
 {
+  /**
+   * Funktion settz bei der MainApp den CallbackHandler für alle Möglichen _Ereignisse
+   *
+   * @param frag Referenz der App
+   */
+  void setHandler( AppFragment frag );
+
   /**
    * Funktion fordert die App auf, das Fragment mit der übergebenen Nummer zu aktivieren
    *
