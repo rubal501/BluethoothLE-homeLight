@@ -53,7 +53,7 @@ public class ProjectConst
   //
   public static final int    PAGE_DISCOVERING     = 0;
   public static final int    PAGE_DIRECT_CONTROL  = 1;
-  public static final int    PAGE_COLOR_CIRCLE    = 2;
+  public static final int    PAGE_COLOR_WHEEL = 2;
   public static final int    PAGE_BRIGHTNESS_ONLY = 3;
   public static final int    PAGE_PREDEF_COLORS   = 4;
   public static final int    PAGE_COUNT           = 5;
@@ -85,7 +85,7 @@ public class ProjectConst
   public static final String ARG_COLOR_LIST       = "color_list";
   public static final String ARG_PREVIEW_COLOR    = "preview_color";
   public static final String ARG_PREDEF_NUMBER    = "predef_number";
-  public static final String ARG_MODULE_NAME = "module_name";
+  public static final String ARG_MODULE_NAME  = "module_name";
   //
   // Der Modultyp mit dem ich mich verbinden will
   //
