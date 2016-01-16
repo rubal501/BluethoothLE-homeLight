@@ -1,25 +1,25 @@
 /******************************************************************************
- *                                                                            *
- *      project: ANDROID                                                      *
- *      module: btlehomelight                                                 *
- *      class: HomeLightMainActivity                                          *
- *      date: 2016-01-15                                                      *
- *                                                                            *
- *      Copyright (C) 2016  Dirk Marciniak                                    *
- *                                                                            *
- *      This program is free software: you can redistribute it and/or modify  *
- *      it under the terms of the GNU General Public License as published by  *
- *      the Free Software Foundation, either version 3 of the License, or     *
- *      (at your option) any later version.                                   *
- *                                                                            *
- *      This program is distributed in the hope that it will be useful,       *
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *      GNU General Public License for more details.                          *
- *                                                                            *
- *      You should have received a copy of the GNU General Public License     *
- *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
- *                                                                            *
+ * *
+ * project: ANDROID                                                      *
+ * module: btlehomelight                                                 *
+ * class: HomeLightMainActivity                                          *
+ * date: 2016-01-15                                                      *
+ * *
+ * Copyright (C) 2016  Dirk Marciniak                                    *
+ * *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ * *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ * *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ * *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight;
@@ -77,10 +77,6 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   private final        short[]              rgbw         = new short[ ProjectConst.C_ASKRGB_LEN - 1 ];
   private              BluetoothModulConfig btConfig     = new BluetoothModulConfig();
   private AppFragment fragmentCallback;
-  private SelectPagesAdapter pagerAdapter;
-  private BTReaderThread readerThread;
-  private CmdQueueThread cmdTread;
-  private ViewPager      mViewPager;
   //
   // verwaltung des Lebenszyklus des Servicves
   //
@@ -114,7 +110,30 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       }
     }
   };
-
+  /**
+   * Implementiere den Callback mit dem Interface zum Empfang der Kommandosequenz
+   * und Weiterleitung an den Empfänger...
+   */
+  private final CommandReciver    CReciver           = new CommandReciver()
+  {
+    @Override
+    public void reciveCommand(String cmd)
+    {
+      String[] data;
+      //
+      // finde das aktuelle Fragment und sende die Nachricht
+      //
+      if( null != (data = onBTDataAvaiable(cmd)) )
+      {
+        if( fragmentCallback != null )
+        {
+          fragmentCallback.onBTDataAvaiable(data);
+        }
+      }
+    }
+  };
+  private SelectPagesAdapter pagerAdapter;
+  private BTReaderThread readerThread;
   /**
    * Der Broadcast Reciver für BT Ereignisse
    * <p/>
@@ -260,28 +279,8 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
       }
     }
   };
-  /**
-   * Implementiere den Callback mit dem Interface zum Empfang der Kommandosequenz
-   * und Weiterleitung an den Empfänger...
-   */
-  private final CommandReciver    CReciver            = new CommandReciver()
-  {
-    @Override
-    public void reciveCommand(String cmd)
-    {
-      String[] data;
-      //
-      // finde das aktuelle Fragment und sende die Nachricht
-      //
-      if( null != (data = onBTDataAvaiable(cmd)) )
-      {
-        if( fragmentCallback != null )
-        {
-          fragmentCallback.onBTDataAvaiable(data);
-        }
-      }
-    }
-  };
+  private CmdQueueThread cmdTread;
+  private ViewPager      mViewPager;
 
   /**
    * Vorprüfen, falls Infos kommen die schon hier abgearbetet werden können
@@ -515,7 +514,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     // Erzeuge einen Select-Adapter zur Erzeugung und Rückgabe der angeforderten Fragmente
     //
-    pagerAdapter = new SelectPagesAdapter(getSupportFragmentManager(), getApplicationContext(), btConfig);
+    pagerAdapter = new SelectPagesAdapter(getSupportFragmentManager(), getApplicationContext(), btConfig, HomeLightSysConfig.getSelectedPages());
     // Initialisiere den Pager mit dem Adapter
     mViewPager = ( ViewPager ) findViewById(R.id.container);
     mViewPager.setAdapter(pagerAdapter);
@@ -907,7 +906,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   {
     if( fragmentCallback != null )
     {
-      fragmentCallback.onPositiveDialogFragment( dialog );
+      fragmentCallback.onPositiveDialogFragment(dialog);
     }
   }
 
@@ -916,7 +915,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   {
     if( fragmentCallback != null )
     {
-      fragmentCallback.onNegativeDialogFragment( dialog );
+      fragmentCallback.onNegativeDialogFragment(dialog);
     }
   }
 

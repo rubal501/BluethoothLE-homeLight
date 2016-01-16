@@ -52,9 +52,11 @@ import de.dmarcini.bt.homelight.fragments.PredefColorFragment;
 public class SelectPagesAdapter extends FragmentStatePagerAdapter
 {
   private static final String                TAG                 = SelectPagesAdapter.class.getSimpleName();
-  // Sparse array to keep track of registered fragments in memory
   private final        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
   private              Context               ctx                 = null;
+  private boolean[] enabledPages = new boolean[ ProjectConst.PAGE_COUNT ];
+  private int       pagesCount   = ProjectConst.PAGE_COUNT;
+  private int[] pagesAvailvible;
   private BluetoothModulConfig btConfig;
 
   /**
@@ -65,6 +67,16 @@ public class SelectPagesAdapter extends FragmentStatePagerAdapter
   public SelectPagesAdapter(FragmentManager fragmentManager)
   {
     super(fragmentManager);
+    //
+    // Alle Seiten erst einmal erlauben
+    //
+    pagesAvailvible = new int[ ProjectConst.PAGE_COUNT ];
+    for( int i = 0; i < ProjectConst.PAGE_COUNT; i++ )
+    {
+      // Erlaube Seite
+      enabledPages[ i ] = true;
+      pagesAvailvible[ i ] = i;
+    }
   }
 
   /**
@@ -79,7 +91,58 @@ public class SelectPagesAdapter extends FragmentStatePagerAdapter
     super(fm);
     this.ctx = ctx;
     this.btConfig = btConfig;
+    //
+    // Alle Seiten erst einmal erlauben
+    //
+    pagesAvailvible = new int[ ProjectConst.PAGE_COUNT ];
+    for( int i = 0; i < ProjectConst.PAGE_COUNT; i++ )
+    {
+      // Erlaube Seite
+      enabledPages[ i ] = true;
+      pagesAvailvible[ i ] = i;
+    }
   }
+
+  /**
+   * Konstruktor mit meinen Parametern
+   *
+   * @param fm       Fragment Manager
+   * @param ctx      Context
+   * @param btConfig die Bluethooth Konfigurationsdaten
+   */
+  public SelectPagesAdapter(FragmentManager fm, Context ctx, BluetoothModulConfig btConfig, boolean[] en)
+  {
+    super(fm);
+    int pageIndex;
+    this.ctx = ctx;
+    this.btConfig = btConfig;
+    this.enabledPages = en;
+    //
+    // zuest die aktiven Seiten zählen
+    //
+    pagesCount = 0;
+    for( int i = 0; i < ProjectConst.PAGE_COUNT; i++ )
+    {
+      if( enabledPages[ i ] )
+      {
+        pagesCount++;
+      }
+    }
+    //
+    // jetzt die aktiven Seiten einrichten
+    //
+    pageIndex = 0;
+    pagesAvailvible = new int[ pagesCount ];
+    for( int i = 0; i < ProjectConst.PAGE_COUNT; i++ )
+    {
+      if( enabledPages[ i ] )
+      {
+        pagesAvailvible[ pageIndex++ ] = i;
+      }
+    }
+    // FERTIG
+  }
+
 
   @Override
   public Object instantiateItem(ViewGroup container, int position)
@@ -107,6 +170,7 @@ public class SelectPagesAdapter extends FragmentStatePagerAdapter
   public Fragment getItem(int position)
   {
     Fragment retFrag;
+    int pageType = -1;
     //
     // je nach Position gibt es dann eine Instanz eines Fragmentes
     //
@@ -115,13 +179,18 @@ public class SelectPagesAdapter extends FragmentStatePagerAdapter
       Log.v(TAG, "getItem() => create Fragment Object");
     }
     //
+    // erst mal der Position einen PageTyp zuweisen
+    //
+    pageType = pagesAvailvible[ position ];
+
+    //
     // erst mal schauen, ob da was vorhanden ist
     //
-    retFrag = registeredFragments.get(position );
-    switch( position )
+    retFrag = registeredFragments.get(pageType);
+    switch( pageType )
     {
       case ProjectConst.PAGE_DISCOVERING:
-        if( retFrag == null  )
+        if( (retFrag == null) || (retFrag instanceof DiscoveringFragment) )
         {
           retFrag = DiscoveringFragment.newInstance(position, btConfig);
           registeredFragments.put(position, retFrag);
@@ -129,15 +198,15 @@ public class SelectPagesAdapter extends FragmentStatePagerAdapter
         return (retFrag);
 
       case ProjectConst.PAGE_DIRECT_CONTROL:
-        if( retFrag == null  )
+        if( (retFrag == null) || (retFrag instanceof DirectControlFragment) )
         {
           retFrag = DirectControlFragment.newInstance(position, btConfig);
           registeredFragments.put(position, retFrag);
         }
         return (retFrag);
 
-      case ProjectConst.PAGE_COLOR_CIRCLE:
-        if( retFrag == null  )
+      case ProjectConst.PAGE_COLOR_WHEEL:
+        if( (retFrag == null) || (retFrag instanceof ColorSelectFragment) )
         {
           retFrag = ColorSelectFragment.newInstance(position, btConfig);
           registeredFragments.put(position, retFrag);
@@ -145,7 +214,7 @@ public class SelectPagesAdapter extends FragmentStatePagerAdapter
         return (retFrag);
 
       case ProjectConst.PAGE_BRIGHTNESS_ONLY:
-        if( retFrag == null  )
+        if( (retFrag == null) || (retFrag instanceof BrightnessOnlyFragment) )
         {
           retFrag = BrightnessOnlyFragment.newInstance(position, btConfig);
           registeredFragments.put(position, retFrag);
@@ -153,7 +222,7 @@ public class SelectPagesAdapter extends FragmentStatePagerAdapter
         return (retFrag);
 
       case ProjectConst.PAGE_PREDEF_COLORS:
-        if( retFrag == null  )
+        if( (retFrag == null) || (retFrag instanceof PredefColorFragment) )
         {
           retFrag = PredefColorFragment.newInstance(position, btConfig);
           registeredFragments.put(position, retFrag);
@@ -172,7 +241,7 @@ public class SelectPagesAdapter extends FragmentStatePagerAdapter
     //
     // Zeige exakt so viele Seiten, wie ich will
     //
-    return (ProjectConst.PAGE_COUNT);
+    return (pagesCount);
   }
 
   @Override
