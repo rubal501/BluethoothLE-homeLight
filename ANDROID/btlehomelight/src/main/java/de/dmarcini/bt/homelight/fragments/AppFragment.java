@@ -53,6 +53,8 @@ public class AppFragment extends Fragment
     //
     super.onCreate(args);
     //
+    mainServiceRef = ( IMainAppServices ) getActivity();
+
     try
     {
       if( args != null )

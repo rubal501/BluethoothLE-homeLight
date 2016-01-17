@@ -176,7 +176,7 @@ public class DiscoveringFragment extends AppFragment implements IFragmentInterfa
       mBTLEDeviceListAdapter.addDevice(btConfig.getBluethoothAdapter().getRemoteDevice(HomeLightSysConfig.getLastConnectedDeviceAddr()));
     }
     setHasOptionsMenu(true);
-    prepareHeader();
+    //prepareHeader();
     if( BuildConfig.DEBUG )
     {
       Log.v(TAG, "onCreateView...OK");
@@ -347,7 +347,7 @@ public class DiscoveringFragment extends AppFragment implements IFragmentInterfa
     //
     // Wenn die Activity meine Services kann
     //
-    if( getActivity() instanceof IMainAppServices )
+    if( mainServiceRef != null )
     {
       if( BuildConfig.DEBUG )
       {
@@ -367,7 +367,7 @@ public class DiscoveringFragment extends AppFragment implements IFragmentInterfa
     }
     else
     {
-      Log.e(TAG, "activity is NOT instance of IMainAppServices!");
+      Log.e(TAG, "callback type IMainAppServices not set!");
     }
   }
 
@@ -469,14 +469,12 @@ public class DiscoveringFragment extends AppFragment implements IFragmentInterfa
     {
       Log.v(TAG, "Page DISCOVERING was selected");
     }
-    //
-    // Setzte Callback für das Fragment bei der App
-    //
-    if( mainService == null )
+    if( mainServiceRef == null )
     {
-      mainService = ( IMainAppServices ) getActivity();
+      Log.e(TAG, "can't set Callback handler to APP");
+      return;
     }
-    mainService.setHandler( this );
+    mainServiceRef.setHandler( this );
     prepareHeader();
   }
 

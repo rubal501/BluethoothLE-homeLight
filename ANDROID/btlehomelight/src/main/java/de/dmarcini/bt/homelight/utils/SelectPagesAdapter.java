@@ -46,17 +46,16 @@ import de.dmarcini.bt.homelight.fragments.PredefColorFragment;
 
 
 /**
- * Ein Adapter zur Verwaltung der Seiten
+ * Ein intelligenten Adapter zur Verwaltung der Seiten
  */
-//public class SelectPagesAdapter extends FragmentStatePagerAdapter
 public class SelectPagesAdapter extends FragmentStatePagerAdapter
 {
   private static final String                TAG                 = SelectPagesAdapter.class.getSimpleName();
   private final        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
   private              Context               ctx                 = null;
-  private boolean[] enabledPages = new boolean[ ProjectConst.PAGE_COUNT ];
-  private int       pagesCount   = ProjectConst.PAGE_COUNT;
-  private int[] pagesAvailvible;
+  private              boolean[]             enabledPages        = new boolean[ ProjectConst.PAGE_COUNT ];
+  private              int                   pagesCount          = ProjectConst.PAGE_COUNT;
+  private int[]                pagesAvailvible;
   private BluetoothModulConfig btConfig;
 
   /**
@@ -163,14 +162,68 @@ public class SelectPagesAdapter extends FragmentStatePagerAdapter
   // Returns the fragment for the position (if instantiated)
   public Fragment getRegisteredFragment(int position)
   {
-    return registeredFragments.get(position);
+    Fragment retFrag;
+    int      pageType = -1;
+    //
+    // erst mal der Position einen PageTyp zuweisen
+    //
+    pageType = pagesAvailvible[ position ];
+    retFrag = registeredFragments.get(position);
+    //
+    // kein Fragment registriert: NULL zurück
+    //
+    if( retFrag == null )
+    {
+      return (null);
+    }
+    //
+    // wenn der richtige Typ des Fragments da ist, zurückgeben
+    //
+    switch( pageType )
+    {
+      case ProjectConst.PAGE_DISCOVERING:
+        if( retFrag instanceof DiscoveringFragment )
+        {
+          return (retFrag);
+        }
+        break;
+
+      case ProjectConst.PAGE_DIRECT_CONTROL:
+        if( retFrag instanceof DirectControlFragment )
+        {
+          return (retFrag);
+        }
+        break;
+
+      case ProjectConst.PAGE_COLOR_WHEEL:
+        if( retFrag instanceof ColorSelectFragment )
+        {
+          return (retFrag);
+        }
+        break;
+
+      case ProjectConst.PAGE_BRIGHTNESS_ONLY:
+        if( retFrag instanceof BrightnessOnlyFragment )
+        {
+          return (retFrag);
+        }
+        break;
+
+      case ProjectConst.PAGE_PREDEF_COLORS:
+        if( retFrag instanceof PredefColorFragment )
+        {
+          return (retFrag);
+        }
+        break;
+    }
+    return (null);
   }
 
   @Override
   public Fragment getItem(int position)
   {
     Fragment retFrag;
-    int pageType = -1;
+    int      pageType = -1;
     //
     // je nach Position gibt es dann eine Instanz eines Fragmentes
     //

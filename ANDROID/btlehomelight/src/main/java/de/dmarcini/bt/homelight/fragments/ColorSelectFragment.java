@@ -57,7 +57,7 @@ import de.dmarcini.bt.homelight.views.ColorPicker;
 
 
 /**
- * Created by dmarc on 22.08.2015.
+ * Fragment zur direkten cisuellen Auswahl der Lichtfarbe auf dem Lampenmodul
  */
 public class ColorSelectFragment extends AppFragment implements IFragmentInterface, ColorPicker.OnColorChangedListener, ColorPicker.OnColorSelectedListener, View.OnClickListener
 {
@@ -89,13 +89,6 @@ public class ColorSelectFragment extends AppFragment implements IFragmentInterfa
       Log.v(TAG, String.format(Locale.ENGLISH, "%s.newInstance(%04d)", TAG, sectionNumber));
     }
     return fragment;
-  }
-
-  @Override
-  public void onCreate(Bundle args)
-  {
-    super.onCreate(args);
-    mainService = ( IMainAppServices ) getActivity();
   }
 
   private void setBlutethoothConfig(BluetoothModulConfig btConfig)
@@ -281,18 +274,18 @@ public class ColorSelectFragment extends AppFragment implements IFragmentInterfa
     rgbw[ 2 ] = ( short ) (color & 0xff);
     rgbw[ 3 ] = 0;
     //
-    if( timeToSend < System.currentTimeMillis() && mainService != null )
+    if( timeToSend < System.currentTimeMillis() && mainServiceRef != null )
     {
       //
       // Mal wieder zum Contoller senden!
       //
       if( calToggleButton.isChecked() )
       {
-        mainService.setModulRGB4Calibrate(rgbw);
+        mainServiceRef.setModulRGB4Calibrate(rgbw);
       }
       else
       {
-        mainService.setModulRawRGBW(rgbw);
+        mainServiceRef.setModulRawRGBW(rgbw);
       }
       //
       // Neue Deadline setzen
@@ -409,13 +402,12 @@ public class ColorSelectFragment extends AppFragment implements IFragmentInterfa
     {
       Log.v(TAG, "Page COLORSELECT (Weehl) was selected");
     }
-    if( mainService == null )
+    if( mainServiceRef == null )
     {
       Log.e(TAG, "can't set Callback handler to APP");
       return;
     }
-    //
-    mainService.setHandler( this );
+    mainServiceRef.setHandler( this );
     //
     // Wenn Modul verbunden ist, setzte ColorWheel
     //
@@ -430,7 +422,7 @@ public class ColorSelectFragment extends AppFragment implements IFragmentInterfa
         Log.v(TAG, "BT Device is connected and ready....");
       }
       onServiceConnected();
-      final short[] pm = mainService.getModulRGBW();
+      final short[] pm = mainServiceRef.getModulRGBW();
       rgbw[0] = pm[0];
       rgbw[1] = pm[1];
       rgbw[2] = pm[2];
@@ -613,18 +605,18 @@ public class ColorSelectFragment extends AppFragment implements IFragmentInterfa
     rgbw[ 2 ] = ( short ) (color & 0xff);
     rgbw[ 3 ] = 0;
     //
-    if( mainService != null )
+    if( mainServiceRef != null )
     {
       //
       // Mal wieder zum Contoller senden!
       //
       if( calToggleButton.isChecked() )
       {
-        mainService.setModulRGB4Calibrate(rgbw);
+        mainServiceRef.setModulRGB4Calibrate(rgbw);
       }
       else
       {
-        mainService.setModulRawRGBW(rgbw);
+        mainServiceRef.setModulRawRGBW(rgbw);
       }
       //
       // Neue Deadline setzen

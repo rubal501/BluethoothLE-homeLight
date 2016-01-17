@@ -864,7 +864,11 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     // Gib dem Fragment order, dass es selektiert wurde
     // TODO: Hier ist die kritische Stelle
-    IFragmentInterface handler = ( IFragmentInterface ) pagerAdapter.getItem(mViewPager.getCurrentItem());
+    IFragmentInterface handler = ( IFragmentInterface ) pagerAdapter.getRegisteredFragment(mViewPager.getCurrentItem());
+    if( handler == null )
+    {
+      handler = ( IFragmentInterface ) pagerAdapter.getItem(mViewPager.getCurrentItem());
+    }
     handler.onPageSelected();
   }
 

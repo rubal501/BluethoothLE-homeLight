@@ -239,14 +239,12 @@ public class BrightnessOnlyFragment extends AppFragment implements IFragmentInte
     {
       Log.v(TAG, "Page BRIGHTNESS CONTROL was selected");
     }
-    //
-    // Setzte Callback für das Fragment bei der App
-    //
-    if( mainService == null )
+    if( mainServiceRef == null )
     {
-      mainService = ( IMainAppServices ) getActivity();
+      Log.e(TAG, "can't set Callback handler to APP");
+      return;
     }
-    mainService.setHandler(this);
+    mainServiceRef.setHandler( this );
     //
     //Wenn Modul verbunden ist, setzte die SeekBar
     //
@@ -261,7 +259,7 @@ public class BrightnessOnlyFragment extends AppFragment implements IFragmentInte
         Log.v(TAG, "BT Device is connected and ready....");
       }
       onServiceConnected();
-      final short[] pm = mainService.getModulRGBW();
+      final short[] pm = mainServiceRef.getModulRGBW();
       rgbw[ 0 ] = pm[ 0 ];
       rgbw[ 1 ] = pm[ 1 ];
       rgbw[ 2 ] = pm[ 2 ];
@@ -358,12 +356,12 @@ public class BrightnessOnlyFragment extends AppFragment implements IFragmentInte
     //
     // Falls die Zeit reif ist für eine Übertragung zum Modul
     //
-    if( timeToSend < System.currentTimeMillis() && mainService != null )
+    if( timeToSend < System.currentTimeMillis() && mainServiceRef != null )
     {
       //
       // Mal wieder zum Contoller senden!
       //
-      mainService.setModulRawRGBW(rgbw);
+      mainServiceRef.setModulRawRGBW(rgbw);
       //
       // Neue Deadline setzen
       //
@@ -392,7 +390,7 @@ public class BrightnessOnlyFragment extends AppFragment implements IFragmentInte
         //
         // Mal wieder zum Contoller senden!
         //
-        mainService.setModulRawRGBW(rgbw);
+        mainServiceRef.setModulRawRGBW(rgbw);
         //
         // Neue Deadline setzen
         //

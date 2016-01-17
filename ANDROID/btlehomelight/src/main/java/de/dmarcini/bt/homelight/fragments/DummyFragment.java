@@ -160,14 +160,12 @@ public class DummyFragment extends AppFragment implements IFragmentInterface
   public void onPageSelected()
   {
     Log.d(TAG, "Page DUMMY was selected");
-    //
-    // Setzte Callback für das Fragment bei der App
-    //
-    if( mainService == null )
+    if( mainServiceRef == null )
     {
-      mainService = ( IMainAppServices ) getActivity();
+      Log.e(TAG, "can't set Callback handler to APP");
+      return;
     }
-    mainService.setHandler( this );
+    mainServiceRef.setHandler(this);
   }
 
   /**
