@@ -42,7 +42,7 @@ public class AppFragment extends Fragment
 {
   private static String TAG = AppFragment.class.getSimpleName();
   protected final short[] rgbw = new short[ ProjectConst.C_ASKRGB_LEN - 1 ];
-  protected IMainAppServices     mainService;
+  protected IMainAppServices mainServiceRef;
   protected BluetoothModulConfig btConfig;
   protected long                 timeToSend;
 
