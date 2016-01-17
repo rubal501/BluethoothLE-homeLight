@@ -58,6 +58,7 @@ import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.SystemPrefActivity;
 import de.dmarcini.bt.homelight.dialogs.EditModuleNameDialogFragment;
+import de.dmarcini.bt.homelight.interrfaces.IFragmentInterface;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BTLEListAdapter;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
@@ -67,11 +68,8 @@ import de.dmarcini.bt.homelight.utils.HomeLightSysConfig;
 /**
  * Das Fragment für die Gerätewahl
  */
-public class DiscoveringFragment extends AppFragment implements AdapterView.OnItemClickListener, View.OnClickListener, AdapterView.OnItemLongClickListener
+public class DiscoveringFragment extends AppFragment implements IFragmentInterface, AdapterView.OnItemClickListener, View.OnClickListener, AdapterView.OnItemLongClickListener
 {
-  //
-  //TODO: Liste beim Scannen erneuern, behalten und bei onResume die Liste füllen
-  //
   private static final ArrayList<BluetoothDevice> foundDevices = new ArrayList<>();
   private static       String                     TAG          = DiscoveringFragment.class.getSimpleName();
   private ListView        discoverListView;
@@ -178,7 +176,7 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
       mBTLEDeviceListAdapter.addDevice(btConfig.getBluethoothAdapter().getRemoteDevice(HomeLightSysConfig.getLastConnectedDeviceAddr()));
     }
     setHasOptionsMenu(true);
-    prepareHeader();
+    //prepareHeader();
     if( BuildConfig.DEBUG )
     {
       Log.v(TAG, "onCreateView...OK");
@@ -349,7 +347,7 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     //
     // Wenn die Activity meine Services kann
     //
-    if( getActivity() instanceof IMainAppServices )
+    if( mainServiceRef != null )
     {
       if( BuildConfig.DEBUG )
       {
@@ -369,7 +367,7 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     }
     else
     {
-      Log.e(TAG, "activity is NOT instance of IMainAppServices!");
+      Log.e(TAG, "callback type IMainAppServices not set!");
     }
   }
 
@@ -471,6 +469,12 @@ public class DiscoveringFragment extends AppFragment implements AdapterView.OnIt
     {
       Log.v(TAG, "Page DISCOVERING was selected");
     }
+    if( mainServiceRef == null )
+    {
+      Log.e(TAG, "can't set Callback handler to APP");
+      return;
+    }
+    mainServiceRef.setHandler( this );
     prepareHeader();
   }
 

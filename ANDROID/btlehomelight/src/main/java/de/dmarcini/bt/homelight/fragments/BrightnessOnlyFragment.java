@@ -1,25 +1,25 @@
 /******************************************************************************
- *                                                                            *
- *      project: ANDROID                                                      *
- *      module: btlehomelight                                                 *
- *      class: BrightnessOnlyFragment                                         *
- *      date: 2016-01-10                                                      *
- *                                                                            *
- *      Copyright (C) 2016  Dirk Marciniak                                    *
- *                                                                            *
- *      This program is free software: you can redistribute it and/or modify  *
- *      it under the terms of the GNU General Public License as published by  *
- *      the Free Software Foundation, either version 3 of the License, or     *
- *      (at your option) any later version.                                   *
- *                                                                            *
- *      This program is distributed in the hope that it will be useful,       *
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *      GNU General Public License for more details.                          *
- *                                                                            *
- *      You should have received a copy of the GNU General Public License     *
- *      along with this program.  If not, see <http://www.gnu.org/licenses/   *
- *                                                                            *
+ * *
+ * project: ANDROID                                                      *
+ * module: btlehomelight                                                 *
+ * class: BrightnessOnlyFragment                                         *
+ * date: 2016-01-10                                                      *
+ * *
+ * Copyright (C) 2016  Dirk Marciniak                                    *
+ * *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ * *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ * *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/   *
+ * *
  ******************************************************************************/
 
 package de.dmarcini.bt.homelight.fragments;
@@ -43,19 +43,20 @@ import java.util.List;
 import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
+import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.R;
+import de.dmarcini.bt.homelight.interrfaces.IFragmentInterface;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
-import de.dmarcini.bt.homelight.ProjectConst;
 
 
 /**
  * Created by dmarc on 22.08.2015.
  */
-public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnValueChangedListener, View.OnTouchListener
+public class BrightnessOnlyFragment extends AppFragment implements IFragmentInterface, ValueBar.OnValueChangedListener, View.OnTouchListener
 {
-  private static String TAG = BrightnessOnlyFragment.class.getSimpleName();
-  private              int    brightness = 0;
+  private static String TAG        = BrightnessOnlyFragment.class.getSimpleName();
+  private        int    brightness = 0;
   private ValueBar brightnessSeekBar;
   private TextView brightnessHeaderTextView;
   private String   brightnessValueString;
@@ -92,14 +93,6 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
   {
     View rootView = inflater.inflate(R.layout.fragment_brightness_only, container, false);
-    if( getActivity() instanceof IMainAppServices )
-    {
-      mainService = ( IMainAppServices ) getActivity();
-    }
-    else
-    {
-      mainService = null;
-    }
     //
     // Adressen der GUI Objekte bestimmen
     //
@@ -191,7 +184,10 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
         //
         case ProjectConst.C_UNKNOWN:
         default:
-          if(BuildConfig.DEBUG)Log.v(TAG, "unhandled command recived! Ignored.");
+          if( BuildConfig.DEBUG )
+          {
+            Log.v(TAG, "unhandled command recived! Ignored.");
+          }
           break;
 
         //
@@ -215,7 +211,7 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
             Log.v(TAG, "RGBW from module recived!");
           }
           break;
-       }
+      }
     }
     else
     {
@@ -243,6 +239,15 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
     {
       Log.v(TAG, "Page BRIGHTNESS CONTROL was selected");
     }
+    if( mainServiceRef == null )
+    {
+      Log.e(TAG, "can't set Callback handler to APP");
+      return;
+    }
+    mainServiceRef.setHandler( this );
+    //
+    //Wenn Modul verbunden ist, setzte die SeekBar
+    //
     if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
     {
       //
@@ -254,13 +259,12 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
         Log.v(TAG, "BT Device is connected and ready....");
       }
       onServiceConnected();
-      final short[] pm = mainService.getModulRGBW();
-      rgbw[0] = pm[0];
-      rgbw[1] = pm[1];
-      rgbw[2] = pm[2];
-      rgbw[3] = pm[3];
+      final short[] pm = mainServiceRef.getModulRGBW();
+      rgbw[ 0 ] = pm[ 0 ];
+      rgbw[ 1 ] = pm[ 1 ];
+      rgbw[ 2 ] = pm[ 2 ];
+      rgbw[ 3 ] = pm[ 3 ];
       setSeekBar();
-      //mainService.askModulForRGBW();
     }
   }
 
@@ -352,12 +356,12 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
     //
     // Falls die Zeit reif ist für eine Übertragung zum Modul
     //
-    if( timeToSend < System.currentTimeMillis() && mainService != null )
+    if( timeToSend < System.currentTimeMillis() && mainServiceRef != null )
     {
       //
       // Mal wieder zum Contoller senden!
       //
-      mainService.setModulRawRGBW(rgbw);
+      mainServiceRef.setModulRawRGBW(rgbw);
       //
       // Neue Deadline setzen
       //
@@ -386,7 +390,7 @@ public class BrightnessOnlyFragment extends AppFragment implements ValueBar.OnVa
         //
         // Mal wieder zum Contoller senden!
         //
-        mainService.setModulRawRGBW(rgbw);
+        mainServiceRef.setModulRawRGBW(rgbw);
         //
         // Neue Deadline setzen
         //

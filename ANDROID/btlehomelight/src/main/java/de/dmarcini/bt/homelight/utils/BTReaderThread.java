@@ -43,7 +43,6 @@ public class BTReaderThread implements Runnable
   public final  Object syncObj = new Object();
   private final String TAG     = BTReaderThread.class.getSimpleName();
   private CircularByteBuffer ringBuffer;
-  //private HomeLightMainActivity.CommandReciver cReciver;
   private volatile boolean isRunning = true;
   private Vector<String> cmdBuffer;
 

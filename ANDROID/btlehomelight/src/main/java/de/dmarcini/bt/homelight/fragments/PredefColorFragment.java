@@ -44,17 +44,18 @@ import java.util.List;
 import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
+import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.dialogs.ColorPrefChangeDialog;
+import de.dmarcini.bt.homelight.interrfaces.IFragmentInterface;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
-import de.dmarcini.bt.homelight.ProjectConst;
 
 
 /**
  * Created by dmarc on 22.08.2015.
  */
-public class PredefColorFragment extends AppFragment implements View.OnClickListener, View.OnLongClickListener
+public class PredefColorFragment extends AppFragment implements IFragmentInterface, View.OnClickListener, View.OnLongClickListener
 {
   private static String TAG = PredefColorFragment.class.getSimpleName();
   private Button predefRedButton;
@@ -94,15 +95,6 @@ public class PredefColorFragment extends AppFragment implements View.OnClickList
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
   {
-    if( getActivity() instanceof IMainAppServices )
-    {
-      mainService = ( IMainAppServices ) getActivity();
-    }
-    else
-    {
-      mainService = null;
-    }
-
     View rootView = inflater.inflate(R.layout.fragment_predef_colors, container, false);
     //
     // Finde die Referenzen
@@ -275,7 +267,13 @@ public class PredefColorFragment extends AppFragment implements View.OnClickList
   @Override
   public void onPageSelected()
   {
-    Log.d(TAG, "Page DUMMY was selected");
+    Log.d(TAG, "Page PREDEFCOLOR was selected");
+    if( mainServiceRef == null )
+    {
+      Log.e(TAG, "can't set Callback handler to APP");
+      return;
+    }
+    mainServiceRef.setHandler(this);
   }
 
   /**
@@ -365,7 +363,6 @@ public class PredefColorFragment extends AppFragment implements View.OnClickList
         colDi.show(getActivity().getFragmentManager(), "changePredefColor");
       }
     }
-
     return false;
   }
 
@@ -382,7 +379,7 @@ public class PredefColorFragment extends AppFragment implements View.OnClickList
     rgbw[ 2 ] = ( short ) (color & 0xff);
     rgbw[ 3 ] = 0;
     //
-    if( mainService != null )
+    if( mainServiceRef != null )
     {
       // 0xfe000000 bedeutet RGBW mode, 0xff000000 RGB
       if( (color & 0x01000000) > 0 )
@@ -392,7 +389,7 @@ public class PredefColorFragment extends AppFragment implements View.OnClickList
         {
           Log.v(TAG, String.format(Locale.ENGLISH, "set selected color RGB %08X...", color));
         }
-        mainService.setModulRawRGBW(rgbw);
+        mainServiceRef.setModulRawRGBW(rgbw);
       }
       else
       {
@@ -401,7 +398,7 @@ public class PredefColorFragment extends AppFragment implements View.OnClickList
         {
           Log.v(TAG, String.format(Locale.ENGLISH, "set selected color RGBW %08X...", color));
         }
-        mainService.setModulRGB4Calibrate(rgbw);
+        mainServiceRef.setModulRGB4Calibrate(rgbw);
       }
     }
   }

@@ -47,18 +47,19 @@ import java.util.List;
 import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
+import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.dialogs.ColorPrefSaveDialog;
+import de.dmarcini.bt.homelight.interrfaces.IFragmentInterface;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
-import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.views.ColorPicker;
 
 
 /**
- * Created by dmarc on 22.08.2015.
+ * Fragment zur direkten cisuellen Auswahl der Lichtfarbe auf dem Lampenmodul
  */
-public class ColorSelectFragment extends AppFragment implements ColorPicker.OnColorChangedListener, ColorPicker.OnColorSelectedListener, View.OnClickListener
+public class ColorSelectFragment extends AppFragment implements IFragmentInterface, ColorPicker.OnColorChangedListener, ColorPicker.OnColorSelectedListener, View.OnClickListener
 {
   private static String TAG = ColorSelectFragment.class.getSimpleName();
   private int          currColor;
@@ -103,16 +104,6 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     if( BuildConfig.DEBUG )
     {
       Log.v(TAG, "onCreateView...");
-    }
-    //
-    if( getActivity() instanceof IMainAppServices )
-    {
-      mainService = ( IMainAppServices ) getActivity();
-    }
-    else
-    {
-      Log.e(TAG, "Application is not type of AppServices");
-      mainService = null;
     }
     //
     // die richtige Orientierung erfragen
@@ -266,16 +257,6 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     {
       Log.v(TAG, "onOptionsItemSelected...");
     }
-//    switch( item.getItemId() )
-//    {
-//      case R.id.menu_scan:
-//        //mLeDeviceListAdapter.clear();
-//        //scanLeDevice(true);
-//        break;
-//      case R.id.menu_stop:
-//        //scanLeDevice(false);
-//        break;
-//    }
     return super.onOptionsItemSelected(item);
   }
 
@@ -293,18 +274,18 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     rgbw[ 2 ] = ( short ) (color & 0xff);
     rgbw[ 3 ] = 0;
     //
-    if( timeToSend < System.currentTimeMillis() && mainService != null )
+    if( timeToSend < System.currentTimeMillis() && mainServiceRef != null )
     {
       //
       // Mal wieder zum Contoller senden!
       //
       if( calToggleButton.isChecked() )
       {
-        mainService.setModulRGB4Calibrate(rgbw);
+        mainServiceRef.setModulRGB4Calibrate(rgbw);
       }
       else
       {
-        mainService.setModulRawRGBW(rgbw);
+        mainServiceRef.setModulRawRGBW(rgbw);
       }
       //
       // Neue Deadline setzen
@@ -421,6 +402,15 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     {
       Log.v(TAG, "Page COLORSELECT (Weehl) was selected");
     }
+    if( mainServiceRef == null )
+    {
+      Log.e(TAG, "can't set Callback handler to APP");
+      return;
+    }
+    mainServiceRef.setHandler( this );
+    //
+    // Wenn Modul verbunden ist, setzte ColorWheel
+    //
     if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
     {
       //
@@ -432,7 +422,7 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
         Log.v(TAG, "BT Device is connected and ready....");
       }
       onServiceConnected();
-      final short[] pm = mainService.getModulRGBW();
+      final short[] pm = mainServiceRef.getModulRGBW();
       rgbw[0] = pm[0];
       rgbw[1] = pm[1];
       rgbw[2] = pm[2];
@@ -615,18 +605,18 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     rgbw[ 2 ] = ( short ) (color & 0xff);
     rgbw[ 3 ] = 0;
     //
-    if( mainService != null )
+    if( mainServiceRef != null )
     {
       //
       // Mal wieder zum Contoller senden!
       //
       if( calToggleButton.isChecked() )
       {
-        mainService.setModulRGB4Calibrate(rgbw);
+        mainServiceRef.setModulRGB4Calibrate(rgbw);
       }
       else
       {
-        mainService.setModulRawRGBW(rgbw);
+        mainServiceRef.setModulRawRGBW(rgbw);
       }
       //
       // Neue Deadline setzen
