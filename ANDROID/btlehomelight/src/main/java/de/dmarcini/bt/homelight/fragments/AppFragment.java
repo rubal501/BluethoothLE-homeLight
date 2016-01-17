@@ -52,7 +52,6 @@ public abstract class AppFragment extends Fragment
   public AppFragment()
   {
     super();
-    mainService = ( IMainAppServices ) getActivity();
   }
 
   @Override
@@ -81,6 +80,7 @@ public abstract class AppFragment extends Fragment
       }
     }
   }
+
 
   /**
    * Das BT Gerät wurde verbunden

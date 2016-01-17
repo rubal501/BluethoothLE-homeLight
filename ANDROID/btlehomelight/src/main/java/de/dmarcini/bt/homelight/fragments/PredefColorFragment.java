@@ -44,11 +44,11 @@ import java.util.List;
 import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
+import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.dialogs.ColorPrefChangeDialog;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
-import de.dmarcini.bt.homelight.ProjectConst;
 
 
 /**
@@ -94,15 +94,6 @@ public class PredefColorFragment extends AppFragment implements View.OnClickList
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
   {
-    if( getActivity() instanceof IMainAppServices )
-    {
-      mainService = ( IMainAppServices ) getActivity();
-    }
-    else
-    {
-      mainService = null;
-    }
-
     View rootView = inflater.inflate(R.layout.fragment_predef_colors, container, false);
     //
     // Finde die Referenzen

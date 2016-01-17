@@ -47,11 +47,11 @@ import java.util.List;
 import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
+import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.dialogs.ColorPrefSaveDialog;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
-import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.views.ColorPicker;
 
 
@@ -66,6 +66,9 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
   private ToggleButton calToggleButton;
   private Button colorWheelSaveColorButton;
   private Boolean isRGBW;
+  //TODO: das muss lokal bei den anderen Frgmenten werden, wie hier
+  private IMainAppServices mainService;
+
 
   public ColorSelectFragment()
   {
@@ -90,6 +93,13 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     return fragment;
   }
 
+  @Override
+  public void onCreate(Bundle args)
+  {
+    super.onCreate(args);
+    mainService = ( IMainAppServices ) getActivity();
+  }
+
   private void setBlutethoothConfig(BluetoothModulConfig btConfig)
   {
     this.btConfig = btConfig;
@@ -103,16 +113,6 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     if( BuildConfig.DEBUG )
     {
       Log.v(TAG, "onCreateView...");
-    }
-    //
-    if( getActivity() instanceof IMainAppServices )
-    {
-      mainService = ( IMainAppServices ) getActivity();
-    }
-    else
-    {
-      Log.e(TAG, "Application is not type of AppServices");
-      mainService = null;
     }
     //
     // die richtige Orientierung erfragen
@@ -411,13 +411,12 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
     {
       Log.v(TAG, "Page COLORSELECT (Weehl) was selected");
     }
-    //
-    // Setzte Callback für das Fragment bei der App
-    //
     if( mainService == null )
     {
-      mainService = ( IMainAppServices ) getActivity();
+      Log.e(TAG, "can't set Callback handler to APP");
+      return;
     }
+    //
     mainService.setHandler( this );
     //
     // Wenn Modul verbunden ist, setzte ColorWheel

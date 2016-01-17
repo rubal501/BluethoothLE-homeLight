@@ -46,10 +46,10 @@ import java.util.List;
 import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
+import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
-import de.dmarcini.bt.homelight.ProjectConst;
 
 
 /**
@@ -104,14 +104,6 @@ public class DirectControlFragment extends AppFragment implements View.OnTouchLi
       Log.v(TAG, "onCreateView...");
     }
     setHasOptionsMenu(true);
-    if( getActivity() instanceof IMainAppServices )
-    {
-      mainService = ( IMainAppServices ) getActivity();
-    }
-    else
-    {
-      mainService = null;
-    }
     //
     // die richtige Orientierung erfragen
     //
