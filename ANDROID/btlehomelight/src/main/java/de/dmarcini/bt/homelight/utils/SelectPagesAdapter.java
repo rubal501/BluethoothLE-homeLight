@@ -47,6 +47,8 @@ import de.dmarcini.bt.homelight.fragments.PredefColorFragment;
 
 /**
  * Ein intelligenten Adapter zur Verwaltung der Seiten
+ * wird immer beim Start der App und / oder beim
+ * Beenden der Einstellungen generiert
  */
 public class SelectPagesAdapter extends FragmentStatePagerAdapter
 {
@@ -68,6 +70,7 @@ public class SelectPagesAdapter extends FragmentStatePagerAdapter
     super(fragmentManager);
     //
     // Alle Seiten erst einmal erlauben
+    // Standart, keine Einschränkungen
     //
     pagesAvailvible = new int[ ProjectConst.PAGE_COUNT ];
     for( int i = 0; i < ProjectConst.PAGE_COUNT; i++ )
@@ -108,6 +111,7 @@ public class SelectPagesAdapter extends FragmentStatePagerAdapter
    * @param fm       Fragment Manager
    * @param ctx      Context
    * @param btConfig die Bluethooth Konfigurationsdaten
+   * @param en       Liste der anzuzeigenden Seiten
    */
   public SelectPagesAdapter(FragmentManager fm, Context ctx, BluetoothModulConfig btConfig, boolean[] en)
   {
@@ -309,15 +313,5 @@ public class SelectPagesAdapter extends FragmentStatePagerAdapter
     Locale l = Locale.getDefault();
     return ctx.getString(R.string.app_name).toUpperCase(l);
   }
-
-  /*
-   * We can access the selected page within the ViewPager at any time with the getCurrentItem method which returns the current page:
-   *
-   * vpPager.getCurrentItem(); // --> 2
-   *
-   * The current page can also be changed programmatically with the
-   *
-   * vpPager.setCurrentItem(2)
-   */
 }
 
