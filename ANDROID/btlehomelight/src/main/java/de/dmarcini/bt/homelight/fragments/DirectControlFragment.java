@@ -46,16 +46,17 @@ import java.util.List;
 import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
+import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.R;
+import de.dmarcini.bt.homelight.interrfaces.IFragmentInterface;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
-import de.dmarcini.bt.homelight.ProjectConst;
 
 
 /**
- * Created by dmarc on 22.08.2015.
+ * Direkte Helligkeitssteuerung aller Farben, eigentlich nur zum Testen
  */
-public class DirectControlFragment extends AppFragment implements View.OnTouchListener
+public class DirectControlFragment extends AppFragment implements IFragmentInterface, View.OnTouchListener
 {
   private static String TAG = DirectControlFragment.class.getSimpleName();
   private TextView deviceAddress;
@@ -104,14 +105,6 @@ public class DirectControlFragment extends AppFragment implements View.OnTouchLi
       Log.v(TAG, "onCreateView...");
     }
     setHasOptionsMenu(true);
-    if( getActivity() instanceof IMainAppServices )
-    {
-      mainService = ( IMainAppServices ) getActivity();
-    }
-    else
-    {
-      mainService = null;
-    }
     //
     // die richtige Orientierung erfragen
     //
@@ -558,6 +551,15 @@ public class DirectControlFragment extends AppFragment implements View.OnTouchLi
     {
       Log.v(TAG, "Page DIRECTCONTROL was selected");
     }
+    if( mainServiceRef == null )
+    {
+      Log.e(TAG, "can't set Callback handler to APP");
+      return;
+    }
+    mainServiceRef.setHandler( this );
+    //
+    //Wenn Modul verbunden ist, setzte die SeekBars
+    //
     if( btConfig.isConnected() && btConfig.getCharacteristicTX() != null && btConfig.getCharacteristicRX() != null )
     {
       //
@@ -569,7 +571,7 @@ public class DirectControlFragment extends AppFragment implements View.OnTouchLi
         Log.v(TAG, "BT Device is connected and ready....");
       }
       onServiceConnected();
-      final short[] pm = mainService.getModulRGBW();
+      final short[] pm = mainServiceRef.getModulRGBW();
       rgbw[ 0 ] = pm[ 0 ];
       rgbw[ 1 ] = pm[ 1 ];
       rgbw[ 2 ] = pm[ 2 ];
@@ -605,12 +607,12 @@ public class DirectControlFragment extends AppFragment implements View.OnTouchLi
    */
   private void onProgressChanged()
   {
-    if( timeToSend < System.currentTimeMillis() && mainService != null )
+    if( timeToSend < System.currentTimeMillis() && mainServiceRef != null )
     {
       //
       // Mal wieder zum Contoller senden!
       //
-      mainService.setModulRawRGBW(rgbw);
+      mainServiceRef.setModulRawRGBW(rgbw);
       //
       // Neue Deadline setzen
       //
@@ -667,7 +669,7 @@ public class DirectControlFragment extends AppFragment implements View.OnTouchLi
         //
         // Mal wieder zum Contoller senden!
         //
-        mainService.setModulRawRGBW(rgbw);
+        mainServiceRef.setModulRawRGBW(rgbw);
         //
         // Neue Deadline setzen
         //

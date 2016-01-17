@@ -30,6 +30,13 @@ package de.dmarcini.bt.homelight.interrfaces;
 public interface IMainAppServices
 {
   /**
+   * Funktion settz bei der MainApp den CallbackHandler für alle Möglichen _Ereignisse
+   *
+   * @param frag Referenz der App
+   */
+  void setHandler(IFragmentInterface frag);
+
+  /**
    * Funktion fordert die App auf, das Fragment mit der übergebenen Nummer zu aktivieren
    *
    * @param position Nummer des Fragments (Positionsnummer aus den Konstanten)

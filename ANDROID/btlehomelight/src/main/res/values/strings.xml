@@ -69,6 +69,10 @@
   <string name="pref_sys_cat_on_connect">keySystemOnConnectCat</string>
   <string name="pref_sys_cat_debugging">keySystemDebuggingCat</string>
   <string name="pref_sys_showpage_direct">keySystemDirectControlSwitch</string>
+  <string name="pref_sys_showpage_discovering">keySystemDiscoverSwitch</string>
+  <string name="pref_sys_showpage_colorwheel">keySystemColorwheelSwitch</string>
+  <string name="pref_sys_showpage_brightness">keySystemBrightnessOnlySwitch</string>
+  <string name="pref_sys_showpage_predefcolors">keySystemPredefColorsSwitch</string>
   <string name="pref_sys_jump_to_page_on_connect">keySystemJumpToDefaultPageOnConnect</string>
   <string name="pref_sys_page_on_connect">KeySystemJumpToPageNumberOnConnect</string>
   <string name="pref_sys_debugging_stat">keySystemDebuggingStatus</string>
@@ -103,13 +107,39 @@
 
   <!-- Programmeinstellungen -->
   <string name="pref_sys_headline">Programmeinstellungen</string>
-  <!-- cat direct control -->
+  <!-- cat pages -->
   <string name="pref_sys_pages_control">Seiten anzeigen</string>
+  <!-- discover -->
+  <string name="pref_sys_pages_discover_head">Steuergeräte suchen</string>
+  <string name="pref_sys_pages_discover_summary_on">Seite anzeigen AN</string>
+  <string name="pref_sys_pages_discover_summary_off">Seite anzeigen AUS</string>
+  <string name="pref_sys_pages_discover_switch_on">zeigen</string>
+  <string name="pref_sys_pages_discover_switch_off">vergbergen</string>
+  <!-- direct control -->
   <string name="pref_sys_pages_direct_control_head">Seite für Direkte Ansteuerung</string>
   <string name="pref_sys_pages_direct_control_summary_on">Direkte Steuerung AN</string>
   <string name="pref_sys_pages_direct_control_summary_off">Direkte Steuerung AUS</string>
   <string name="pref_sys_pages_direct_control_switch_on">zeigen</string>
   <string name="pref_sys_pages_direct_control_switch_off">vergbergen</string>
+  <!-- colorwheel -->
+  <string name="pref_sys_pages_colorwheel_head">Seite für Farbwahl</string>
+  <string name="pref_sys_pages_colorwheel_summary_on">Farbkreis Seite AN</string>
+  <string name="pref_sys_pages_colorwheel_summary_off">Farbkreis Seite AUS</string>
+  <string name="pref_sys_pages_colorwheel_switch_on">zeigen</string>
+  <string name="pref_sys_pages_colorwheel_switch_off">vergbergen</string>
+  <!-- colorwheel -->
+  <string name="pref_sys_pages_brightness_head">Seite für WEISS</string>
+  <string name="pref_sys_pages_brightness_summary_on">WEISS AN</string>
+  <string name="pref_sys_pages_brightness_summary_off">WEISS AUS</string>
+  <string name="pref_sys_pages_brightness_switch_on">zeigen</string>
+  <string name="pref_sys_pages_brightness_switch_off">vergbergen</string>
+  <!-- predefColors -->
+  <string name="pref_sys_pages_predef_head">Seite gespeicherte Farben</string>
+  <string name="pref_sys_pages_predef_summary_on">Voreingestellte Farben AN</string>
+  <string name="pref_sys_pages_predef_summary_off">Voreingestellte Farben AUS</string>
+  <string name="pref_sys_pages_predef_switch_on">zeigen</string>
+  <string name="pref_sys_pages_predef_switch_off">vergbergen</string>
+
   <!-- cat on connect -->
   <string name="pref_system_on_connect">Beim Verbinden</string>
   <string name="pref_sys_on_connect_jump_header">Zur Vorgabeseite</string>
