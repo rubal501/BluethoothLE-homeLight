@@ -48,6 +48,7 @@ import java.util.Locale;
 import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.R;
+import de.dmarcini.bt.homelight.interrfaces.IFragmentInterface;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
 
@@ -55,7 +56,7 @@ import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
 /**
  * Direkte Helligkeitssteuerung aller Farben, eigentlich nur zum Testen
  */
-public class DirectControlFragment extends AppFragment implements View.OnTouchListener
+public class DirectControlFragment extends AppFragment implements IFragmentInterface, View.OnTouchListener
 {
   private static String TAG = DirectControlFragment.class.getSimpleName();
   private TextView deviceAddress;

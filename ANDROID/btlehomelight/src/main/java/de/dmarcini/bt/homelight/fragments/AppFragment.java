@@ -24,13 +24,10 @@
 
 package de.dmarcini.bt.homelight.fragments;
 
-import android.app.DialogFragment;
-import android.bluetooth.BluetoothGattService;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import java.util.List;
 import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
@@ -41,18 +38,13 @@ import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
 /**
  * die Schablone für Fragmente der App
  */
-public abstract class AppFragment extends Fragment
+public class AppFragment extends Fragment
 {
   private static String TAG = AppFragment.class.getSimpleName();
   protected final short[] rgbw = new short[ ProjectConst.C_ASKRGB_LEN - 1 ];
   protected IMainAppServices     mainService;
   protected BluetoothModulConfig btConfig;
   protected long                 timeToSend;
-
-  public AppFragment()
-  {
-    super();
-  }
 
   @Override
   public void onCreate(Bundle args)
@@ -81,59 +73,5 @@ public abstract class AppFragment extends Fragment
     }
   }
 
-
-  /**
-   * Das BT Gerät wurde verbunden
-   */
-  public abstract void onBTConnected();
-
-  /**
-   * Das BT Gerät wurde getrennt
-   */
-  public abstract void onBTDisconnected();
-
-  /**
-   * Das BT Gerät meldet verfügbarte Services
-   *
-   * @param gattServices
-   */
-  public abstract void onBTServicesRecived(List<BluetoothGattService> gattServices);
-
-  /**
-   * Es kommen Daten vom BT Gerät
-   *
-   * @param data
-   */
-  public abstract void onBTDataAvaiable(String[] data);
-
-
-  /**
-   * Bluethooth Hintergrundservice verbunden!
-   */
-  public abstract void onServiceConnected();
-
-  /**
-   * Bluethooth Hintergrundservice getrennt
-   */
-  public abstract void onServiceDisconnected();
-
-  /**
-   * Page wurde selektiert
-   */
-  public abstract void onPageSelected();
-
-  /**
-   * Der Dialog hat eine Positive Antwort
-   *
-   * @param frag Das Fragment( der Dialog )
-   */
-  public abstract void onPositiveDialogFragment(DialogFragment frag);
-
-  /**
-   * Der Dialog hat eine Negative Antwort
-   *
-   * @param frag Das Fragment( der Dialog )
-   */
-  public abstract void onNegativeDialogFragment(DialogFragment frag);
 
 }

@@ -55,7 +55,7 @@ import java.util.Locale;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
-import de.dmarcini.bt.homelight.fragments.AppFragment;
+import de.dmarcini.bt.homelight.interrfaces.IFragmentInterface;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.interrfaces.INoticeDialogListener;
 import de.dmarcini.bt.homelight.service.BluetoothLowEnergyService;
@@ -76,7 +76,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
   private final        Vector<String>       recCmdQueue  = new Vector<>();
   private final        short[]              rgbw         = new short[ ProjectConst.C_ASKRGB_LEN - 1 ];
   private              BluetoothModulConfig btConfig     = new BluetoothModulConfig();
-  private AppFragment fragmentCallback;
+  private IFragmentInterface fragmentCallback;
   //
   // verwaltung des Lebenszyklus des Servicves
   //
@@ -694,7 +694,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
    * @param frag Referenz der App
    */
   @Override
-  public void setHandler(AppFragment frag)
+  public void setHandler(IFragmentInterface frag)
   {
     fragmentCallback = frag;
   }
@@ -864,7 +864,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     //
     // Gib dem Fragment order, dass es selektiert wurde
     // TODO: Hier ist die kritische Stelle
-    AppFragment handler = ( AppFragment ) pagerAdapter.getItem(mViewPager.getCurrentItem());
+    IFragmentInterface handler = ( IFragmentInterface ) pagerAdapter.getItem(mViewPager.getCurrentItem());
     handler.onPageSelected();
   }
 

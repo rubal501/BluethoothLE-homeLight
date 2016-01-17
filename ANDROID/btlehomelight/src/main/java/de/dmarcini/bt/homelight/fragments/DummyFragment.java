@@ -39,16 +39,17 @@ import java.util.List;
 import java.util.Locale;
 
 import de.dmarcini.bt.homelight.BuildConfig;
+import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.R;
+import de.dmarcini.bt.homelight.interrfaces.IFragmentInterface;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
-import de.dmarcini.bt.homelight.ProjectConst;
 
 
 /**
  * Created by dmarc on 22.08.2015.
  */
-public class DummyFragment extends AppFragment
+public class DummyFragment extends AppFragment implements IFragmentInterface
 {
   private static String TAG = DummyFragment.class.getSimpleName();
 

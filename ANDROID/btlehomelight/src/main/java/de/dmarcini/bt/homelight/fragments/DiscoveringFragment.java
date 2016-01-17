@@ -58,6 +58,7 @@ import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.SystemPrefActivity;
 import de.dmarcini.bt.homelight.dialogs.EditModuleNameDialogFragment;
+import de.dmarcini.bt.homelight.interrfaces.IFragmentInterface;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BTLEListAdapter;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
@@ -67,7 +68,7 @@ import de.dmarcini.bt.homelight.utils.HomeLightSysConfig;
 /**
  * Das Fragment für die Gerätewahl
  */
-public class DiscoveringFragment extends AppFragment implements AdapterView.OnItemClickListener, View.OnClickListener, AdapterView.OnItemLongClickListener
+public class DiscoveringFragment extends AppFragment implements IFragmentInterface, AdapterView.OnItemClickListener, View.OnClickListener, AdapterView.OnItemLongClickListener
 {
   private static final ArrayList<BluetoothDevice> foundDevices = new ArrayList<>();
   private static       String                     TAG          = DiscoveringFragment.class.getSimpleName();

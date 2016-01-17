@@ -50,6 +50,7 @@ import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.dialogs.ColorPrefSaveDialog;
+import de.dmarcini.bt.homelight.interrfaces.IFragmentInterface;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
 import de.dmarcini.bt.homelight.views.ColorPicker;
@@ -58,7 +59,7 @@ import de.dmarcini.bt.homelight.views.ColorPicker;
 /**
  * Created by dmarc on 22.08.2015.
  */
-public class ColorSelectFragment extends AppFragment implements ColorPicker.OnColorChangedListener, ColorPicker.OnColorSelectedListener, View.OnClickListener
+public class ColorSelectFragment extends AppFragment implements IFragmentInterface, ColorPicker.OnColorChangedListener, ColorPicker.OnColorSelectedListener, View.OnClickListener
 {
   private static String TAG = ColorSelectFragment.class.getSimpleName();
   private int          currColor;
@@ -66,9 +67,6 @@ public class ColorSelectFragment extends AppFragment implements ColorPicker.OnCo
   private ToggleButton calToggleButton;
   private Button colorWheelSaveColorButton;
   private Boolean isRGBW;
-  //TODO: das muss lokal bei den anderen Frgmenten werden, wie hier
-  private IMainAppServices mainService;
-
 
   public ColorSelectFragment()
   {

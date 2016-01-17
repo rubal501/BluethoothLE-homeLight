@@ -47,6 +47,7 @@ import de.dmarcini.bt.homelight.BuildConfig;
 import de.dmarcini.bt.homelight.ProjectConst;
 import de.dmarcini.bt.homelight.R;
 import de.dmarcini.bt.homelight.dialogs.ColorPrefChangeDialog;
+import de.dmarcini.bt.homelight.interrfaces.IFragmentInterface;
 import de.dmarcini.bt.homelight.interrfaces.IMainAppServices;
 import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
 
@@ -54,7 +55,7 @@ import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
 /**
  * Created by dmarc on 22.08.2015.
  */
-public class PredefColorFragment extends AppFragment implements View.OnClickListener, View.OnLongClickListener
+public class PredefColorFragment extends AppFragment implements IFragmentInterface, View.OnClickListener, View.OnLongClickListener
 {
   private static String TAG = PredefColorFragment.class.getSimpleName();
   private Button predefRedButton;
