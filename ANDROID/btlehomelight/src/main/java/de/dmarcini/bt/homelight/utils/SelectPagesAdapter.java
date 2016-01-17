@@ -186,7 +186,10 @@ public class SelectPagesAdapter extends FragmentStatePagerAdapter
     //
     // erst mal schauen, ob da was vorhanden ist
     //
-    retFrag = registeredFragments.get(pageType);
+    retFrag = registeredFragments.get(position);
+    //
+    // ist es der richtige Typ? Wenn ncht, neu erzeugen
+    //
     switch( pageType )
     {
       case ProjectConst.PAGE_DISCOVERING:
