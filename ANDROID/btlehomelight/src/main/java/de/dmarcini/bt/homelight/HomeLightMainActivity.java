@@ -143,7 +143,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
    * ACTION_DATA_AVAILABLE: received data from the device.
    * This can be a result of read or notification operations.
    */
-  private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver()
+  private final BroadcastReceiver btGattBroadcastGattUpdateReceiver = new BroadcastReceiver()
   {
     @Override
     public void onReceive(Context context, Intent intent)
@@ -169,7 +169,6 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
         readerThread = new BTReaderThread(ringBuffer, recCmdQueue);
         Thread rThread = new Thread(readerThread, "reader_thread");
         rThread.start();
-
         //
         // on connected erst weitergeben, wenn auch die RX und TX Kanäle vorhanden sind
         // sonst passiert das erst beim Discovering
@@ -520,9 +519,13 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     mViewPager.setAdapter(pagerAdapter);
     mViewPager.addOnPageChangeListener(this);
     //
+    // TODO: Chcek, ob das so passt
+    //
+    onPageSelected(mViewPager.getCurrentItem());
+    //
     // Broadcast Reciver für andere Fragmente zugänglich machen
     //
-    btConfig.setGattUpdateReceiver(mGattUpdateReceiver);
+    btConfig.setGattUpdateReceiver(btGattBroadcastGattUpdateReceiver);
     //
     // Der Service muss noch gestartet werden
     //
@@ -581,7 +584,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
 
   private void tryReconnectToDevice()
   {
-    registerReceiver(mGattUpdateReceiver, intentFilter);
+    registerReceiver(btGattBroadcastGattUpdateReceiver, intentFilter);
     if( (btConfig.getBluetoothService() != null) && (btConfig.getDeviceAddress() != null) )
     {
       final boolean result = btConfig.getBluetoothService().connect(btConfig.getDeviceAddress());
@@ -639,7 +642,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     }
     try
     {
-      unregisterReceiver(mGattUpdateReceiver);
+      unregisterReceiver(btGattBroadcastGattUpdateReceiver);
     }
     catch( IllegalArgumentException ex )
     {
@@ -863,7 +866,7 @@ public class HomeLightMainActivity extends AppCompatActivity implements IMainApp
     mViewPager.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
     //
     // Gib dem Fragment order, dass es selektiert wurde
-    // TODO: Hier ist die kritische Stelle
+    // Hier ist die kritische Stelle
     IFragmentInterface handler = ( IFragmentInterface ) pagerAdapter.getRegisteredFragment(mViewPager.getCurrentItem());
     if( handler == null )
     {

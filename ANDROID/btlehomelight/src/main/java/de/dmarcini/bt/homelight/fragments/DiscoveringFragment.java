@@ -345,7 +345,7 @@ public class DiscoveringFragment extends AppFragment implements IFragmentInterfa
       mScanning = false;
     }
     //
-    // Wenn die Activity meine Services kann
+    // Wenn REf auf activity da ist
     //
     if( mainServiceRef != null )
     {
