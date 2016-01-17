@@ -41,9 +41,13 @@ import de.dmarcini.bt.homelight.utils.BluetoothModulConfig;
 public class AppFragment extends Fragment
 {
   private static String TAG = AppFragment.class.getSimpleName();
+  /** Das Aray speichert die RGBW Einstellungen */
   protected final short[] rgbw = new short[ ProjectConst.C_ASKRGB_LEN - 1 ];
+  /** Referenz zur App mit dem interface IMainAppServices */
   protected IMainAppServices mainServiceRef;
+  /** Referenz auf das Objekt, welches die BT Relevanten Einstellungen speichert */
   protected BluetoothModulConfig btConfig;
+  /** Zeitverzögerung für das Versenden der Farbeinstellung an das BT Modul */
   protected long                 timeToSend;
 
   @Override
@@ -52,6 +56,8 @@ public class AppFragment extends Fragment
     int pos;
     //
     super.onCreate(args);
+    //
+    // Für Nutzung von Services der App
     //
     mainServiceRef = ( IMainAppServices ) getActivity();
 
