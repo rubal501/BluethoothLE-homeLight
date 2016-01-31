@@ -24,22 +24,28 @@ Communication::~Communication()
 // Kommando senden und das Echo ausgeben
 // für Debugging der BT Schnittstelle notwendig,kann später entfallen
 //#############################################################################
-String Communication::sendCommand( SoftwareSerial& comm, String cmd, bool echo )
+String Communication::sendCommand( HardwareSerial& comm, SoftwareSerial *dComm, String cmd, bool echo )
 {
   unsigned long waitfor;
   String retval;
   
   #ifdef DEBUG
-  Serial.print("Sende <");
-  Serial.print( cmd );
-  Serial.println(">...");
+  if( dComm != NULL)
+  {
+    dComm->print("Sende <");
+    dComm->print( cmd );
+    dComm->println(">...");
+  }
   #endif
   delay(25);
   comm.print(cmd);
   comm.flush();
   delay(35);
   #ifdef DEBUG
-  Serial.println("Sende CMD...OK");
+  if( dComm != NULL )
+  {
+    dComm->println("Sende CMD...OK");
+  }
   #endif  
   waitfor = millis() + 500L;
   if( echo )
@@ -55,13 +61,19 @@ String Communication::sendCommand( SoftwareSerial& comm, String cmd, bool echo )
         int ch = comm.read();
         retval += char(ch);
         #ifdef DEBUG
-        Serial.write( ch );
+        if( dComm != NULL )
+        {
+          dComm->write( ch );
+        }
         #endif        
       }
       else
       {
         #ifdef DEBUG
-        Serial.write(comm.read());
+        if( dComm != NULL )
+        {
+          dComm->write(comm.read());
+        }
         #else
         comm.read();
         #endif
@@ -73,7 +85,10 @@ String Communication::sendCommand( SoftwareSerial& comm, String cmd, bool echo )
     }
   }
   #ifdef DEBUG
-  Serial.println("");
+  if( dComm != NULL )
+  {
+    dComm->println("");
+  }
   #endif
   if( echo )
   {
@@ -85,86 +100,129 @@ String Communication::sendCommand( SoftwareSerial& comm, String cmd, bool echo )
 //#############################################################################
 // Finde die Kommunikationsgeschwindigkeit des Moduls heraus
 //#############################################################################
-long Communication::findCommSpeed( SoftwareSerial& comm )
+long Communication::findCommSpeed( HardwareSerial& comm, SoftwareSerial *dComm )
 {
   String testString;
-
+  //
+  // TESTE BASIC: 9600 Baud
+  //
+  comm.flush();
   comm.begin(9600L);
-  
   #ifdef DEBUG
-  Serial.println("Teste 9600 baud...");
+  if( dComm != NULL )
+  {
+    dComm->println("Teste 9600 baud...");
+  }
   #endif
-  testString = sendCommand( comm, "AT", true );
+  testString = sendCommand( comm, dComm, "AT", true );
   #ifdef DEBUG
-  Serial.print("Ergebnis: <");
-  Serial.print( testString );
-  Serial.println(">");
+  if( dComm != NULL )
+  {
+    dComm->print("Ergebnis: <");
+    dComm->print( testString );
+    dComm->println(">");
+  }
   #endif
   if( testString == "OK" )
   {
     // gefundene Geschwindigkeit.
     #ifdef DEBUG
-    Serial.println("9600 baud gefunden...");
+    if( dComm != NULL )
+    {
+      dComm->println("9600 baud gefunden...");
+    }
     #endif
     return( 9600L );
   }
-
+  //
+  // Teste auf 19200 Baud
+  //
   comm.begin(19200L);
-  
   #ifdef DEBUG
-  Serial.println("Teste 19200 baud...");
+  if( dComm != NULL )
+  {
+    dComm->println("Teste 19200 baud...");
+  }
   #endif
-  testString = sendCommand( comm, "AT", true );
+  testString = sendCommand( comm, dComm, "AT", true );
   #ifdef DEBUG
-  Serial.print("Ergebnis: <");
-  Serial.print( testString );
-  Serial.println(">");
+  if( dComm != NULL )
+  {
+    dComm->print("Ergebnis: <");
+    dComm->print( testString );
+    dComm->println(">");
+  }
   #endif
   if( testString == "OK" )
   {
     // gefundene Geschwindigkeit.
     #ifdef DEBUG
-    Serial.println("19200 baud gefunden...");
+    if( dComm != NULL )
+    {
+      dComm->println("19200 baud gefunden...");
+    }
     #endif
     return( 19200L );
   }
   
+  //
+  // Teste auf 38400 Baud
+  //
   comm.begin(38400L);
-  
   #ifdef DEBUG
-  Serial.println("Teste 38400 baud...");
+  if( dComm != NULL )
+  {
+    dComm->println("Teste 38400 baud...");
+  }
   #endif
-  testString = sendCommand( comm, "AT", true );
+  testString = sendCommand( comm, dComm, "AT", true );
   #ifdef DEBUG
-  Serial.print("Ergebnis: <");
-  Serial.print( testString );
-  Serial.println(">");
+  if( dComm != NULL )
+  {
+    dComm->print("Ergebnis: <");
+    dComm->print( testString );
+    dComm->println(">");
+  }
   #endif
   if( testString == "OK" )
   {
     // gefundene Geschwindigkeit.
     #ifdef DEBUG
-    Serial.println("38400 baud gefunden...");
+    if( dComm != NULL )
+    {
+      dComm->println("38400 baud gefunden...");
+    }
     #endif
     return( 38400L );
   }
 
+  //
+  // Test auf 57600 Baud
+  //
   comm.begin(57600L);
-  
   #ifdef DEBUG
-  Serial.println("Teste 58600 baud...");
+  if( dComm != NULL )
+  {
+    dComm->println("Teste 58600 baud...");
+  }
   #endif
-  testString = sendCommand( comm, "AT", true );
+  testString = sendCommand( comm, dComm, "AT", true );
   #ifdef DEBUG
-  Serial.print("Ergebnis: <");
-  Serial.print( testString );
-  Serial.println(">");
+  if( dComm != NULL )
+  {
+    dComm->print("Ergebnis: <");
+    dComm->print( testString );
+    dComm->println(">");
+  }
   #endif
   if( testString == "OK" )
   {
     // gefundene Geschwindigkeit.
     #ifdef DEBUG
-    Serial.println("57600 baud gefunden...");
+    if( dComm != NULL )
+    {
+      dComm->println("57600 baud gefunden...");
+    }
     #endif
     return( 57600L );
   }
@@ -177,19 +235,22 @@ long Communication::findCommSpeed( SoftwareSerial& comm )
 // return 1 => Zeilenende (ETX)gefunden
 // return 0 => Nix unternehmen
 //#############################################################################
-byte Communication::readMessageIfAvavible( SoftwareSerial& comm, String& btKdoStr )
+byte Communication::readMessageIfAvavible( HardwareSerial& comm, SoftwareSerial *dComm, String& btKdoStr )
 {  
   int inChar;
    
   //
   // Solange hier aten rein purzeln
   // 
-  while(comm.available())
+  while( comm.available() )
   {
     // Das _Zeichen lesen
     inChar = comm.read() & 0x00ff;
     #ifdef DEBUG
-    Serial.write(inChar);
+    if( dComm != NULL )
+    {
+      dComm->write(inChar);
+    }
     #endif
     // wenn die Zeichenkette zu lang ist:
     if( btKdoStr.length() > 24 )
@@ -265,7 +326,7 @@ boolean Communication::isModulConnected(void)
 //#############################################################################
 // Sende das Zeug an den Meister
 //#############################################################################
-void Communication::sendToMaster( SoftwareSerial& comm, String& toSend )
+void Communication::sendToMaster( HardwareSerial& comm, String& toSend )
 {
   comm.write( Communication::STX );
   comm.print( toSend );
@@ -284,7 +345,7 @@ char Communication::nibbleToHex(byte ch)
 //#############################################################################
 //  Sende aktuelle Einstellungen des Moduls RGBW
 //#############################################################################
-void Communication::sendRGBW( SoftwareSerial& comm, byte* rgbw )
+void Communication::sendRGBW( HardwareSerial& comm, byte* rgbw )
 {
   String cmd;
   
@@ -304,7 +365,7 @@ void Communication::sendRGBW( SoftwareSerial& comm, byte* rgbw )
 //#############################################################################
 // Sende den Modulnamen 
 //#############################################################################
-void Communication::sendModuleName( SoftwareSerial& comm, String& mName )
+void Communication::sendModuleName( HardwareSerial& comm, String& mName )
 {
   String cmd;
   cmd += nibbleToHex( C_ASKNAME >> 4);
@@ -317,7 +378,7 @@ void Communication::sendModuleName( SoftwareSerial& comm, String& mName )
 //#############################################################################
 // Sende den Modulnamen
 //#############################################################################
-void Communication::sendModuleType( SoftwareSerial& comm, const String& moduleType )
+void Communication::sendModuleType( HardwareSerial& comm, const String& moduleType )
 {
   String cmd;
   cmd += nibbleToHex( C_ASKTYP >> 4);

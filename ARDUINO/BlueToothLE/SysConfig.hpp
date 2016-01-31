@@ -27,15 +27,15 @@ public:
   //
   // die Sachen, die schnell gehen sollen...
   //
-  static void SystemPreInit( EEPROMConfig& cfg  );
+  static void SystemPreInit( EEPROMConfig& cfg, SoftwareSerial* dComm );
 //
   // Die gesamte Systeminitialisierung ausgelagert aus Main.cpp
   //
-  static void SystemInit( SoftwareSerial& comm, Communication& myComm, EEPROMConfig& cfg  );
+  static void SystemInit( HardwareSerial& comm, SoftwareSerial* dComm, Communication& myComm, EEPROMConfig& cfg  );
   //
   // Setzte den Modulnamen
   //
-  static void setModuleName( SoftwareSerial& mySerial, Communication& myComm, EEPROMConfig& theConfig, String name );
+  static void setModuleName( HardwareSerial& comm, SoftwareSerial* dComm, Communication& myComm, EEPROMConfig& theConfig, String name );
   //
   // setze die PWM Frequenzen nach meinen Bedürfnissen
   //
@@ -43,7 +43,7 @@ public:
   //
   // Das Modul durch POWER OFF PAUSE ON zurücksetzen zur Übernahme
   //
-  static void restartBTModul( SoftwareSerial& mySerial, Communication& myComm ); 
+  static void restartBTModul( HardwareSerial comm, SoftwareSerial* dComm, Communication& myComm ); 
 protected:
 private:
 	SysConfig( const SysConfig &c );
