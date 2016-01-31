@@ -236,7 +236,7 @@ public class ColorSelectFragment extends AppFragment implements IFragmentInterfa
     {
       Log.v(TAG, "onCreateOptionsMenu...");
     }
-    inflater.inflate(R.menu.menu_home_light_main, menu);
+    //inflater.inflate(R.menu.menu_home_light_main, menu);
   }
 
   @Override

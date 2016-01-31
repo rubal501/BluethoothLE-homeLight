@@ -191,7 +191,7 @@ public class DiscoveringFragment extends AppFragment implements IFragmentInterfa
     {
       Log.v(TAG, "onCreateOptionsMenu...");
     }
-    inflater.inflate(R.menu.menu_home_light_main, menu);
+    inflater.inflate(R.menu.menu_options_discovering, menu);
     prepareHeader();
   }
 
@@ -268,12 +268,16 @@ public class DiscoveringFragment extends AppFragment implements IFragmentInterfa
     switch( item.getItemId() )
     {
       case R.id.menu_preferences:
-        // TODO: Preferences Activity aufrufen
         Log.v(TAG, "onOptionsItemSelected, preferences call...");
         Intent intent = new Intent(getActivity(), SystemPrefActivity.class);
         getActivity().startActivityForResult(intent, ProjectConst.REQUEST_SYS_PREFS);
         break;
+
+      case R.id.menu_finish:
+        getActivity().finish();
+        break;
     }
+
     return super.onOptionsItemSelected(item);
   }
 
@@ -345,7 +349,7 @@ public class DiscoveringFragment extends AppFragment implements IFragmentInterfa
       mScanning = false;
     }
     //
-    // Wenn REf auf activity da ist
+    // Wenn Ref auf activity da ist
     //
     if( mainServiceRef != null )
     {

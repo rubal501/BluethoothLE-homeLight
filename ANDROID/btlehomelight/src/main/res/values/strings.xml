@@ -36,8 +36,9 @@
   <string name="main_ble_not_supported">BT 4.0 nicht unterstützt!</string>
   <string name="main_ble_unknown_service">unbekannter Service</string>
 
-  <!-- Main Menu -->
+  <!-- Menu -->
   <string name="menu_preferences">Einstellungen...</string>
+  <string name="menu_finish">ENDE</string>
 
   <!-- Discovering Fragment -->
   <string name="discovering_no_data">Kein Gerät verfügbar</string>
