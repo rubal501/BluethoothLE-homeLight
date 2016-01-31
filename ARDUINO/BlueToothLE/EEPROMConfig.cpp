@@ -27,35 +27,44 @@ EEPROMConfig::~EEPROMConfig()
 //
 // Lade Konfiguration aus dem EEPROM
 //
-void EEPROMConfig::loadConfig() 
+void EEPROMConfig::loadConfig( SoftwareSerial *dComm ) 
 {
   //
   // Wenn die Version stimmt, lade Config aus dem EEPROM
   //
   if (checkVersion() == 1 )
   {  
-#ifdef DEBUG
-    Serial.println( "Version ok, lese aus EEPROM..." );
-#endif
+    #ifdef DEBUG
+    if( dComm !=  NULL )
+    {
+      dComm->println( "Version ok, lese aus EEPROM..." );
+    }
+    #endif
     for (unsigned int t=0; t<sizeof(storedConfig); t++)
     {
       *((char*)&storedConfig + t) = EEPROM.read(CONFIG_START + t);
     }
     wasChanged = false;    
-#ifdef DEBUG
-    Serial.println( "Version ok, lese aus EEPROM...OK" );
-#endif
+    #ifdef DEBUG
+    if( dComm !=  NULL )
+    {
+      dComm->println( "Version ok, lese aus EEPROM...OK" );
+    }
+    #endif
   }
   else
   {
     //
     // neue Version erzeugen
     //
-#ifdef DEBUG
-    Serial.println( "Version nicht ok, erzeuge KONFIG..." );
-#endif
+    #ifdef DEBUG
+    if( dComm !=  NULL )
+    {
+      dComm->println( "Version nicht ok, erzeuge KONFIG..." );
+    }
+    #endif
     initConfig();
-    saveConfig();
+    saveConfig(dComm);
     wasChanged = false;
   }
 }
@@ -110,18 +119,24 @@ void EEPROMConfig::initConfig(void)
 //
 // Die Konfiguration byteweise in EEPROM sichern
 //
-void EEPROMConfig::saveConfig() 
+void EEPROMConfig::saveConfig( SoftwareSerial *dComm ) 
 {
-#ifdef DEBUG
-  Serial.println( "Sichere KONFIG..." );
-#endif
+  #ifdef DEBUG
+  if( dComm != NULL )
+  {
+    dComm->println( "Sichere KONFIG..." );
+  }
+  #endif
   for (unsigned int t=0; t<sizeof(storedConfig); t++)
   {
     EEPROM.update(CONFIG_START + t, *((char*)&storedConfig + t));
   }
-#ifdef DEBUG
-  Serial.println( "Sichere KONFIG...OK" );
- #endif
+  #ifdef DEBUG
+  if( dComm != NULL )
+  {
+    dComm->println( "Sichere KONFIG...OK" );
+  }
+  #endif
 }
 
 //

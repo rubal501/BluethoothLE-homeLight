@@ -11,8 +11,8 @@
 
 #include <Arduino.h>
 #include <EEPROM.h>
-//#include <avr/pgmspace.h>
 #include "config.hpp"
+#include "SoftwareSerial.hpp"
 
 
 struct StoreStruct 
@@ -47,8 +47,8 @@ private:
 public:
 	EEPROMConfig();
 	~EEPROMConfig();
-  void loadConfig(void);
-  void saveConfig(void);
+  void loadConfig( SoftwareSerial *dComm );
+  void saveConfig( SoftwareSerial *dComm );
   //
   // Getter für Konfig
   //

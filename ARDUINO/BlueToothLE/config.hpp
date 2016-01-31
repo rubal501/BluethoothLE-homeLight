@@ -18,10 +18,10 @@
 #define PWM_BLUE            9
 #define PWM_WHITE           10
 // RGB invertieren (bei gemeinsamer Anode muss das sein)
-//#define RGBINVERSE          1 
-#undef RGBINVERSE
+#define RGBINVERSE          1 
+//#undef RGBINVERSE
 //
-// Software UART Ports
+// Software UART Ports für DEBUGGING
 //
 #define RXPIN               8
 #define TXPIN               2
@@ -38,11 +38,8 @@
 //
 // Übertragungsgeschwindigkeiten
 //
-#define BAUDRATE_USB        115200
-#define DESTBAUDRATE_VAL    38400
-#define DESTBAUDRATE_NUM    2
-
-
+#define BAUDRATE_BT         19200
+#define BAUDRATE_DEBUG      19200
 
 
 #endif /* CONFIG_H_ */

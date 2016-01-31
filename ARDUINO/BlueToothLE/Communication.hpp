@@ -23,19 +23,19 @@ private:
   static const int STX = 0x02;
   static const int ETX = 0x03;
   static char nibbleToHex(byte ch);  
-  void sendToMaster( SoftwareSerial& comm, String& toSend );
+  void sendToMaster( HardwareSerial& comm, String& toSend );
 
 //functions
 public:
 	Communication();
 	~Communication();
-  String sendCommand( SoftwareSerial& comm, String cmd, bool echo = false );
-  long findCommSpeed( SoftwareSerial& comm );
-  byte readMessageIfAvavible( SoftwareSerial& comm, String& btKdoStr );
+  String sendCommand( HardwareSerial& comm, SoftwareSerial *dComm, String cmd, bool echo = false );
+  long findCommSpeed( HardwareSerial& comm, SoftwareSerial *dComm );
+  byte readMessageIfAvavible( HardwareSerial& comm, SoftwareSerial *dComm, String& btKdoStr  );
   boolean isModulConnected(void);
-  void sendRGBW( SoftwareSerial& comm, byte* rgbw );
-  void sendModuleName( SoftwareSerial& comm, String& mName );
-  void sendModuleType( SoftwareSerial& comm, const String& moduleType );
+  void sendRGBW( HardwareSerial& comm, byte* rgbw );
+  void sendModuleName( HardwareSerial& comm, String& mName );
+  void sendModuleType( HardwareSerial& comm, const String& moduleType );
 protected:
 private:
 	Communication( const Communication &c );
