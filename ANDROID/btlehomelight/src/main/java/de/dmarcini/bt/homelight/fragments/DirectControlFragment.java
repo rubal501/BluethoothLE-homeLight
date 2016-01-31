@@ -295,7 +295,7 @@ public class DirectControlFragment extends AppFragment implements IFragmentInter
       Log.v(TAG, "onCreateOptionsMenu...");
     }
     //MenuInflater inflater = getActivity().getMenuInflater();
-    inflater.inflate(R.menu.menu_direct_control_fragment, menu);
+    //inflater.inflate(R.menu.menu_direct_control_fragment, menu);
   }
 
   @Override

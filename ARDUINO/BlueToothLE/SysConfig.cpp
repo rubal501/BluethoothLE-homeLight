@@ -23,8 +23,19 @@ SysConfig::~SysConfig()
 {
 } //~SysConfig
 
-void SysConfig::SystemPreInit( EEPROMConfig& theConfig )
+void SysConfig::SystemPreInit( EEPROMConfig& theConfig, SoftwareSerial* dComm  )
 {
+  #ifdef DEBUG
+  //
+  // Ports für Software Serial Serial setzen
+  //
+  pinMode( TXPIN, OUTPUT );
+  pinMode( RXPIN, INPUT );
+  dComm->begin(BAUDRATE_DEBUG);
+  // Interruptsteuerung des Empfanges AN
+  dComm->listen();
+  dComm->println("SystemPreInit: OK");
+  #endif
   //
   // EEPROM-Pin setzen
   //
@@ -32,7 +43,7 @@ void SysConfig::SystemPreInit( EEPROMConfig& theConfig )
   //
   // Die Konfiguration laden (Aus EEPROM)
   //
-  theConfig.loadConfig();
+  theConfig.loadConfig(dComm);
   //
   // PWM Ports vorbereiten, 488 Herz PWM
   //
@@ -42,84 +53,106 @@ void SysConfig::SystemPreInit( EEPROMConfig& theConfig )
   SysConfig::setPwmFrequency(PWM_WHITE, 64);
 }
 
-void SysConfig::SystemInit( SoftwareSerial& mySerial, Communication& myComm, EEPROMConfig& theConfig )
+void SysConfig::SystemInit( HardwareSerial& comm, SoftwareSerial* dComm, Communication& myComm, EEPROMConfig& theConfig   )
 {
   long currSpeed;
-  //
-  // Ports für Software Serial Serial setzen
-  //
-  pinMode( TXPIN, OUTPUT );
-  pinMode( RXPIN, INPUT );
-  // Interruptsteuerung des Empfanges AN
-  mySerial.listen();
   //
   // Port für ONLINE Check des BT Moduls
   //
   pinMode( ONLINE_PIN, INPUT ); 
-  //digitalWrite(ONLINE_PIN, HIGH ); 
   //
   // der RESET-PIN (HIGH ist alles in Ordnung)
   //
   pinMode( RESET_PIN, OUTPUT );
   digitalWrite( RESET_PIN, HIGH );
   delay(300);
-#ifdef DEBUG
-  Serial.print("ROT: ");
-  Serial.println( theConfig.getCalRed(), HEX );
-  Serial.print("GRUEN: ");
-  Serial.println( theConfig.getCalGreen(), HEX );
-  Serial.print("BLAU: ");
-  Serial.println( theConfig.getCalBlue(), HEX );
-  Serial.print("WEISS: ");
-  Serial.println( theConfig.getCalWhite(), HEX );
-#endif
+  #ifdef DEBUG
+  if( dComm != NULL )
+  {
+    dComm->println("SystemInit...");
+    dComm->print("ROT: ");
+    dComm->println( theConfig.getCalRed(), HEX );
+    dComm->print("GRUEN: ");
+    dComm->println( theConfig.getCalGreen(), HEX );
+    dComm->print("BLAU: ");
+    dComm->println( theConfig.getCalBlue(), HEX );
+    dComm->print("WEISS: ");
+    dComm->println( theConfig.getCalWhite(), HEX );
+    dComm->flush();
+  }
+  #endif
   //
   // Verbindungsgeschwindigkeit checken,
   // langsdam rantasten...
   // gibt es 0 zurück, PANIK, 
   // TODO: noch was machen
-  currSpeed = myComm.findCommSpeed( mySerial );
+  currSpeed = myComm.findCommSpeed( comm, dComm );
   //*
-  if( currSpeed != 19200 )
+  if( currSpeed != BAUDRATE_BT )
   {
-    Serial.println( "Setze neue Geschwindigkeit auf 19200..." );
-    myComm.sendCommand( mySerial, "AT+BAUD1" );
-    mySerial.begin( 19200L );
+    #ifdef DEBUG   
+    if( dComm != NULL )
+    {
+      dComm->print( "Setze neue Geschwindigkeit auf " );
+      dComm->println( BAUDRATE_BT );
+      dComm->flush();
+    } 
+    #endif
+    myComm.sendCommand( comm, dComm, "AT+BAUD1" );
+    comm.begin( BAUDRATE_BT );
     delay(250);
-    myComm.sendCommand( mySerial, "AT" );
-    Serial.println( "Setze neue Geschwindigkeit auf 19200...OK" );
+    myComm.sendCommand( comm, dComm, "AT" );
+    #ifdef DEBUG
+    if( dComm != NULL )
+    {
+      dComm->print( "Setze neue Geschwindigkeit auf " );
+      dComm->print( BAUDRATE_BT );
+      dComm->println( " ...OK");
+      dComm->flush();
+    }
+    #endif
   }
-  //
-  // RESET, saubere Anfangskonfig
-  //
-  //myComm.sendCommand( mySerial, "AT+RESET" );
-  //delay( 1500 );
+  #ifdef DEBUG
+  if( dComm != NULL )
+  {
+    dComm->print( "Geschwindigkeit fuer BT Modul: " );
+    dComm->print( BAUDRATE_BT );
+    dComm->println( " baud");
+    dComm->flush();
+  }
+  #endif
   //
   // Statusport-LED ohne blinken
   //
-  myComm.sendCommand( mySerial, "AT+PIO11" );
+  myComm.sendCommand( comm, dComm, "AT+PIO11" );
   //
   // Modulname setzen
   //
-  setModuleName( mySerial, myComm, theConfig, theConfig.getModuleName() );
+  setModuleName( comm, dComm, myComm, theConfig, theConfig.getModuleName() );
   //
   // Version erfragen
   //
-#ifdef DEBUG
-  myComm.sendCommand( mySerial, "AT+VERS?" );
-  myComm.sendCommand( mySerial, "AT+BAUD?" );
-  myComm.sendCommand( mySerial, "AT+NAME?" );
-#endif
+  #ifdef DEBUG
+  myComm.sendCommand( comm, dComm, "AT+VERS?" );
+  myComm.sendCommand( comm, dComm, "AT+BAUD?" );
+  myComm.sendCommand( comm, dComm, "AT+NAME?" );
+  #endif
   //
   // AT Mode festlegen
   //
-  myComm.sendCommand( mySerial, "AT+MODE0" ); 
+  myComm.sendCommand( comm, dComm, "AT+MODE0" ); 
+  #ifdef DEBUG
+  if( dComm != NULL )
+  {
+    dComm->println("SystemInit...OK");
+  }
+  #endif  
 }
 
 //
 // Setze im Modul den Modulnamen
 //
-void SysConfig::setModuleName( SoftwareSerial& mySerial, Communication& myComm, EEPROMConfig& theConfig, String name )
+void SysConfig::setModuleName( HardwareSerial& comm, SoftwareSerial* dComm, Communication& myComm, EEPROMConfig& theConfig, String name )
 {
   String mName;
   //
@@ -130,7 +163,7 @@ void SysConfig::setModuleName( SoftwareSerial& mySerial, Communication& myComm, 
   //
   // Modulname setzen
   //
-  myComm.sendCommand( mySerial, mName );
+  myComm.sendCommand( comm, dComm, mName );
 }
 
 /**
@@ -211,19 +244,24 @@ void SysConfig::setPwmFrequency(int pin, int divisor)
 /* eingeschaltet. Die Funktion bockiert etwas über 6000 ms, die BT      */
 /* Verbindung wird (natürlich) getrennt                                 */
 /************************************************************************/
-void SysConfig::restartBTModul( SoftwareSerial& mySerial, Communication& myComm )
+void SysConfig::restartBTModul( HardwareSerial comm, SoftwareSerial* dComm, Communication& myComm )
 {
-  Serial.println("BT Modul resetten...");
-  Serial.flush();
+  #ifdef DEBUG
+  if( dComm != NULL )
+  {
+    dComm->println("BT Modul resetten...");
+    dComm->flush();
+  }
+  #endif
   //
   // RESET, saubere Anfangskonfig
   //
-  myComm.sendCommand( mySerial, "AT+RESET" );
+  myComm.sendCommand( comm, dComm, "AT+RESET" );
   delay( 1500 );
   //
   // Statusport-LED ohne blinken
   //
-  myComm.sendCommand( mySerial, "AT+PIO11" );
+  myComm.sendCommand( comm, dComm,"AT+PIO11" );
   //
   // Völlig herzlos rebooten
   //

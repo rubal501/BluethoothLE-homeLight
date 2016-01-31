@@ -17,24 +17,27 @@ const static String moduleType = "DM_RGBW";
 //
 // Software Serial Objekt erzeigen und initiieren
 //
-SoftwareSerial mySerial( RXPIN, TXPIN, false); // RX, TX
+#ifdef DEBUG
+SoftwareSerial* debugSerial = new SoftwareSerial( RXPIN, TXPIN, false); // RX, TX
+#else
+SoftwareSerial* debugSerial = NULL;
+#endif
 //
 // das Kommunikationsobjekt (USB und BT Modul)
 //
-Communication *myComm = new Communication();
+Communication* myComm = new Communication();
 //
 // die gespeicherten Vorgaben
 //
 EEPROMConfig theConfig;
 
-const int baudRateVal = DESTBAUDRATE_VAL;
 String btInputString="";
 unsigned long saveTime = 0L;
 unsigned long eepromShutoffTime = 0L;
 unsigned long onlineTestTime = 0L;
 const unsigned long SAVEDELAY = 2500L;
 const unsigned long BEAMDELAY = 250L;
-const unsigned long ONLINETEST_DELAY = 300L;
+const unsigned long ONLINETEST_DELAY = 150L;
 boolean isOnline = false;
 boolean isLightsOFF = false;
 
@@ -48,34 +51,26 @@ void setup()
   //
   eepromShutoffTime = millis() + BEAMDELAY;
   digitalWrite(ONLINE_PIN, HIGH );
-  SysConfig::SystemPreInit( theConfig );
+  SysConfig::SystemPreInit( theConfig, debugSerial );
   // LED Helligkeiten aus Config einstellen
   LEDSet::init( theConfig );    
   //
-  // Serielle USB Verbindung öffnen
+  // Serielle Verbindung öffnen (Verbindung mit BT-Modul)
   //
-  Serial.begin(BAUDRATE_USB);
-  while (!Serial)
-  {
-    ; // wait for serial port to connect. Needed for native USB port only
-  }
+  Serial.begin(BAUDRATE_BT);
+  //
   #ifdef DEBUG
-  Serial.println("BT Testprogramm!");
-  Serial.println( "Lese Konfiguration...");
-  #else
-  Serial.println("MODULSTART");
+  debugSerial->println("BT Testprogramm!");
+  debugSerial->println( "Lese Konfiguration...");
   #endif
   //
   // Konfiguriere das in einer ausgelagerten Sequenz
   //
-  SysConfig::SystemInit( mySerial, *myComm, theConfig );
+  SysConfig::SystemInit( Serial, debugSerial, *myComm, theConfig );
   //
   #ifdef DEBUG  
-  Serial.println("");
-  #endif
-  Serial.println("BEREIT!");
-  #ifdef DEBUG
-  Serial.println("==========================");
+  debugSerial->println("");
+  debugSerial->println("==========================");
   #endif
 }
 
@@ -94,7 +89,7 @@ void loop()
   //
   // gab es ein Zeilenende/Kommandoende Zeichen in der Eingabe?
   //
-  if( myComm->readMessageIfAvavible(mySerial, btInputString) )
+  if( myComm->readMessageIfAvavible( Serial, debugSerial, btInputString) )
   {
     // Zeilenende, das war ein Kommando?
     cmd = CommandParser::parseCommand( btInputString, kdo );
@@ -102,19 +97,19 @@ void loop()
     { 
       // Frage nach dem Modultyp 0x00 
       case C_ASKTYP:
-        myComm->sendModuleType(mySerial, moduleType);
+        myComm->sendModuleType(Serial, moduleType);
         #ifdef DEBUG
-        Serial.println("Sende Module Typ an Master..." );
-        Serial.println( moduleType );
+        debugSerial->println("Sende Module Typ an Master..." );
+        debugSerial->println( moduleType );
         #endif
         break;
       
       // Frage nach dem Modulnamen 0x01
       case C_ASKNAME:
         paramString = theConfig.getModuleName();
-        myComm->sendModuleName( mySerial, paramString );
+        myComm->sendModuleName( Serial, paramString );
         #ifdef DEBUG
-        Serial.println("Sende Module Name an Master..." );
+        debugSerial->println("Sende Module Name an Master..." );
         #endif        
         break;
         
@@ -125,9 +120,9 @@ void loop()
         kdo[1] = theConfig.getGreen();
         kdo[2] = theConfig.getBlue();
         kdo[3] = theConfig.getWhite();
-        myComm->sendRGBW( mySerial, kdo );
+        myComm->sendRGBW( Serial, kdo );
         #ifdef DEBUG
-        Serial.println("Sende RGBW (raw) an Master..." );
+        debugSerial->println("Sende RGBW (raw) an Master..." );
         #endif
         break;
       
@@ -139,7 +134,7 @@ void loop()
         isLightsOFF = false;
         LEDSet::setBrightness( theConfig, kdo );
         #ifdef DEBUG
-        Serial.println("SET COLOR emfpangen..." );
+        debugSerial->println("SET COLOR emfpangen..." );
         #endif        
         // in frühestens 2 Sekunden sichern
         saveTime = millis() + SAVEDELAY;
@@ -148,18 +143,18 @@ void loop()
       // Setzte den Modulnamen
       case C_SETNAME:
         #ifdef DEBUG
-        Serial.println("Modulname setzen..." );
+        debugSerial->println("Modulname setzen..." );
         #endif
         paramString = CommandParser::getModuleName(btInputString);
         if( paramString.length() > 2 )
         {
-          SysConfig::setModuleName( mySerial, *myComm, theConfig, paramString );
+          SysConfig::setModuleName( Serial, debugSerial, *myComm, theConfig, paramString );
           #ifdef DEBUG
-          Serial.println("Modulname setzen: " + paramString );
+          debugSerial->println("Modulname setzen: " + paramString );
           #endif
-          theConfig.saveConfig();
+          theConfig.saveConfig( debugSerial );
           // Das Modul neu starten....
-          SysConfig::restartBTModul( mySerial, *myComm );
+          SysConfig::restartBTModul( Serial, debugSerial, *myComm );
           // in frühestens 2 Sekunden sichern
           saveTime = millis() + SAVEDELAY;
         }
@@ -170,7 +165,7 @@ void loop()
         if( isLightsOFF )
         {
           #ifdef DEBUG
-          Serial.println("LEDs ON..." );
+          debugSerial->println("LED's ON..." );
           #endif
           // Die Dinger an machen
           LEDSet::setBrightnessFromConfig( theConfig );
@@ -178,7 +173,7 @@ void loop()
         else
         {
           #ifdef DEBUG
-          Serial.println("LEDs OFF..." );
+          debugSerial->println("LEDs OFF..." );
           #endif
           LEDSet::setBrightnessOff();
         }
@@ -187,7 +182,9 @@ void loop()
         
       default:
         //nix verstehen meister!
-        Serial.println("NIX VERSTEHEN..." );
+        #ifdef DEBUG
+        debugSerial->println("NIX VERSTEHEN..." );
+        #endif
         break;
     } 
     btInputString = "";
@@ -201,7 +198,7 @@ void loop()
     // da soll was gesichert werden!
     if( saveTime < millis() )
     {
-      theConfig.saveConfig();
+      theConfig.saveConfig( debugSerial );
       eepromShutoffTime = millis() + BEAMDELAY;
       saveTime = 0L;
     }
@@ -232,7 +229,9 @@ void loop()
       if( !isOnline )
       {
         // Status verändert
-        Serial.println("Modul ging ONLINE");
+        #ifdef DEBUG
+        debugSerial->println("Modul ging ONLINE");
+        #endif
         isOnline = true;
       }
     }
@@ -244,17 +243,21 @@ void loop()
       if( isOnline )
       {
         // Status verändert
+        #ifdef DEBUG
         Serial.println("Modul ging OFFLINE");
+        #endif
         isOnline = false;
       }
     }
     onlineTestTime = millis() + ONLINETEST_DELAY;    
   }
   //
-  if(Serial.available()) 
+  #ifdef DEBUG
+  if(debugSerial->available()) 
   {
-    mySerial.write(Serial.read());
+    Serial.write(debugSerial->read());
   }
+  #endif
 
 }
 

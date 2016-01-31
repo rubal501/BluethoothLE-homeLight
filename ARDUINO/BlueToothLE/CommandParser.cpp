@@ -65,7 +65,6 @@ String CommandParser::getModuleName(String& btInputString )
   //
   // initialisieren und ersten Abschnitt erstellen
   //
-  Serial.println("DEBUG MODULENAME " + btInputString );
   btInputString.toCharArray(buffer, btInputString.length()+1, 0 );
   // splitte in seine Abschnitte
   ptr = strtok( buffer, delimiter);

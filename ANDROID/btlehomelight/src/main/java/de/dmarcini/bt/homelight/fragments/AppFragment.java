@@ -60,7 +60,7 @@ public class AppFragment extends Fragment
     // Für Nutzung von Services der App
     //
     mainServiceRef = ( IMainAppServices ) getActivity();
-
+    //
     try
     {
       if( args != null )
@@ -80,6 +80,4 @@ public class AppFragment extends Fragment
       }
     }
   }
-
-
 }
