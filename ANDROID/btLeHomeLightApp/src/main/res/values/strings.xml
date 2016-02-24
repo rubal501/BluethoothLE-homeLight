@@ -1,0 +1,33 @@
+<resources>
+  <string name="app_name">BTLE PlacehoderApp</string>
+  <string name="app_header">BTLE_PLACEHOLDER</string>
+
+  <string name="nav_title">BTLE Placeholder</string>
+  <string name="nav_mail">dirk_marciniak@online.de</string>
+  <string name="nav_color_circle">Farbkreis</string>
+  <string name="nav_color_white">Nur Weiß</string>
+  <string name="nav_color_presets">Gespeicherte Farben</string>
+
+  <string name="nav_comm">Kommunikation</string>
+  <string name="nav_comm_bt">Gerät verbinden</string>
+
+  <string name="nav_prop">Einstellungen</string>
+  <string name="nav_prop_prog">Programm</string>
+
+
+  <string name="navigation_drawer_open">Öffne Navigation</string>
+  <string name="navigation_drawer_close">Schließe Navigation</string>
+
+  <string name="action_settings">Einstellungen</string>
+
+
+
+  <!-- Color wheel fragment -->
+  <string name="color_wheel_save_color_button_text">In Voreinstellungen merken!</string>
+  <string name="color_wheel_toggle_button_text">RGBW</string>
+  <string name="color_wheel_toggle_button_text_on">RGBW</string>
+  <string name="color_wheel_toggle_button_text_off">RGB</string>
+
+
+
+</resources>

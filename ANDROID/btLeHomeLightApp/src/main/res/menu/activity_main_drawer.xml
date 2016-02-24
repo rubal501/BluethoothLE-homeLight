@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <group android:checkableBehavior="single">
+    <item
+        android:id="@+id/navColorCircle"
+        android:icon="@drawable/ic_menu_camera"
+        android:title="@string/nav_color_circle"/>
+    <item
+        android:id="@+id/navColorOnlyWhite"
+        android:icon="@drawable/ic_menu_gallery"
+        android:title="@string/nav_color_white"/>
+    <item
+        android:id="@+id/navColorPresets"
+        android:icon="@drawable/ic_menu_slideshow"
+        android:title="@string/nav_color_presets"/>
+  </group>
+
+  <item android:title="@string/nav_comm">
+    <menu>
+      <item
+          android:id="@+id/navCommBT"
+          android:icon="@drawable/ic_bluetooth_black_24dp"
+          android:title="@string/nav_comm_bt"/>
+    </menu>
+  </item>
+
+  <item android:title="@string/nav_prop">
+    <menu>
+      <item
+          android:id="@+id/navPropertys"
+          android:icon="@drawable/ic_settings_black_24dp"
+          android:title="@string/nav_prop_prog"/>
+    </menu>
+  </item>
+</menu>
