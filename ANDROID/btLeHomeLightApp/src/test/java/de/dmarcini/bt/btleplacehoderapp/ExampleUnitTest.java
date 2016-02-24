@@ -1,4 +1,4 @@
-package de.dmarcini.bt.btleplaceholder;
+package de.dmarcini.bt.btlehomelight;
 
 import org.junit.Test;
 

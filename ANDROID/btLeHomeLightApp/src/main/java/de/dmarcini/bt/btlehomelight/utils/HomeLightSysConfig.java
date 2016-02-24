@@ -27,8 +27,8 @@ package de.dmarcini.bt.btlehomelight.utils;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
-import de.dmarcini.bt.homelight.ProjectConst;
-import de.dmarcini.bt.homelight.R;
+import de.dmarcini.bt.btlehomelight.ProjectConst;
+import de.dmarcini.bt.btlehomelight.R;
 
 /**
  * Objekt zur Sicherung der App-Konfiguration, statisch, global
@@ -148,7 +148,6 @@ public final class HomeLightSysConfig
     showColorWheel = pref.getBoolean(res.getString(R.string.pref_sys_showpage_colorwheel), true);
     showBrightnessOnly = pref.getBoolean(res.getString(R.string.pref_sys_showpage_brightness), true);
     showPredefColors = pref.getBoolean(res.getString(R.string.pref_sys_showpage_predefcolors), true);
-    updateSelectedPages();
     //
     jumpToDefaultPageOnConnect = pref.getBoolean(res.getString(R.string.pref_sys_jump_to_page_on_connect), true);
     isAppDebugging = pref.getBoolean(res.getString(R.string.pref_sys_debugging_stat), true);
@@ -156,18 +155,5 @@ public final class HomeLightSysConfig
     lastConnectedDeviceAddr = pref.getString(res.getString(R.string.pref_sys_lastConnectedDeviceAddr), null);
     lastConnectedDeviceName = pref.getString(res.getString(R.string.pref_sys_lastConnectedDeviceName), null);
   }
-
-  /**
-   * Die Matrix für erwünschte Seiten setzen!
-   */
-  private static void updateSelectedPages()
-  {
-    selectedPages[ ProjectConst.PAGE_DISCOVERING ] = showDiscovering;
-    selectedPages[ ProjectConst.PAGE_DIRECT_CONTROL ] = showDirectControl;
-    selectedPages[ ProjectConst.PAGE_COLOR_WHEEL ] = showColorWheel;
-    selectedPages[ ProjectConst.PAGE_BRIGHTNESS_ONLY ] = showBrightnessOnly;
-    selectedPages[ ProjectConst.PAGE_PREDEF_COLORS ] = showPredefColors;
-  }
-
 
 }

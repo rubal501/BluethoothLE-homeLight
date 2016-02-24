@@ -37,14 +37,16 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
 import java.util.List;
 import java.util.UUID;
 
-import de.dmarcini.bt.btleplaceholder.BuildConfig;
+import de.dmarcini.bt.btlehomelight.BuildConfig;
 import de.dmarcini.bt.btlehomelight.ProjectConst;
+import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
 import de.dmarcini.bt.btlehomelight.utils.HM10GattAttributes;
 
 /**
@@ -53,25 +55,18 @@ import de.dmarcini.bt.btlehomelight.utils.HM10GattAttributes;
  */
 public class BluetoothLowEnergyService extends Service
 {
-  private final static String  TAG                             = BluetoothLowEnergyService.class.getSimpleName();
-  private final static String servicePrefix = BluetoothLowEnergyService.class.getName();
-  public final static  String  ACTION_GATT_CONNECTED           = servicePrefix + ".ACTION_GATT_CONNECTED";
-  public final static  String  ACTION_GATT_DISCONNECTED        = servicePrefix + ".ACTION_GATT_DISCONNECTED";
-  public final static  String  ACTION_GATT_SERVICES_DISCOVERED = servicePrefix + ".ACTION_GATT_SERVICES_DISCOVERED";
-  public final static  String  ACTION_DATA_AVAILABLE           = servicePrefix + ".ACTION_DATA_AVAILABLE";
-  public final static  String  EXTRA_DATA                      = servicePrefix + ".EXTRA_DATA";
-  private static final int     STATE_DISCONNECTED              = 0;
-  private static final int     STATE_CONNECTING                = 1;
-  private static final int     STATE_CONNECTED                 = 2;
-  private final        IBinder mBinder                         = new LocalBinder();
-  private              int     mConnectionState                = STATE_DISCONNECTED;
+  private final static String  TAG              = BluetoothLowEnergyService.class.getSimpleName();
+  private final static String  servicePrefix    = BluetoothLowEnergyService.class.getName();
+  private final        IBinder mBinder          = new LocalBinder();
+  private              int     mConnectionState = ProjectConst.STATUS_DISCONNECTED;
+  private              Handler btEventHandler   = null;
   private BluetoothManager mBluetoothManager;
   private BluetoothAdapter mBluetoothAdapter;
   private String           mBluetoothDeviceAddress;
   private BluetoothGatt    mBluetoothGatt;
   //
   // implementiert Methjoden für GATT (Gereric Attribute) Ereignisse, welche die APP
-  // bearbeiten soll. Beispielsweise Verbindungsänderungen und DService descovering
+  // bearbeiten soll. Beispielsweise Verbindungsänderungen und Service descovering
   //
   private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback()
   {
@@ -81,15 +76,17 @@ public class BluetoothLowEnergyService extends Service
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState)
     {
-      String intentAction;
       //
       // Verbindung zu GATT Server?
       //
       if( newState == BluetoothProfile.STATE_CONNECTED )
       {
-        intentAction = ACTION_GATT_CONNECTED;
-        mConnectionState = STATE_CONNECTED;
-        broadcastUpdate(intentAction);
+        mConnectionState = ProjectConst.STATUS_CONNECTED;
+        if( btEventHandler != null )
+        {
+          //BlueThoothMessage msg = new BlueThoothMessage( ProjectConst.MESSAGE_CONNECTED );
+          btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTED, null);
+        }
         if( BuildConfig.DEBUG )
         {
           Log.i(TAG, "Connected to GATT server.");
@@ -107,13 +104,16 @@ public class BluetoothLowEnergyService extends Service
       //
       else if( newState == BluetoothProfile.STATE_DISCONNECTED )
       {
-        intentAction = ACTION_GATT_DISCONNECTED;
-        mConnectionState = STATE_DISCONNECTED;
+        mConnectionState = ProjectConst.STATUS_DISCONNECTED;
+        if( btEventHandler != null )
+        {
+          //BlueThoothMessage msg = new BlueThoothMessage( ProjectConst.MESSAGE_CONNECTED );
+          btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTED, null);
+        }
         if( BuildConfig.DEBUG )
         {
           Log.i(TAG, "Disconnected from GATT server.");
         }
-        broadcastUpdate(intentAction);
       }
     }
 
@@ -128,8 +128,12 @@ public class BluetoothLowEnergyService extends Service
       //
       if( status == BluetoothGatt.GATT_SUCCESS )
       {
+        if( btEventHandler != null )
+        {
+          //BlueThoothMessage msg = new BlueThoothMessage( ProjectConst.MESSAGE_GATT_SERVICES_DISCOVERED );
+          btEventHandler.obtainMessage(ProjectConst.MESSAGE_GATT_SERVICES_DISCOVERED, null);
+        }
         // Suche beendet!
-        broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
       }
       else
       {
@@ -151,7 +155,11 @@ public class BluetoothLowEnergyService extends Service
     {
       if( status == BluetoothGatt.GATT_SUCCESS )
       {
-        broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+        if( btEventHandler != null )
+        {
+          BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_BTLE_CHARACTERISTIC, characteristic);
+          btEventHandler.obtainMessage(ProjectConst.MESSAGE_BTLE_CHARACTERISTIC, msg);
+        }
       }
     }
 
@@ -161,63 +169,13 @@ public class BluetoothLowEnergyService extends Service
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic)
     {
-      broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+      if( btEventHandler != null )
+      {
+        BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_BTLE_CHARACTERISTIC, characteristic);
+        btEventHandler.obtainMessage(ProjectConst.MESSAGE_BTLE_CHARACTERISTIC, msg);
+      }
     }
   };
-
-  /**
-   * Sende die Statusänderung an alle
-   *
-   * @param action
-   */
-  private void broadcastUpdate(final String action)
-  {
-    final Intent intent = new Intent(action);
-    sendBroadcast(intent);
-  }
-
-  /**
-   * Sende die Statusänderung an alle, sende Die Serverfunktion mit
-   *
-   * @param action String mit der Bezeichnung der aktion
-   */
-  private void broadcastUpdate(final String action, final BluetoothGattCharacteristic characteristic)
-  {
-    final Intent intent = new Intent(action);
-
-    //
-    // schreibe für alle anderen Profile die Daten in HEX
-    //
-    final byte[] data = characteristic.getValue();
-    if( BuildConfig.DEBUG )
-    {
-      Log.i(TAG, "data: " + characteristic.getValue());
-    }
-    //
-    // Wurden Daten empfangen?
-    //
-    if( data != null && data.length > 0 )
-    {
-      final StringBuilder stringBuilder = new StringBuilder(data.length);
-      for( byte byteChar : data )
-      {
-        stringBuilder.append(String.format("%02X ", byteChar));
-      }
-      if( BuildConfig.DEBUG )
-      {
-        Log.d(TAG, String.format("%s", new String(data)));
-      }
-      //
-      // Daten gekürzt auf (? Bytes), Bei mehr daten 0x0a als Trenner
-      // (getting cut off when longer, need to push on new line, 0A)
-      //
-      intent.putExtra(EXTRA_DATA, String.format("%s", new String(data)));
-    }
-    //
-    // Status vermelden
-    //
-    sendBroadcast(intent);
-  }
 
   /**
    * Den Binder zurückgeben, wenn der Service an die App gebunden wurde
@@ -245,6 +203,7 @@ public class BluetoothLowEnergyService extends Service
     // um Resourcen wieder freizugeben. Hier erledigt das die Funktion close()
     //
     close();
+    btEventHandler = null;
     return super.onUnbind(intent);
   }
 
@@ -317,7 +276,12 @@ public class BluetoothLowEnergyService extends Service
         //
         // Das neuverbinden war erfolgreich!
         //
-        mConnectionState = STATE_CONNECTING;
+        if( btEventHandler != null )
+        {
+          //BlueThoothMessage msg = new BlueThoothMessage( ProjectConst.MESSAGE_CONNECTED );
+          btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTING, null);
+        }
+        mConnectionState = ProjectConst.STATUS_CONNECTING;
         return true;
       }
       else
@@ -332,7 +296,7 @@ public class BluetoothLowEnergyService extends Service
       }
     }
     //
-    // Kein neuverbinden, also VErbindung zum entfernten Gerät aufbauen
+    // Kein neuverbinden, also Verbindung zum entfernten Gerät aufbauen
     //
     final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
     if( device == null )
@@ -347,7 +311,13 @@ public class BluetoothLowEnergyService extends Service
     mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
     Log.i(TAG, "Trying to create a new connection.");
     mBluetoothDeviceAddress = address;
-    mConnectionState = STATE_CONNECTING;
+    if( btEventHandler != null )
+    {
+      //BlueThoothMessage msg = new BlueThoothMessage( ProjectConst.MESSAGE_CONNECTED );
+      btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTING, null);
+    }
+
+    mConnectionState = ProjectConst.STATUS_CONNECTING;
     return true;
   }
 
@@ -364,11 +334,6 @@ public class BluetoothLowEnergyService extends Service
     }
     mBluetoothGatt.disconnect();
   }
-
-  /**
-   * After using a given BLE device, the app must call this method to ensure resources are
-   * released properly.
-   */
 
   /**
    * Wenn ein BT Gerät genutzt wurde, muss "close()" ausgeführt werden, um Resourcen freizugeben
@@ -418,7 +383,7 @@ public class BluetoothLowEnergyService extends Service
    * Aktiviere oder deaktiviere die Benachrichtigung auf einer "characteristic"
    *
    * @param characteristic die "characteristic" dessen Benachrichtigung aktiviert/deaktiviert werden soll
-   * @param enabled aktiv/deaktiv
+   * @param enabled        aktiv/deaktiv
    */
   public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic, boolean enabled)
   {
@@ -460,9 +425,50 @@ public class BluetoothLowEnergyService extends Service
    */
   public class LocalBinder extends Binder
   {
+    /**
+     * Gib den Service an die App zurück
+     *
+     * @return Referenz auf den Service
+     */
     public BluetoothLowEnergyService getService()
     {
       return BluetoothLowEnergyService.this;
+    }
+
+    /**
+     * registriere einen Callback
+     *
+     * @param mHandler der Handler
+     */
+    public void registerServiceHandler(Handler mHandler)
+    {
+      Log.i(TAG, "Client register");
+      btEventHandler = mHandler;
+      if( mConnectionState == ProjectConst.STATUS_DISCONNECTED )
+      {
+        btEventHandler.obtainMessage(ProjectConst.MESSAGE_DISCONNECTED, null);
+      }
+      else if( mConnectionState == ProjectConst.STATUS_CONNECTING )
+      {
+        btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTING, null);
+      }
+      else if( mConnectionState == ProjectConst.STATUS_CONNECTED )
+      {
+        btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTED, null);
+      }
+      else
+      {
+        btEventHandler.obtainMessage(ProjectConst.MESSAGE_DISCONNECTED, null);
+      }
+    }
+
+    /**
+     * lösche den Handler
+     */
+    public void unregisterServiceHandler()
+    {
+      Log.i(TAG, "Client register");
+      btEventHandler = null;
     }
   }
 }

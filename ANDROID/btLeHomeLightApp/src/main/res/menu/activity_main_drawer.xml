@@ -4,15 +4,19 @@
   <group android:checkableBehavior="single">
     <item
         android:id="@+id/navColorCircle"
-        android:icon="@drawable/ic_menu_camera"
+        android:icon="@drawable/ic_lightbulb_outline_color_24dp"
         android:title="@string/nav_color_circle"/>
     <item
         android:id="@+id/navColorOnlyWhite"
-        android:icon="@drawable/ic_menu_gallery"
+        android:icon="@drawable/ic_lightbulb_outline_black_24dp"
         android:title="@string/nav_color_white"/>
     <item
+        android:id="@+id/navColorEqualizer"
+        android:icon="@drawable/ic_equalizer_black_24dp"
+        android:title="@string/nav_color_equ"/>
+    <item
         android:id="@+id/navColorPresets"
-        android:icon="@drawable/ic_menu_slideshow"
+        android:icon="@drawable/ic_unarchive_black_24dp"
         android:title="@string/nav_color_presets"/>
   </group>
 
@@ -31,6 +35,10 @@
           android:id="@+id/navPropertys"
           android:icon="@drawable/ic_settings_black_24dp"
           android:title="@string/nav_prop_prog"/>
+      <item
+          android:id="@+id/navQuit"
+          android:icon="@drawable/ic_done_all_black_24dp"
+          android:title="@string/nav_quit_prog"/>
     </menu>
   </item>
 </menu>

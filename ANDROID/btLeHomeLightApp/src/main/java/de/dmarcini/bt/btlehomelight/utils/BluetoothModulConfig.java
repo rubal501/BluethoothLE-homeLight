@@ -28,7 +28,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.BroadcastReceiver;
 
-import de.dmarcini.bt.homelight.service.BluetoothLowEnergyService;
+import de.dmarcini.bt.btlehomelight.service.BluetoothLowEnergyService;
 
 /**
  * Objekt zum halten der aktuellen Bluethoot-relevanten Daten

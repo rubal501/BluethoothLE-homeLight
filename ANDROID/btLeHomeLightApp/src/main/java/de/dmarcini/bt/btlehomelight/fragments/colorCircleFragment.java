@@ -15,9 +15,10 @@ import com.larswerkman.holocolorpicker.ColorPicker;
 
 import de.dmarcini.bt.btlehomelight.MainActivity;
 import de.dmarcini.bt.btlehomelight.interfaces.IBtServiceListener;
-import de.dmarcini.bt.btleplaceholder.BuildConfig;
-import de.dmarcini.bt.btleplaceholder.R;
+import de.dmarcini.bt.btlehomelight.BuildConfig;
+import de.dmarcini.bt.btlehomelight.R;
 import de.dmarcini.bt.btlehomelight.service.BtServiceMessage;
+import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
 
 /**
  * Created by dmarc on 18.02.2016.
@@ -231,7 +232,6 @@ public class colorCircleFragment extends Fragment implements IBtServiceListener,
    * @param what
    * @param msg
    */
-  @Override
   public void handleMessages(int what, BtServiceMessage msg)
   {
 
@@ -246,7 +246,6 @@ public class colorCircleFragment extends Fragment implements IBtServiceListener,
    *
    * @param msg
    */
-  @Override
   public void msgConnecting(BtServiceMessage msg)
   {
 
@@ -261,7 +260,6 @@ public class colorCircleFragment extends Fragment implements IBtServiceListener,
    *
    * @param msg
    */
-  @Override
   public void msgConnected(BtServiceMessage msg)
   {
 
@@ -276,7 +274,6 @@ public class colorCircleFragment extends Fragment implements IBtServiceListener,
    *
    * @param msg
    */
-  @Override
   public void msgDisconnected(BtServiceMessage msg)
   {
 
@@ -291,7 +288,6 @@ public class colorCircleFragment extends Fragment implements IBtServiceListener,
    *
    * @param msg
    */
-  @Override
   public void msgRecivedTick(BtServiceMessage msg)
   {
 
@@ -306,7 +302,6 @@ public class colorCircleFragment extends Fragment implements IBtServiceListener,
    *
    * @param msg
    */
-  @Override
   public void msgConnectError(BtServiceMessage msg)
   {
 
@@ -321,7 +316,6 @@ public class colorCircleFragment extends Fragment implements IBtServiceListener,
    *
    * @param msg
    */
-  @Override
   public void msgReciveWriteTmeout(BtServiceMessage msg)
   {
 
@@ -346,6 +340,97 @@ public class colorCircleFragment extends Fragment implements IBtServiceListener,
    */
   @Override
   public void onClick(View v)
+  {
+
+  }
+
+  /**
+   * Behandle alle ankommenden Nachrichten
+   * <p/>
+   * Stand: 16.11.2013
+   *
+   * @param msg
+   */
+  @Override
+  public void handleMessages(BlueThoothMessage msg)
+  {
+
+  }
+
+  /**
+   * Behandle ankommende Nachricht über den Versuch eine Verbindung aufzubauen
+   * <p/>
+   * Stand: 16.11.2013
+   *
+   * @param msg
+   */
+  @Override
+  public void msgConnecting(BlueThoothMessage msg)
+  {
+
+  }
+
+  /**
+   * Behandle Nachricht über den erfolgreichen Aufbau einer Verbindung zum BT Gerät
+   * <p/>
+   * Stand: 16.11.2013
+   *
+   * @param msg
+   */
+  @Override
+  public void msgConnected(BlueThoothMessage msg)
+  {
+
+  }
+
+  /**
+   * Behandle Nachricht über den Verlust der BT-Verbindung
+   * <p/>
+   * Stand: 16.11.2013
+   *
+   * @param msg
+   */
+  @Override
+  public void msgDisconnected(BlueThoothMessage msg)
+  {
+
+  }
+
+  /**
+   * Behandle TICK-Nachricht vom Service
+   * <p/>
+   * Stand: 16.11.2013
+   *
+   * @param msg
+   */
+  @Override
+  public void msgRecivedTick(BlueThoothMessage msg)
+  {
+
+  }
+
+  /**
+   * Behandle die Nachricht vom Service, dass der Verbindungsversuch erfolglos war
+   * <p/>
+   * Stand: 16.11.2013
+   *
+   * @param msg
+   */
+  @Override
+  public void msgConnectError(BlueThoothMessage msg)
+  {
+
+  }
+
+  /**
+   * Behandle die _Nachricht, dass es einen Timeout beim schreiben zum BT-Gerät gab
+   * <p/>
+   * Stand: 16.11.2013
+   *
+   * @param msg
+   */
+  @Override
+  public void msgReciveWriteTmeout(BlueThoothMessage msg)
   {
 
   }

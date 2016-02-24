@@ -1,6 +1,18 @@
 package de.dmarcini.bt.btlehomelight;
 
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -13,15 +25,135 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.Locale;
 
-import de.dmarcini.bt.btleplaceholder.BuildConfig;
-import de.dmarcini.bt.btleplaceholder.R;
+import de.dmarcini.bt.btlehomelight.interfaces.IBtServiceListener;
+import de.dmarcini.bt.btlehomelight.service.BluetoothLowEnergyService;
+import de.dmarcini.bt.btlehomelight.service.BluetoothLowEnergyService.LocalBinder;
+import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
+import de.dmarcini.bt.btlehomelight.utils.BluetoothModulConfig;
+import de.dmarcini.bt.btlehomelight.utils.HomeLightSysConfig;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
-  private static final String TAG = MainActivity.class.getSimpleName();
+  private static final String                    TAG         = MainActivity.class.getSimpleName();
+  //
+  // Ein Messagehandler, der vom Service kommende Messages bearbeitet
+  //
+  @SuppressLint( "HandlerLeak" )
+  private final        Handler                   mHandler    = new Handler()
+  {
+    @Override
+    public void handleMessage(Message msg)
+    {
+      if( !(msg.obj instanceof BlueThoothMessage) )
+      {
+        Log.e(TAG, "Handler::handleMessage: Recived Message is NOT type of BtServiceMessage!");
+        return;
+      }
+      BlueThoothMessage smsg = ( BlueThoothMessage ) msg.obj;
+      if( smsg.getData() != null && smsg.getData().length() > 0 && BuildConfig.DEBUG )
+      {
+        Log.d(TAG, "BT message: <" + smsg.getData() + ">");
+      }
+      if( msgHandler != null )
+      {
+        msgHandler.handleMessages( smsg );
+      }
+    }
+  };
+  private              BluetoothModulConfig      btConfig    = new BluetoothModulConfig();
+  private              BluetoothLowEnergyService mService    = null;
+  private              LocalBinder               binder      = null;
+  //
+  // Lebensdauer des Service wird beim binden / unbinden benutzt
+  //
+  private final        ServiceConnection         mConnection = new ServiceConnection()
+  {
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service)
+    {
+      if( BuildConfig.DEBUG )
+      {
+        Log.d(TAG, "onServiceConnected()...");
+      }
+      binder = ( LocalBinder ) service;
+      mService = binder.getService();
+      binder.registerServiceHandler(mHandler);
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name)
+    {
+      if( BuildConfig.DEBUG )
+      {
+        Log.d(TAG, "onServiceDisconnected...");
+      }
+      if( mService != null && binder != null )
+      {
+        if( BuildConfig.DEBUG )
+        {
+          Log.d(TAG, "onServiceDisconnected...unregister Handler...");
+        }
+        binder.unregisterServiceHandler();
+      }
+      mService = null;
+      binder = null;
+    }
+  };
+  private              IBtServiceListener        msgHandler  = null;
+
+  @Override
+  public void onStart()
+  {
+    super.onStart();
+    //
+    // Der Service muss noch gestartet werden
+    //
+    Intent gattServiceIntent = new Intent(this, BluetoothLowEnergyService.class);
+    bindService(gattServiceIntent, mConnection, BIND_AUTO_CREATE);
+  }
+
+  @Override
+  protected void onStop()
+  {
+    super.onStop();
+    try
+    {
+      //
+      // BT Verbindung trennen
+      //
+      btConfig.getBluetoothService().disconnect();
+    }
+    catch( NullPointerException ex )
+    {
+      Log.e(TAG, "onStop: Oups, Null Pointer....");
+    }
+  }
+
+  /**
+   * Versuche wieder das Gerät zu verbinden
+   */
+  private void tryReconnectToDevice()
+  {
+    // TODO: eine Möglichkeit machen, dass reconnect immer dann passiert, wenn es vorher eine Verbindung gab oder Verbinden mit dem letzten Gerät eingestellt ist
+
+    if( (btConfig.getBluetoothService() != null) && (btConfig.getDeviceAddress() != null) )
+    {
+      final boolean result = btConfig.getBluetoothService().connect(btConfig.getDeviceAddress());
+      Log.d(TAG, "Connect request result=" + result);
+    }
+  }
+
+
+  @Override
+  protected void onDestroy()
+  {
+    super.onDestroy();
+    unbindService(mConnection);
+  }
 
   /**
    * Wenn die App erzeugt wird
@@ -37,6 +169,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
       Log.v(TAG, "erzeuge Application...");
       Log.e(TAG, "D E B U G Version");
     }
+    //##############################################################################################
+    //
+    // Ist Bluethooth LE (4.0) unterstützt?
+    //
+    if( !getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE) )
+    {
+      Toast.makeText(this, R.string.main_btle_not_supported, Toast.LENGTH_SHORT).show();
+      finish();
+    }
+    //
+    // initialisiere den Adapter
+    //
+    final BluetoothManager bluetoothManager = ( BluetoothManager ) getSystemService(Context.BLUETOOTH_SERVICE);
+    btConfig.setBluetoothAdapter(bluetoothManager.getAdapter());
+    //
+    // Ist ein BT Adapter vorhanden?
+    //
+    if( btConfig.getBluethoothAdapter() == null )
+    {
+      Toast.makeText(this, R.string.main_btle_not_supported, Toast.LENGTH_SHORT).show();
+      finish();
+      return;
+    }
+    //
+    // Systemeinstellungen einlesen
+    //
+    HomeLightSysConfig.readSysPrefs(getResources(), PreferenceManager.getDefaultSharedPreferences(this));
     //
     // Das Haupt Layout setzten
     //
@@ -51,9 +210,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
     drawer.setDrawerListener(toggle);
     toggle.syncState();
-
     NavigationView navigationView = ( NavigationView ) findViewById(R.id.nav_view);
     navigationView.setNavigationItemSelectedListener(this);
+  }
+
+  @Override
+  public void onResume()
+  {
+    super.onResume();
+    //
+    // Systemeinstellungen einlesen
+    //
+    HomeLightSysConfig.readSysPrefs(getResources(), PreferenceManager.getDefaultSharedPreferences(this));
+    //
+    // Stelle sicher, dass der BT Adapter aktiviert wurde
+    // erzeuge einen Intend (eine Absicht) und schicke diese an das System
+    //
+    if( !btConfig.getBluethoothAdapter().isEnabled() )
+    {
+      //
+      // erzeuge die Nachricht ans System, der "Rest" ist dann bei onActivityResult
+      //
+      Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+      startActivityForResult(enableBtIntent, ProjectConst.REQUEST_ENABLE_BT);
+    }
+    else
+    {
+      //
+      // versuche zu verbinden (wenn das was zu verbinden ist)
+      //
+      tryReconnectToDevice();
+    }
+  }
+
+  @Override
+  public void onPause()
+  {
+    super.onPause();
   }
 
   /**
@@ -185,6 +378,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //          fTrans.addToBackStack("SPX42PreferencesFragment");
 //        }
         break;
+      case R.id.navColorEqualizer:
+        if( BuildConfig.DEBUG )
+        {
+          Log.v(TAG, "onNavigationItemSelected: make color equalizer fragment...");
+        }
+        break;
+
       case R.id.navColorPresets:
         if( BuildConfig.DEBUG )
         {
@@ -203,6 +403,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if( BuildConfig.DEBUG )
         {
           Log.v(TAG, "onNavigationItemSelected: make program propertys fragment...");
+        }
+        break;
+
+      case R.id.navQuit:
+        if( BuildConfig.DEBUG )
+        {
+          Log.v(TAG, "onNavigationItemSelected: quit app...");
         }
         break;
 

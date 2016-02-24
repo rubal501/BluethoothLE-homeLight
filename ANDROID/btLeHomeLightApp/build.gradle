@@ -12,7 +12,7 @@ android {
   compileSdkVersion 23
   buildToolsVersion "23.0.2"
   defaultConfig {
-    applicationId 'de.dmarcini.bt.btleplaceholder'
+    applicationId 'de.dmarcini.bt.btlehomelight'
     minSdkVersion 19
     targetSdkVersion 21
     versionCode 1
