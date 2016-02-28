@@ -1,13 +1,14 @@
 <resources>
   <string name="app_name">BTLE Home Light APP</string>
   <string name="app_header">Lichtsteuerung</string>
+  <string name="app_dummy_text">dummy</string>
 
   <string name="main_btle_not_supported">Bluethooth LE nicht unterstützt!</string>
 
   <string name="nav_title">Funktionsmenü</string>
   <string name="nav_mail">dirk_marciniak@online.de</string>
   <string name="nav_color_circle">Farbkreis</string>
-  <string name="nav_color_white">Nur Weiß</string>
+  <string name="nav_color_brightness">Helligkeit</string>
   <string name="nav_color_equ">Equalizer</string>
   <string name="nav_color_presets">Gespeicherte Farben</string>
   <string name="nav_comm">Kommunikation</string>
@@ -22,13 +23,23 @@
 
   <string name="action_settings">Einstellungen</string>
 
-
+  <!-- Discovering Fragment -->
+  <string name="discovering_no_data">Kein Gerät verfügbar</string>
+  <string name="discovering_headline_search">Suche Gerät</string>
+  <string name="discovering_headline_devices">Geräte</string>
+  <string name="discovering_scan">suchen...</string>
+  <string name="discovering_stop">suche beenden.</string>
+  <string name="discovering_disconnect">trennen</string>
 
   <!-- Color wheel fragment -->
   <string name="color_wheel_save_color_button_text">In Voreinstellungen merken!</string>
   <string name="color_wheel_toggle_button_text">RGBW</string>
   <string name="color_wheel_toggle_button_text_on">RGBW</string>
   <string name="color_wheel_toggle_button_text_off">RGB</string>
+
+  <!-- Brightness Fragment -->
+  <string name="brigtness_header">Helligkeit</string>
+  <string name="brigtness_header_vals" format="raw">Helligkeit: %02d </string>
 
   <!-- System Einstellungen Keys NICHT LOKALISIEREN! -->
   <string name="pref_sys_cat_direct_control">keySystemDirectControlCat</string>
@@ -45,6 +56,7 @@
   <string name="pref_sys_lastConnectedDeviceAddr">keySystemLastConnectedDeviceAddr</string>
   <string name="pref_sys_lastConnectedDeviceName">keySystemLastConnectedDeviceName</string>
 
-
+  <!-- BTLE List Adapter -->
+  <string name="list_adapter_unknown_device">unbekannt</string>
 
 </resources>
