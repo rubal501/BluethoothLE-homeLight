@@ -41,7 +41,7 @@ public interface IBtServiceListener
    * 
    * @param msg
    */
-  public void handleMessages( final BlueThoothMessage msg);
+  void handleMessages(final BlueThoothMessage msg);
 
   /**
    * 
@@ -51,7 +51,7 @@ public interface IBtServiceListener
    * 
    * @param msg
    */
-  public void msgConnecting(final BlueThoothMessage msg);
+  void msgConnecting(final BlueThoothMessage msg);
 
   /**
    * 
@@ -61,7 +61,7 @@ public interface IBtServiceListener
    * 
    * @param msg
    */
-  public void msgConnected(final BlueThoothMessage msg);
+  void msgConnected(final BlueThoothMessage msg);
 
   /**
    * 
@@ -71,7 +71,7 @@ public interface IBtServiceListener
    * 
    * @param msg
    */
-  public void msgDisconnected(final BlueThoothMessage msg);
+  void msgDisconnected(final BlueThoothMessage msg);
 
   /**
    * 
@@ -81,7 +81,7 @@ public interface IBtServiceListener
    * 
    * @param msg
    */
-  public void msgRecivedTick(final BlueThoothMessage msg);
+  void msgRecivedTick(final BlueThoothMessage msg);
 
   /**
    * 
@@ -91,7 +91,7 @@ public interface IBtServiceListener
    * 
    * @param msg
    */
-  public void msgConnectError(final BlueThoothMessage msg);
+  void msgConnectError(final BlueThoothMessage msg);
 
   /**
    * 
@@ -101,5 +101,5 @@ public interface IBtServiceListener
    * 
    * @param msg
    */
-  public void msgReciveWriteTmeout(final BlueThoothMessage msg);
+  void msgReciveWriteTmeout(final BlueThoothMessage msg);
 }
