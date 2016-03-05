@@ -25,27 +25,33 @@
 package de.dmarcini.bt.btlehomelight.utils;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * This class includes a small subset of standard GATT attributes for demonstration purposes.
  */
 public class HM10GattAttributes
 {
-  public static  String                  CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
-  public static  String                  HM_10_CONF                   = "0000ffe0-0000-1000-8000-00805f9b34fb";
-  public static  String                  HM_RX_TX                     = "0000ffe1-0000-1000-8000-00805f9b34fb";
+  public static String UUID_CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
+  public static String UUID_MANUFACTURER_NAME            = "00002a29-0000-1000-8000-00805f9b34fb";
+  public static String UUID_HM_10_CONF                   = "0000ffe1-0000-1000-8000-00805f9b34fb";
+  public static String UUID_HM_RX_TX                     = "0000ffe0-0000-1000-8000-00805f9b34fb";
+  public static String UUID_DEVICE_INFO                  = "00001801-0000-1000-8000-00805f9b34fb";
+  public static String UUID_GENERIC_ACCESS               = "00001800-0000-1000-8000-00805f9b34fb";
+  public static UUID   HM_RXTX_UUID                      = UUID.fromString(UUID_HM_RX_TX);
+  public static UUID   HM_10_CONF_UUID                   = UUID.fromString(UUID_HM_10_CONF);
   private static HashMap<String, String> attributes                   = new HashMap();
 
   static
   {
-    // Sample Services.
-    attributes.put("0000ffe0-0000-1000-8000-00805f9b34fb", "HM 10 Serial");
-    attributes.put("00001800-0000-1000-8000-00805f9b34fb", "Device Information Service");
-    // Sample Characteristics.
-    attributes.put(HM_RX_TX, "RX/TX data");
-    attributes.put(HM_10_CONF, "Config Data");
-    attributes.put("00002a29-0000-1000-8000-00805f9b34fb", "Manufacturer Name String");
+    attributes.put(UUID_CLIENT_CHARACTERISTIC_CONFIG, "client characteristic config");
+    attributes.put(UUID_MANUFACTURER_NAME, "manufacturer name string");
+    attributes.put(UUID_HM_10_CONF, "config data");
+    attributes.put(UUID_HM_RX_TX, "RX/TX data");
+    attributes.put(UUID_DEVICE_INFO, "device information service");
+    attributes.put(UUID_GENERIC_ACCESS, "generic access");
   }
+
 
   public static String lookup(String uuid, String defaultName)
   {
