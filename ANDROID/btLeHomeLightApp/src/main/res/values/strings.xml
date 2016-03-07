@@ -23,9 +23,15 @@
 
   <string name="action_settings">Einstellungen</string>
 
+  <!-- Servicve Fehlermeldungen -->
+  <string name="service_err_not_services">Keine entfernten Services gefunden</string>
+  <string name="service_err_incorrect_module_type">falscher Modultyp verbunden</string>
+  <string name="service_err_data_corrupt">inkorrekte Daten empfangen</string>
+
+
   <!-- Discovering Fragment -->
   <string name="discovering_no_data">Kein Gerät verfügbar</string>
-  <string name="discovering_headline_search">Suche Gerät</string>
+  <string name="discovering_headline_search">Suche Geräte</string>
   <string name="discovering_headline_devices">Geräte</string>
   <string name="discovering_scan">suchen...</string>
   <string name="discovering_stop">suche beenden.</string>
@@ -50,11 +56,12 @@
   <string name="pref_sys_showpage_colorwheel">keySystemColorwheelSwitch</string>
   <string name="pref_sys_showpage_brightness">keySystemBrightnessOnlySwitch</string>
   <string name="pref_sys_showpage_predefcolors">keySystemPredefColorsSwitch</string>
-  <string name="pref_sys_jump_to_page_on_connect">keySystemJumpToDefaultPageOnConnect</string>
+  <!--string name="pref_sys_jump_to_page_on_connect">keySystemJumpToDefaultPageOnConnect</string-->
   <string name="pref_sys_page_on_connect">KeySystemJumpToPageNumberOnConnect</string>
   <string name="pref_sys_debugging_stat">keySystemDebuggingStatus</string>
   <string name="pref_sys_lastConnectedDeviceAddr">keySystemLastConnectedDeviceAddr</string>
   <string name="pref_sys_lastConnectedDeviceName">keySystemLastConnectedDeviceName</string>
+  <string name="pref_sys_autoReconnect">keySystemAutoReconnect</string>
 
   <!-- BTLE List Adapter -->
   <string name="list_adapter_unknown_device">unbekannt</string>

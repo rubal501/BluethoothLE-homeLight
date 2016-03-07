@@ -2,7 +2,6 @@ package de.dmarcini.bt.btlehomelight.fragments;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,22 +10,21 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 
-import com.larswerkman.holocolorpicker.ColorPicker;
+import java.util.Locale;
 
-import de.dmarcini.bt.btlehomelight.MainActivity;
-import de.dmarcini.bt.btlehomelight.interfaces.IBtServiceListener;
 import de.dmarcini.bt.btlehomelight.BuildConfig;
 import de.dmarcini.bt.btlehomelight.R;
-import de.dmarcini.bt.btlehomelight.service.BtServiceMessage;
+import de.dmarcini.bt.btlehomelight.interfaces.IBtCommand;
 import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
+import de.dmarcini.bt.btlehomelight.views.ColorPicker;
 
 /**
  * Created by dmarc on 18.02.2016.
  */
-public class colorCircleFragment extends Fragment implements IBtServiceListener, ColorPicker.OnColorChangedListener, ColorPicker.OnColorSelectedListener, View.OnClickListener
+public class ColorCircleFragment extends LightRootFragment implements ColorPicker.OnColorChangedListener, ColorPicker.OnColorSelectedListener, View.OnClickListener
 {
-  private static final String       TAG             = colorCircleFragment.class.getSimpleName();
-  private MainActivity runningActivity = null;
+  private static final String     TAG             = ColorCircleFragment.class.getSimpleName();
+  private              IBtCommand runningActivity = null;
   private int          currColor;
   private ColorPicker  picker;
   private ToggleButton calToggleButton;
@@ -95,6 +93,18 @@ public class colorCircleFragment extends Fragment implements IBtServiceListener,
       Log.v(TAG, "onCreateView...OK");
     }
     return (rootView);
+  }
+
+  @Override
+  public void onActivityCreated(Bundle savedInstanceState)
+  {
+    super.onActivityCreated(savedInstanceState);
+    runningActivity = ( IBtCommand ) getActivity();
+    if( BuildConfig.DEBUG )
+    {
+      Log.d(TAG, "onActivityCreated: ...");
+    }
+    runningActivity.askModulForRGBW();
   }
 
   /**
@@ -222,126 +232,53 @@ public class colorCircleFragment extends Fragment implements IBtServiceListener,
   }
 
 
-  /**
-   * Behandle alle ankommenden Nachrichten
-   * <p/>
-   * Project: SubmatixBTLoggerAndroid Package: de.dmarcini.submatix.android4.gui
-   * <p/>
-   * Stand: 16.11.2013
-   *
-   * @param what
-   * @param msg
-   */
-  public void handleMessages(int what, BtServiceMessage msg)
-  {
-
-  }
-
-  /**
-   * Behandle ankommende Nachricht über den Versuch eine Verbindung aufzubauen
-   * <p/>
-   * Project: SubmatixBTLoggerAndroid Package: de.dmarcini.submatix.android4.gui
-   * <p/>
-   * Stand: 16.11.2013
-   *
-   * @param msg
-   */
-  public void msgConnecting(BtServiceMessage msg)
-  {
-
-  }
-
-  /**
-   * Behandle Nachricht über den erfolgreichen Aufbau einer Verbindung zum BT Gerät
-   * <p/>
-   * Project: SubmatixBTLoggerAndroid Package: de.dmarcini.submatix.android4.gui
-   * <p/>
-   * Stand: 16.11.2013
-   *
-   * @param msg
-   */
-  public void msgConnected(BtServiceMessage msg)
-  {
-
-  }
-
-  /**
-   * Behandle Nachricht über den Verlust der BT-Verbindung
-   * <p/>
-   * Project: SubmatixBTLoggerAndroid Package: de.dmarcini.submatix.android4.gui
-   * <p/>
-   * Stand: 16.11.2013
-   *
-   * @param msg
-   */
-  public void msgDisconnected(BtServiceMessage msg)
-  {
-
-  }
-
-  /**
-   * Behandle TICK-Nachricht vom Service
-   * <p/>
-   * Project: SubmatixBTLoggerAndroid Package: de.dmarcini.submatix.android4.gui
-   * <p/>
-   * Stand: 16.11.2013
-   *
-   * @param msg
-   */
-  public void msgRecivedTick(BtServiceMessage msg)
-  {
-
-  }
-
-  /**
-   * Behandle die Nachricht vom Service, dass der Verbindungsversuch erfolglos war
-   * <p/>
-   * Project: SubmatixBTLoggerAndroid Package: de.dmarcini.submatix.android4.gui
-   * <p/>
-   * Stand: 16.11.2013
-   *
-   * @param msg
-   */
-  public void msgConnectError(BtServiceMessage msg)
-  {
-
-  }
-
-  /**
-   * Behandle die _Nachricht, dass es einen Timeout beim schreiben zum BT-Gerät gab
-   * <p/>
-   * Project: SubmatixBTLoggerAndroid Package: de.dmarcini.submatix.android4.gui
-   * <p/>
-   * Stand: 16.11.2013
-   *
-   * @param msg
-   */
-  public void msgReciveWriteTmeout(BtServiceMessage msg)
-  {
-
-  }
-
   @Override
   public void onColorChanged(int color)
   {
-
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, String.format(Locale.ENGLISH, "color changed to %08X!", color));
+    }
   }
 
   @Override
   public void onColorSelected(int color)
   {
-
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, String.format(Locale.ENGLISH, "color selected to %08X!", color));
+    }
   }
 
   /**
    * Called when a view has been clicked.
    *
-   * @param v The view that was clicked.
+   * @param clickedView The view that was clicked.
    */
   @Override
-  public void onClick(View v)
+  public void onClick(View clickedView)
   {
-
+    if( clickedView.getId() == R.id.RGBWToggleButton )
+    {
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, "toggle RGB <-> RGBW");
+      }
+    }
+    else if( clickedView.getId() == R.id.colorWheelSaveColorButton )
+    {
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, "saveColorButton");
+      }
+    }
+    else
+    {
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, "unknown view clicked");
+      }
+    }
   }
 
   /**
@@ -354,7 +291,10 @@ public class colorCircleFragment extends Fragment implements IBtServiceListener,
   @Override
   public void handleMessages(BlueThoothMessage msg)
   {
-
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "message recived!");
+    }
   }
 
   /**
@@ -431,6 +371,17 @@ public class colorCircleFragment extends Fragment implements IBtServiceListener,
    */
   @Override
   public void msgReciveWriteTmeout(BlueThoothMessage msg)
+  {
+
+  }
+
+  /**
+   * BEhandle ankommende Daten
+   *
+   * @param msg Nachricht mit eingeschlossenen Daten
+   */
+  @Override
+  public void msgDataRecived(BlueThoothMessage msg)
   {
 
   }

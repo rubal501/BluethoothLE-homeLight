@@ -9,7 +9,7 @@
     <item
         android:id="@+id/navColorOnlyWhite"
         android:icon="@drawable/ic_lightbulb_outline_black_24dp"
-        android:title="@string/nav_color_white"/>
+        android:title="@string/nav_color_brightness"/>
     <item
         android:id="@+id/navColorEqualizer"
         android:icon="@drawable/ic_equalizer_black_24dp"

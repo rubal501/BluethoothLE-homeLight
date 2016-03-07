@@ -40,7 +40,7 @@
       android:layout_height="wrap_content"
       android:orientation="vertical">
 
-  <de.dmarcini.bt.homelight.views.ColorPicker
+  <de.dmarcini.bt.btlehomelight.views.ColorPicker
       android:id="@+id/colorPicker"
       android:layout_width="wrap_content"
       android:layout_height="0dp"

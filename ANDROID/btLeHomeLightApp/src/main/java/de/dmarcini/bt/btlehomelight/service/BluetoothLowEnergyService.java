@@ -24,6 +24,7 @@
 
 package de.dmarcini.bt.btlehomelight.service;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -34,18 +35,29 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.ParcelUuid;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import de.dmarcini.bt.btlehomelight.BuildConfig;
 import de.dmarcini.bt.btlehomelight.ProjectConst;
+import de.dmarcini.bt.btlehomelight.R;
+import de.dmarcini.bt.btlehomelight.interfaces.IBtCommand;
 import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
 import de.dmarcini.bt.btlehomelight.utils.HM10GattAttributes;
 
@@ -56,20 +68,26 @@ import de.dmarcini.bt.btlehomelight.utils.HM10GattAttributes;
 public class BluetoothLowEnergyService extends Service
 {
   private final static String  TAG              = BluetoothLowEnergyService.class.getSimpleName();
-  private final static String  servicePrefix    = BluetoothLowEnergyService.class.getName();
+  //private final static String  servicePrefix    = BluetoothLowEnergyService.class.getName();
   private final        IBinder mBinder          = new LocalBinder();
   private              int     mConnectionState = ProjectConst.STATUS_DISCONNECTED;
+  private boolean isCorrectConnectedModule = false;
   private              Handler btEventHandler   = null;
-  private BluetoothManager mBluetoothManager;
-  private BluetoothAdapter mBluetoothAdapter;
-  private String           mBluetoothDeviceAddress;
-  private BluetoothGatt    mBluetoothGatt;
+  private              Handler mHandler         = new Handler();
+  private BluetoothManager            mBluetoothManager;
+  private BluetoothAdapter            mBluetoothAdapter;
+  private String                      mBluetoothDeviceAddress;
+  private BluetoothGatt               mBluetoothGatt;
+  private BluetoothGattCharacteristic characteristicTX;
+  private BluetoothGattCharacteristic characteristicRX;
   //
   // implementiert Methjoden für GATT (Gereric Attribute) Ereignisse, welche die APP
-  // bearbeiten soll. Beispielsweise Verbindungsänderungen und Service descovering
+  // bearbeiten soll.
+  // Beispielsweise Verbindungsänderungen und Service descovering
   //
-  private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback()
+  private final BluetoothGattCallback btLeGattCallback = new BluetoothGattCallback()
   {
+    private final String TAGCG = BluetoothGattCallback.class.getSimpleName();
     //
     // Verbindungsstatus ändert sich
     //
@@ -81,22 +99,21 @@ public class BluetoothLowEnergyService extends Service
       //
       if( newState == BluetoothProfile.STATE_CONNECTED )
       {
-        mConnectionState = ProjectConst.STATUS_CONNECTED;
-        if( btEventHandler != null )
-        {
-          //BlueThoothMessage msg = new BlueThoothMessage( ProjectConst.MESSAGE_CONNECTED );
-          btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTED, null);
-        }
+        setConnectionState( ProjectConst.STATUS_CONNECTED );
         if( BuildConfig.DEBUG )
         {
-          Log.i(TAG, "Connected to GATT server.");
+          Log.i(TAGCG, "Connected to GATT server.");
         }
         //
         // versuche Services zu finden
         //
         if( BuildConfig.DEBUG )
         {
-          Log.i(TAG, "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
+          Log.i(TAGCG, "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
+        }
+        else
+        {
+          mBluetoothGatt.discoverServices();
         }
       }
       //
@@ -104,15 +121,10 @@ public class BluetoothLowEnergyService extends Service
       //
       else if( newState == BluetoothProfile.STATE_DISCONNECTED )
       {
-        mConnectionState = ProjectConst.STATUS_DISCONNECTED;
-        if( btEventHandler != null )
-        {
-          //BlueThoothMessage msg = new BlueThoothMessage( ProjectConst.MESSAGE_CONNECTED );
-          btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTED, null);
-        }
+        setConnectionState( ProjectConst.STATUS_DISCONNECTED );
         if( BuildConfig.DEBUG )
         {
-          Log.i(TAG, "Disconnected from GATT server.");
+          Log.i(TAGCG, "Disconnected from GATT server.");
         }
       }
     }
@@ -126,14 +138,82 @@ public class BluetoothLowEnergyService extends Service
       //
       // Ist die Suche beendet?
       //
+      if( BuildConfig.DEBUG )
+      {
+        Log.i(TAGCG, "onServicesDiscovered received: status " + status);
+      }
       if( status == BluetoothGatt.GATT_SUCCESS )
       {
         if( btEventHandler != null )
         {
-          //BlueThoothMessage msg = new BlueThoothMessage( ProjectConst.MESSAGE_GATT_SERVICES_DISCOVERED );
-          btEventHandler.obtainMessage(ProjectConst.MESSAGE_GATT_SERVICES_DISCOVERED, null);
+          BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_GATT_SERVICES_DISCOVERED);
+          btEventHandler.obtainMessage(ProjectConst.MESSAGE_GATT_SERVICES_DISCOVERED, msg).sendToTarget();
         }
-        // Suche beendet!
+        //
+        // Suche beendet! Finde RXTX Service
+        //
+        List<BluetoothGattService> gattServices = gatt.getServices();
+        if( gattServices == null )
+        {
+          //
+          // Keine Services gefunden => FEHLER
+          //
+          setConnectionState( ProjectConst.STATUS_CONNECT_ERROR, R.string.service_err_not_services);
+          return;
+        }
+        //
+        // jetzt nach serialer Verbindung suchen
+        //
+        characteristicTX = characteristicRX = null;
+        for( BluetoothGattService gattService : gattServices )
+        {
+          if( BuildConfig.DEBUG )
+          {
+            Log.d(TAGCG, "service   : " + gattService.getUuid().toString() + "...");
+          }
+          //
+          // ist dieser Service ein Serial RXTX?
+          //
+          if( gattService.getUuid().toString().compareTo(HM10GattAttributes.HM_RXTX_UUID.toString()) == 0 )
+          {
+            //
+            // Alles ist in Ordnung
+            //
+            if( BuildConfig.DEBUG )
+            {
+              Log.v(TAGCG, "found serial RX TX service! All OK!");
+            }
+            characteristicTX = gattService.getCharacteristic(HM10GattAttributes.HM_10_CONF_UUID);
+            characteristicRX = gattService.getCharacteristic(HM10GattAttributes.HM_10_CONF_UUID);
+            //
+            // wenn die Kommunikation sichergestellt ist, frage nach dem Modul
+            //
+            askModulForType();
+            return;
+          }
+          else
+          {
+            if( BuildConfig.DEBUG )
+            {
+              Log.v(TAGCG, "found service: " + HM10GattAttributes.lookup(gattService.getUuid().toString(), "unknown"));
+            }
+          }
+        }
+        //
+        // Kontrolle, ob es Services gab, ansonsten intervenieren
+        //
+        if( characteristicTX == null || characteristicRX == null )
+        {
+          characteristicTX = characteristicRX = null;
+          if( btEventHandler != null )
+          {
+            BlueThoothMessage msg1 = new BlueThoothMessage(ProjectConst.MESSAGE_CONNECT_ERROR);
+            btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECT_ERROR, msg1).sendToTarget();
+            BlueThoothMessage msg2 = new BlueThoothMessage(ProjectConst.MESSAGE_DISCONNECTED);
+            btEventHandler.obtainMessage(ProjectConst.MESSAGE_GATT_SERVICES_DISCOVERED, msg2).sendToTarget();
+          }
+          return;
+        }
       }
       else
       {
@@ -142,24 +222,104 @@ public class BluetoothLowEnergyService extends Service
         //
         if( BuildConfig.DEBUG )
         {
-          Log.i(TAG, "onServicesDiscovered received: " + status);
+          Log.i(TAGCG, "onServicesDiscovered received: " + status);
         }
       }
     }
 
     //
-    // Es wurde eine "characteristic" gefunden, d.h. eine Servicefunktion
+    // Es wurden Daten empfangen, bitte abholen!
     //
     @Override
     public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status)
     {
+      //
+      // Alles fertig gelesen?
+      //
       if( status == BluetoothGatt.GATT_SUCCESS )
       {
-        if( btEventHandler != null )
+        computeData(characteristic);
+      }
+    }
+
+    /**
+     * Bearbeite die von der characteristic empfangenen Daten
+     *
+     * @param characteristic Der Datenkanal aus dem die Daten kommen
+     * TODO: Hier erst mal direkt, wobei ich davon ausgehe, dass die datensätze zusammenhängend empfangen werden. Später Ringpuffer implementieren und Daten daraus versenden
+     */
+    private void computeData(BluetoothGattCharacteristic characteristic)
+    {
+      byte   data[];
+      String recMsg;
+      //
+      // lese die Daten aus dem BT-Kanal (Characteristic)
+      //
+      data = characteristic.getValue();
+      //
+      // Sind Daten vorhanden?
+      //
+      if( data != null && data.length > 0 )
+      {
+        //
+        // Lese Daten
+        //
+        recMsg = String.format("%s", new String(data));
+        //
+        // Sind die Daten als Komando korrekt formatiert?
+        //
+        if( recMsg.matches(ProjectConst.PDUPATTERN) )
         {
-          BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_BTLE_CHARACTERISTIC, characteristic);
-          btEventHandler.obtainMessage(ProjectConst.MESSAGE_BTLE_CHARACTERISTIC, msg);
+          if( BuildConfig.DEBUG )
+          {
+            Log.v(TAGCG, "readed data ist valid PDU, recived: " + recMsg);
+          }
+          //
+          // entspricht das dem Kommando sende Modultyp ?
+          //
+          if( recMsg.matches(ProjectConst.MODULTYPPATTERN) )
+          {
+            //
+            // Jetzt wichtig: ISt ees ein zugelassener Modultyp oder nicht?
+            //
+            if( recMsg.matches(ProjectConst.MY_MODULTYPPATTERN) )
+            {
+              isCorrectConnectedModule = true;
+              Log.i(TAGCG, "connected modul is an correct type");
+            }
+            else
+            {
+              Log.e(TAGCG, "connected modul is an incorrect type!");
+              setConnectionState(ProjectConst.STATUS_CONNECT_ERROR, R.string.service_err_incorrect_module_type);
+            }
+          }
+          //
+          // An Activity senden, wenn Handler gesetzt ist
+          //
+          if( btEventHandler != null && isCorrectConnectedModule )
+          {
+            BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_BTLE_DATA, recMsg);
+            btEventHandler.obtainMessage(ProjectConst.MESSAGE_BTLE_DATA, msg).sendToTarget();
+          }
         }
+        else
+        {
+          //
+          // Daten sind ungültig
+          //
+          if( BuildConfig.DEBUG )
+          {
+            Log.v(TAGCG, "readet data ist NOT valid PDU, recived: " + recMsg);
+          }
+          setConnectionState(ProjectConst.STATUS_CONNECT_ERROR, R.string.service_err_data_corrupt);
+        }
+      }
+      else
+      {
+        //
+        // Ups, da waren keine Daten drin!
+        //
+        Log.w(TAGCG, "NO DATA!");
       }
     }
 
@@ -169,10 +329,78 @@ public class BluetoothLowEnergyService extends Service
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic)
     {
+      computeData(characteristic);
+    }
+  };
+
+  /**
+   * Callback Methode beim Scannen von BTLE Geräten
+   */
+  @SuppressLint( "NewApi" )
+  private ScanCallback scanCallback = new ScanCallback()
+  {
+
+    @Override
+    public void onBatchScanResults(List<ScanResult> results)
+    {
+      Iterator<ScanResult> it = results.iterator();
+      while( it.hasNext() )
+      {
+        ScanResult result = it.next();
+        if( BuildConfig.DEBUG )
+        {
+          Log.v(TAG, "found BTLE Device: " + result.getDevice().getAddress());
+        }
+        if( btEventHandler != null )
+        {
+          BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERED, result.getDevice());
+          btEventHandler.obtainMessage(ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERED, msg).sendToTarget();
+        }
+      }
+    }
+
+    @Override
+    public void onScanFailed(int errorCode)
+    {
+      Log.e(TAG, "BTLE scan ERROR, Code: " + errorCode);
+    }
+
+    @Override
+    public void onScanResult(int callbackType, ScanResult result)
+    {
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, "found BTLE Device (new API): " + result.getDevice().getAddress());
+      }
       if( btEventHandler != null )
       {
-        BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_BTLE_CHARACTERISTIC, characteristic);
-        btEventHandler.obtainMessage(ProjectConst.MESSAGE_BTLE_CHARACTERISTIC, msg);
+        BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERED, result.getDevice());
+        btEventHandler.obtainMessage(ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERED, msg).sendToTarget();
+      }
+      else
+      {
+        Log.w(TAG, "can't send message to app! No Message Handler");
+      }
+    }
+  };
+
+  /**
+   * Callback für Androis < Lollipop
+   */
+  private BluetoothAdapter.LeScanCallback oldApiScanCallback = new BluetoothAdapter.LeScanCallback()
+  {
+
+    @Override
+    public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord)
+    {
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, "found BTLE Device (old API): " + device.getAddress());
+      }
+      if( btEventHandler != null )
+      {
+        BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERED, device);
+        btEventHandler.obtainMessage(ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERED, msg).sendToTarget();
       }
     }
   };
@@ -212,7 +440,8 @@ public class BluetoothLowEnergyService extends Service
    *
    * @return true wenn erfolgreich
    */
-  public boolean initialize()
+  @Override
+  public void onCreate()
   {
     //
     // Ab API 18 wird eine Referenz via BluethootManager geholt
@@ -226,7 +455,6 @@ public class BluetoothLowEnergyService extends Service
       if( mBluetoothManager == null )
       {
         Log.e(TAG, "Unable to initialize BluetoothManager.");
-        return false;
       }
     }
     //
@@ -238,19 +466,14 @@ public class BluetoothLowEnergyService extends Service
     if( mBluetoothAdapter == null )
     {
       Log.e(TAG, "Unable to obtain a BluetoothAdapter.");
-      return false;
     }
-    //
-    // Es gibt einen Adapter!
-    //
-    return true;
   }
 
   /**
    * Verbinde zum GATT Server auf dem entfernten BTLE Gerät
    *
    * @param address Die Adresse des fernen Gerätes
-   * @return True wenn die Verbindung erfolgrecih war
+   * @return True wenn die Verbindung erfolgreich war
    */
   public boolean connect(final String address)
   {
@@ -261,6 +484,13 @@ public class BluetoothLowEnergyService extends Service
     {
       Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.");
       return false;
+    }
+    //
+    // ist da noch was beim Discover?
+    //
+    if( mConnectionState == ProjectConst.STATUS_DISCOVERING )
+    {
+      stopDiscoverDevices();
     }
     //
     // verbinde ein schon verbindenes Gerät neu (versuche reconnect)
@@ -276,12 +506,7 @@ public class BluetoothLowEnergyService extends Service
         //
         // Das neuverbinden war erfolgreich!
         //
-        if( btEventHandler != null )
-        {
-          //BlueThoothMessage msg = new BlueThoothMessage( ProjectConst.MESSAGE_CONNECTED );
-          btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTING, null);
-        }
-        mConnectionState = ProjectConst.STATUS_CONNECTING;
+        setConnectionState(ProjectConst.STATUS_CONNECTING);
         return true;
       }
       else
@@ -290,7 +515,7 @@ public class BluetoothLowEnergyService extends Service
         // Neu verbinden schlug fehl, versuche GATT zu empfangen
         //
         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-        mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
+        mBluetoothGatt = device.connectGatt(this, false, btLeGattCallback);
         mBluetoothDeviceAddress = address;
         return false;
       }
@@ -308,16 +533,10 @@ public class BluetoothLowEnergyService extends Service
     // Wir wollen direkt zum Gerät verbinden, also wird der autoConnect
     // Parameter auf "false" gesetzt
     //
-    mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
+    mBluetoothGatt = device.connectGatt(this, false, btLeGattCallback);
     Log.i(TAG, "Trying to create a new connection.");
     mBluetoothDeviceAddress = address;
-    if( btEventHandler != null )
-    {
-      //BlueThoothMessage msg = new BlueThoothMessage( ProjectConst.MESSAGE_CONNECTED );
-      btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTING, null);
-    }
-
-    mConnectionState = ProjectConst.STATUS_CONNECTING;
+    setConnectionState(ProjectConst.STATUS_CONNECTING);
     return true;
   }
 
@@ -395,9 +614,9 @@ public class BluetoothLowEnergyService extends Service
     mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
 
     // This is specific to Heart Rate Measurement.
-    if( ProjectConst.UUID_HM_RX_TX.equals(characteristic.getUuid()) )
+    if( HM10GattAttributes.HM_RXTX_UUID.equals(characteristic.getUuid()) )
     {
-      BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID.fromString(HM10GattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+      BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID.fromString(HM10GattAttributes.UUID_CLIENT_CHARACTERISTIC_CONFIG));
       descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
       mBluetoothGatt.writeDescriptor(descriptor);
     }
@@ -421,9 +640,275 @@ public class BluetoothLowEnergyService extends Service
   }
 
   /**
+   * Finde BTLE Geräte, wenn nicht gerade eine Verbindung besteht, Möglichkeiet Filter zu setzen
+   * Beispiel hier: HM10GattAttributes.HM_10_CONF == "0000ffe0-0000-1000-8000-00805f9b34fb"
+   *
+   * @param uuidArr
+   * @return
+   */
+  @SuppressLint( "NewApi" )
+  public boolean discoverDevices(String[] uuidArr)
+  {
+    if( mConnectionState != ProjectConst.STATUS_DISCONNECTED || mBluetoothAdapter == null )
+    {
+      Log.w(TAG, "discovering not possible, device not disconnected or not BT Adapter here!");
+      return (false);
+    }
+    // Stops scanning after a pre-defined scan period.
+    mHandler.postDelayed(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        stopDiscoverDevices();
+      }
+    }, ProjectConst.SCAN_PERIOD);
+    //
+    // gibt es keinen Filter, alles suchen
+    //
+    if( uuidArr == null || uuidArr.length == 0 )
+    {
+      if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP )
+      {
+        if( BuildConfig.DEBUG )
+        {
+          Log.v(TAG, "start BTLE discovering with API > LOLLIPOP without filters");
+        }
+        mBluetoothAdapter.getBluetoothLeScanner().startScan(scanCallback);
+      }
+      else
+      {
+        if( BuildConfig.DEBUG )
+        {
+          Log.v(TAG, "start BTLE discovering with old API < LOLLIPOP without filters");
+        }
+        mBluetoothAdapter.startLeScan(oldApiScanCallback);
+      }
+    }
+    else
+    {
+      if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP )
+      {
+        if( BuildConfig.DEBUG )
+        {
+          Log.v(TAG, "start BTLE discovering with API > LOLLIPOP with filters");
+        }
+        //
+        // erzeuge den Suchfilter
+        //
+        ArrayList<ScanFilter> filterList = new ArrayList();
+        for( int i = 0; i < uuidArr.length; i++ )
+        {
+          // Empfangsstärke wäre noch möglich, .setRssiRange(-75, 0).
+          filterList.add(new ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(uuidArr[ i ])).build());
+        }
+        ScanSettings.Builder builder = new ScanSettings.Builder();
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M )
+        {
+          builder.setMatchMode(ScanSettings.SCAN_MODE_BALANCED);
+        }
+        ScanSettings scSettings = builder.build();
+        mBluetoothAdapter.getBluetoothLeScanner().startScan(filterList, scSettings, scanCallback);
+      }
+      else
+      {
+        if( BuildConfig.DEBUG )
+        {
+          Log.v(TAG, "start BTLE discovering with old API < LOLLIPOP without filters");
+        }
+        mBluetoothAdapter.startLeScan(oldApiScanCallback);
+      }
+    }
+    setConnectionState(ProjectConst.STATUS_DISCOVERING);
+    return (true);
+  }
+
+  /**
+   * Stoppe den Scannervorgang!
+   *
+   * @return
+   */
+  public void stopDiscoverDevices()
+  {
+    if( mConnectionState == ProjectConst.STATUS_DISCOVERING && mBluetoothAdapter != null )
+    {
+      if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP )
+      {
+        if( BuildConfig.DEBUG )
+        {
+          Log.v(TAG, "stop BTLE discovering with API > LOLLIPOP");
+        }
+        mBluetoothAdapter.getBluetoothLeScanner().stopScan(scanCallback);
+      }
+      else
+      {
+        if( BuildConfig.DEBUG )
+        {
+          Log.v(TAG, "stop BTLE discovering with old API < LOLLIPOP");
+        }
+        mBluetoothAdapter.stopLeScan(oldApiScanCallback);
+      }
+      if( btEventHandler != null )
+      {
+        BlueThoothMessage msg1 = new BlueThoothMessage(ProjectConst.MESSAGE_BTLE_DEVICE_END_DISCOVERING);
+        btEventHandler.obtainMessage(ProjectConst.MESSAGE_BTLE_DEVICE_END_DISCOVERING, msg1).sendToTarget();
+      }
+      setConnectionState(ProjectConst.STATUS_DISCONNECTED);
+    }
+  }
+
+  /**
+   * Verbindungsstatus ohne Fehlermeldung ändern
+   *
+   * @param connectionState Der neue Verbindungsstatus
+   */
+  private void setConnectionState(int connectionState )
+  {
+    setConnectionState( connectionState, 0  );
+  }
+
+  /**
+   * Verbindungsstatus mit Fehlermeldung setzten
+   *
+   * @param connectionState Neuer Verbindungsstatus
+   * @param errResourceId Resource-Id der Fehlermeldung in Strings
+   */
+  private void setConnectionState(int connectionState, int errResourceId )
+  {
+    //
+    // sind da noch aktionen auszuführen?
+    //
+    switch( connectionState )
+    {
+      case ProjectConst.STATUS_DISCONNECTED:
+        if( btEventHandler != null )
+        {
+          if( mConnectionState == ProjectConst.STATUS_DISCOVERING )
+          {
+            // Beendetes discovering
+            BlueThoothMessage msg1 = new BlueThoothMessage(ProjectConst.MESSAGE_BTLE_DEVICE_END_DISCOVERING);
+            btEventHandler.obtainMessage(ProjectConst.MESSAGE_BTLE_DEVICE_END_DISCOVERING, msg1).sendToTarget();
+          }
+          BlueThoothMessage msg2 = new BlueThoothMessage(ProjectConst.MESSAGE_DISCONNECTED);
+          btEventHandler.obtainMessage(mConnectionState, msg2).sendToTarget();
+        }
+        isCorrectConnectedModule = false;
+        characteristicTX = characteristicRX = null;
+        break;
+
+      case ProjectConst.STATUS_CONNECTING:
+        if( btEventHandler != null )
+        {
+          BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_CONNECTING);
+          btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTING, msg).sendToTarget();
+        }
+        isCorrectConnectedModule = false;
+        break;
+
+      case ProjectConst.STATUS_CONNECTED:
+        if( btEventHandler != null )
+        {
+          BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_CONNECTED, mBluetoothManager.getConnectedDevices(BluetoothProfile.GATT).get(0));
+          btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTED, msg).sendToTarget();
+        }
+        break;
+
+      case ProjectConst.STATUS_DISCOVERING:
+        if( btEventHandler != null )
+        {
+          BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERING);
+          btEventHandler.obtainMessage(ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERING, msg).sendToTarget();
+        }
+        isCorrectConnectedModule = false;
+        break;
+
+      case ProjectConst.STATUS_CONNECT_ERROR:
+      default:
+        if( btEventHandler != null )
+        {
+          BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_CONNECT_ERROR, errResourceId );
+          btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECT_ERROR, msg).sendToTarget();
+          BlueThoothMessage msg2 = new BlueThoothMessage(ProjectConst.MESSAGE_DISCONNECTED);
+          btEventHandler.obtainMessage(mConnectionState, msg2).sendToTarget();
+        }
+        isCorrectConnectedModule = false;
+        characteristicTX = characteristicRX = null;
+    }
+    mConnectionState = connectionState;
+  }
+
+  /**
+   * Sende an das Modul die Frage nach seinem Typ
+   */
+  private void askModulForType()
+  {
+    String kommandoString;
+    //
+    // Kommando zusammenbauen
+    //
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKTYP, ProjectConst.ETX);
+    Log.d(TAG, "send ask for type =" + kommandoString);
+    sendKdoToModule(kommandoString);
+  }
+
+  /**
+   * Frage das Modul nach seinem Namen
+   */
+  private void askModulForName()
+  {
+    String kommandoString;
+    //
+    // Kommando zusammenbauen
+    //
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKNAME, ProjectConst.ETX);
+    Log.d(TAG, "send ask for name =" + kommandoString);
+    sendKdoToModule(kommandoString);
+  }
+
+  /**
+   * Frage das Modul nach aktellem RGBW
+   */
+  private void askModulForRGBW()
+  {
+    String kommandoString;
+    //
+    // Kommando zusammenbauen
+    //
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ASKRGBW, ProjectConst.ETX);
+    Log.d(TAG, "send ask for RGBW (raw) =" + kommandoString);
+    sendKdoToModule(kommandoString);
+  }
+
+  /**
+   * Sende den Kommandostring (incl ETX und STX) zum Modul, wenn Verbunden
+   *
+   * @param kdo String mit ETC und STX
+   */
+  private boolean sendKdoToModule(final String kdo)
+  {
+    if( mConnectionState == ProjectConst.STATUS_CONNECTED && characteristicRX != null && characteristicTX != null && mBluetoothGatt != null )
+    {
+      byte[] tx = kdo.getBytes();
+      characteristicTX.setValue(tx);
+      mBluetoothGatt.writeCharacteristic(characteristicTX);
+      setCharacteristicNotification(characteristicRX, true);
+      if( BuildConfig.DEBUG )
+      {
+        Log.d(TAG, "send OK");
+      }
+      return (true);
+    }
+    else
+    {
+      Log.w(TAG, "send NOT OK, not connected?");
+      return (false);
+    }
+  }
+
+  /**
    * Der Binder über welchen die APP den service erreicht
    */
-  public class LocalBinder extends Binder
+  public class LocalBinder extends Binder implements IBtCommand
   {
     /**
      * Gib den Service an die App zurück
@@ -446,19 +931,23 @@ public class BluetoothLowEnergyService extends Service
       btEventHandler = mHandler;
       if( mConnectionState == ProjectConst.STATUS_DISCONNECTED )
       {
-        btEventHandler.obtainMessage(ProjectConst.MESSAGE_DISCONNECTED, null);
+        BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_DISCONNECTED);
+        btEventHandler.obtainMessage(ProjectConst.MESSAGE_DISCONNECTED, msg).sendToTarget();
       }
       else if( mConnectionState == ProjectConst.STATUS_CONNECTING )
       {
-        btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTING, null);
+        BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_CONNECTING);
+        btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTING, msg).sendToTarget();
       }
       else if( mConnectionState == ProjectConst.STATUS_CONNECTED )
       {
-        btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTED, null);
+        BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_CONNECTED, mBluetoothManager.getConnectedDevices(BluetoothProfile.GATT).get(0));
+        btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTED, msg).sendToTarget();
       }
       else
       {
-        btEventHandler.obtainMessage(ProjectConst.MESSAGE_DISCONNECTED, null);
+        BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_DISCONNECTED);
+        btEventHandler.obtainMessage(ProjectConst.MESSAGE_DISCONNECTED, msg).sendToTarget();
       }
     }
 
@@ -469,6 +958,107 @@ public class BluetoothLowEnergyService extends Service
     {
       Log.i(TAG, "Client register");
       btEventHandler = null;
+    }
+
+    /**
+     * Suche nach BTLE Geräten (wenn uuidArr != null nach allen)
+     *
+     * @param uuidArr
+     */
+    @Override
+    public boolean discoverDevices(String[] uuidArr)
+    {
+      return (BluetoothLowEnergyService.this.discoverDevices(uuidArr));
+    }
+
+    /**
+     * Stoppe die Erkundung!
+     */
+    @Override
+    public void stopDiscoverDevices()
+    {
+      BluetoothLowEnergyService.this.stopDiscoverDevices();
+    }
+
+    /**
+     * Berbinde zu einem BTLE Modul
+     *
+     * @param addr Adresse des Modules
+     */
+    @Override
+    public void connectTo(String addr)
+    {
+      BluetoothLowEnergyService.this.connect(addr);
+    }
+
+    /**
+     * Trenne die Verbindung mit einem BTLE Modul
+     */
+    @Override
+    public void disconnect()
+    {
+      BluetoothLowEnergyService.this.disconnect();
+    }
+
+    @Override
+    public int askModulOnlineStatus()
+    {
+/*
+      if( btEventHandler != null )
+      {
+        btEventHandler.obtainMessage(mConnectionState, null).sendToTarget();
+      }
+*/
+      return (mConnectionState);
+    }
+
+    /**
+     * Frage welches Modul verbunden ist
+     *
+     * @return Moduladresse oder NULL
+     */
+    @Override
+    public String askConnectedModul()
+    {
+      if( mConnectionState == ProjectConst.STATUS_CONNECTED )
+      {
+
+        if( !mBluetoothManager.getConnectedDevices(BluetoothProfile.GATT).isEmpty() )
+        {
+          if( !mBluetoothManager.getConnectedDevices(BluetoothProfile.GATT).get(0).getAddress().isEmpty() )
+          {
+            return (mBluetoothManager.getConnectedDevices(BluetoothProfile.GATT).get(0).getAddress());
+          }
+        }
+      }
+      return null;
+    }
+
+    /**
+     * Frage (noch einmal) nach dem Modultyp
+     */
+    @Override
+    public void askModulForType()
+    {
+      BluetoothLowEnergyService.this.askModulForType();
+    }
+
+    /**
+     * Fragt das Modul nach seinem Namen
+     */
+    @Override
+    public void askModulForName()
+    {
+      BluetoothLowEnergyService.this.askModulForName();
+    }
+
+    /**
+     * Frage das Modul nach der aktuellen RGBW Einstellung (Roh)
+     */
+    @Override
+    public void askModulForRGBW()
+    {
+      //TODO implementieren
     }
   }
 }

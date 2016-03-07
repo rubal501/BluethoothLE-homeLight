@@ -35,17 +35,21 @@ import de.dmarcini.bt.btlehomelight.R;
  */
 public final class HomeLightSysConfig
 {
-  private static boolean   showDiscovering            = true;
-  private static boolean   showDirectControl          = true;
-  private static boolean   showColorWheel             = true;
-  private static boolean   showBrightnessOnly         = true;
-  private static boolean   showPredefColors           = true;
-  private static boolean   jumpToDefaultPageOnConnect = true;
-  private static boolean   isAppDebugging             = false;
-  private static int       defaultPageOnConnect       = ProjectConst.DEFAULT_CONNECT_PAGE;
-  private static String    lastConnectedDeviceAddr    = null;
-  private static String    lastConnectedDeviceName    = null;
-  private static boolean[] selectedPages              = new boolean[ ProjectConst.PAGE_COUNT ];
+  private static boolean autoReconnect           = false;
+  private static boolean showDiscovering         = true;
+  private static boolean showDirectControl       = true;
+  private static boolean showColorWheel          = true;
+  private static boolean showBrightnessOnly      = true;
+  private static boolean showPredefColors        = true;
+  private static boolean isAppDebugging          = false;
+  private static int     defaultPageOnConnect    = ProjectConst.DEFAULT_CONNECT_PAGE;
+  private static String  lastConnectedDeviceAddr = null;
+  private static String  lastConnectedDeviceName = null;
+
+  public static boolean isAutoReconnect()
+  {
+    return autoReconnect;
+  }
 
   public static boolean isShowDiscovering()
   {
@@ -65,11 +69,6 @@ public final class HomeLightSysConfig
   public static boolean isShowBrightnessOnly()
   {
     return showBrightnessOnly;
-  }
-
-  public static boolean[] getSelectedPages()
-  {
-    return selectedPages;
   }
 
   /**
@@ -93,6 +92,21 @@ public final class HomeLightSysConfig
   }
 
   /**
+   * Setzte im Konfig-Objekt UND in den Preferenzen das zuletzt verbindene Gerät
+   *
+   * @param res                     System Resourcen
+   * @param pref                    System Preferenzen
+   * @param lastConnectedDeviceAddr Das neue Gerät
+   */
+  public static void setLastConnectedDeviceAddr(Resources res, SharedPreferences pref, String lastConnectedDeviceAddr)
+  {
+    SharedPreferences.Editor ed = pref.edit();
+    ed.putString(res.getString(R.string.pref_sys_lastConnectedDeviceAddr), lastConnectedDeviceAddr);
+    ed.commit();
+    HomeLightSysConfig.lastConnectedDeviceAddr = lastConnectedDeviceAddr;
+  }
+
+  /**
    * Welche Seite wird von der Discover Seite aus angezeigt, wenn Gerät verbunden wird
    *
    * @return ID der Seite
@@ -112,15 +126,6 @@ public final class HomeLightSysConfig
     return showDirectControl;
   }
 
-  /**
-   * Soll auf der Seite discovering bei einem CONNECT zur Default Seite gewechselt werden?
-   *
-   * @return ja oder nein
-   */
-  public static boolean isJumpToDefaultPageOnConnect()
-  {
-    return jumpToDefaultPageOnConnect;
-  }
 
   /**
    * Sollen die App im debug-Status sein ?
@@ -149,7 +154,7 @@ public final class HomeLightSysConfig
     showBrightnessOnly = pref.getBoolean(res.getString(R.string.pref_sys_showpage_brightness), true);
     showPredefColors = pref.getBoolean(res.getString(R.string.pref_sys_showpage_predefcolors), true);
     //
-    jumpToDefaultPageOnConnect = pref.getBoolean(res.getString(R.string.pref_sys_jump_to_page_on_connect), true);
+    autoReconnect = pref.getBoolean(res.getString(R.string.pref_sys_autoReconnect), false);
     isAppDebugging = pref.getBoolean(res.getString(R.string.pref_sys_debugging_stat), true);
     defaultPageOnConnect = pref.getInt(res.getString(R.string.pref_sys_page_on_connect), ProjectConst.DEFAULT_CONNECT_PAGE);
     lastConnectedDeviceAddr = pref.getString(res.getString(R.string.pref_sys_lastConnectedDeviceAddr), null);

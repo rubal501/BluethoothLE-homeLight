@@ -1,6 +1,7 @@
 package de.dmarcini.bt.btlehomelight;
 
 import android.annotation.SuppressLint;
+import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.ComponentName;
@@ -29,14 +30,19 @@ import android.widget.Toast;
 
 import java.util.Locale;
 
+import de.dmarcini.bt.btlehomelight.fragments.BTConnectFragment;
+import de.dmarcini.bt.btlehomelight.fragments.LightRootFragment;
+import de.dmarcini.bt.btlehomelight.fragments.ColorCircleFragment;
+import de.dmarcini.bt.btlehomelight.fragments.PlaceholderFragment;
+import de.dmarcini.bt.btlehomelight.fragments.WhiteOnlyFragment;
+import de.dmarcini.bt.btlehomelight.interfaces.IBtCommand;
 import de.dmarcini.bt.btlehomelight.interfaces.IBtServiceListener;
 import de.dmarcini.bt.btlehomelight.service.BluetoothLowEnergyService;
 import de.dmarcini.bt.btlehomelight.service.BluetoothLowEnergyService.LocalBinder;
 import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
-import de.dmarcini.bt.btlehomelight.utils.BluetoothModulConfig;
 import de.dmarcini.bt.btlehomelight.utils.HomeLightSysConfig;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+public class MainActivity extends AppCompatActivity implements IBtCommand, NavigationView.OnNavigationItemSelectedListener
 {
   private static final String                    TAG         = MainActivity.class.getSimpleName();
   //
@@ -50,13 +56,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     {
       if( !(msg.obj instanceof BlueThoothMessage) )
       {
-        Log.e(TAG, "Handler::handleMessage: Recived Message is NOT type of BtServiceMessage!");
+        Log.e(TAG, "Handler::handleMessage: Recived Message is NOT type of BlueThoothMessage!");
         return;
       }
       BlueThoothMessage smsg = ( BlueThoothMessage ) msg.obj;
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, String.format(Locale.ENGLISH, "Message Typ %s recived.", ProjectConst.getMsgName(smsg.getMsgType())));
+      }
       if( smsg.getData() != null && smsg.getData().length() > 0 && BuildConfig.DEBUG )
       {
-        Log.d(TAG, "BT message: <" + smsg.getData() + ">");
+        Log.d(TAG, "Handler::handleMessage: <" + smsg.getData() + ">");
       }
       if( msgHandler != null )
       {
@@ -64,13 +74,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
       }
     }
   };
-  private              BluetoothModulConfig      btConfig    = new BluetoothModulConfig();
-  private              BluetoothLowEnergyService mService    = null;
-  private              LocalBinder               binder      = null;
+  private       LocalBinder        binder      = null;
   //
   // Lebensdauer des Service wird beim binden / unbinden benutzt
   //
-  private final        ServiceConnection         mConnection = new ServiceConnection()
+  private final ServiceConnection  mConnection = new ServiceConnection()
   {
     @Override
     public void onServiceConnected(ComponentName name, IBinder service)
@@ -80,7 +88,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.d(TAG, "onServiceConnected()...");
       }
       binder = ( LocalBinder ) service;
-      mService = binder.getService();
+      if( binder == null )
+      {
+        return;
+      }
       binder.registerServiceHandler(mHandler);
     }
 
@@ -91,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
       {
         Log.d(TAG, "onServiceDisconnected...");
       }
-      if( mService != null && binder != null )
+      if( binder != null )
       {
         if( BuildConfig.DEBUG )
         {
@@ -99,11 +110,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         binder.unregisterServiceHandler();
       }
-      mService = null;
       binder = null;
     }
   };
-  private              IBtServiceListener        msgHandler  = null;
+  private       IBtServiceListener msgHandler  = null;
 
   @Override
   public void onStart()
@@ -125,7 +135,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
       //
       // BT Verbindung trennen
       //
-      btConfig.getBluetoothService().disconnect();
+      if( binder != null )
+      {
+        binder.disconnect();
+      }
     }
     catch( NullPointerException ex )
     {
@@ -138,12 +151,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
    */
   private void tryReconnectToDevice()
   {
-    // TODO: eine Möglichkeit machen, dass reconnect immer dann passiert, wenn es vorher eine Verbindung gab oder Verbinden mit dem letzten Gerät eingestellt ist
-
-    if( (btConfig.getBluetoothService() != null) && (btConfig.getDeviceAddress() != null) )
+    if( (binder != null) && (HomeLightSysConfig.getLastConnectedDeviceAddr() != null) &&  HomeLightSysConfig.isAutoReconnect() )
     {
-      final boolean result = btConfig.getBluetoothService().connect(btConfig.getDeviceAddress());
-      Log.d(TAG, "Connect request result=" + result);
+      Log.i(TAG, String.format(Locale.ENGLISH, "request to reconnect to device <%s>", HomeLightSysConfig.getLastConnectedDeviceAddr()));
+      binder.connectTo(HomeLightSysConfig.getLastConnectedDeviceAddr());
     }
   }
 
@@ -182,11 +193,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // initialisiere den Adapter
     //
     final BluetoothManager bluetoothManager = ( BluetoothManager ) getSystemService(Context.BLUETOOTH_SERVICE);
-    btConfig.setBluetoothAdapter(bluetoothManager.getAdapter());
     //
     // Ist ein BT Adapter vorhanden?
     //
-    if( btConfig.getBluethoothAdapter() == null )
+    if( bluetoothManager == null )
     {
       Toast.makeText(this, R.string.main_btle_not_supported, Toast.LENGTH_SHORT).show();
       finish();
@@ -219,14 +229,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
   {
     super.onResume();
     //
-    // Systemeinstellungen einlesen
+    // Systemeinstellungen neu einlesen
     //
     HomeLightSysConfig.readSysPrefs(getResources(), PreferenceManager.getDefaultSharedPreferences(this));
     //
     // Stelle sicher, dass der BT Adapter aktiviert wurde
     // erzeuge einen Intend (eine Absicht) und schicke diese an das System
     //
-    if( !btConfig.getBluethoothAdapter().isEnabled() )
+    if( !(( BluetoothManager )getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter().isEnabled() )
     {
       //
       // erzeuge die Nachricht ans System, der "Rest" ist dann bei onActivityResult
@@ -283,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
   }
 
   /**
-   * DAs Optionen Menü erzeugen (auch in der ActionBar)
+   * Das Optionen Menü erzeugen (auch in der ActionBar)
    *
    * @param menu welches Menü
    * @return erfolgreich?
@@ -319,6 +329,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
   @Override
   public boolean onNavigationItemSelected(MenuItem item)
   {
+    FragmentTransaction fTrans = null;
+    LightRootFragment            newFrag = null;
     // Handle navigation view item clicks here.
     int id = item.getItemId();
     if( BuildConfig.DEBUG )
@@ -356,33 +368,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
           Log.v(TAG, "onNavigationDrawerItemSelected: make color wheel fragment...");
         }
-//        AreYouSureDialogFragment sureDial = new AreYouSureDialogFragment(getString(R.string.dialog_sure_exit));
-//        sureDial.show(getFragmentManager().beginTransaction(), "programexit");
+        newFrag = new ColorCircleFragment();
+        fTrans = getFragmentManager().beginTransaction();
         break;
-//      //
+
       case R.id.navColorOnlyWhite:
         if( BuildConfig.DEBUG )
         {
-          Log.v(TAG, "onNavigationDrawerItemSelected: make only white slider fragment...");
+          Log.v(TAG, "onNavigationDrawerItemSelected: make only brightness slider fragment...");
         }
-//        if( isOnline )
-//        {
-//          //
-//          // Der Benutzer wählt den Konfigurationseintrag für den SPX
-//          //
-//          Log.i(TAG, "onNavigationDrawerItemSelected: create SPX42PreferencesFragment...");
-//          newFrag = new SPX42PreferencesFragment();
-//          newFrag.setArguments(arguments);
-//          mTitle = getString(R.string.conf_headline);
-//          fTrans = getFragmentManager().beginTransaction();
-//          fTrans.addToBackStack("SPX42PreferencesFragment");
-//        }
+        newFrag = new WhiteOnlyFragment();
+        fTrans = getFragmentManager().beginTransaction();
         break;
+
       case R.id.navColorEqualizer:
         if( BuildConfig.DEBUG )
         {
           Log.v(TAG, "onNavigationItemSelected: make color equalizer fragment...");
         }
+        newFrag = new PlaceholderFragment();
+        fTrans = getFragmentManager().beginTransaction();
         break;
 
       case R.id.navColorPresets:
@@ -390,6 +395,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
           Log.v(TAG, "onNavigationItemSelected: make color presets fragment...");
         }
+        newFrag = new PlaceholderFragment();
+        fTrans = getFragmentManager().beginTransaction();
         break;
 
       case R.id.navCommBT:
@@ -397,6 +404,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
           Log.v(TAG, "onNavigationItemSelected: make connection fragment...");
         }
+        newFrag = new BTConnectFragment();
+        fTrans = getFragmentManager().beginTransaction();
         break;
 
       case R.id.navPropertys:
@@ -404,6 +413,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
           Log.v(TAG, "onNavigationItemSelected: make program propertys fragment...");
         }
+        newFrag = new PlaceholderFragment();
+        fTrans = getFragmentManager().beginTransaction();
         break;
 
       case R.id.navQuit:
@@ -411,13 +422,160 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
           Log.v(TAG, "onNavigationItemSelected: quit app...");
         }
+//        AreYouSureDialogFragment sureDial = new AreYouSureDialogFragment(getString(R.string.dialog_sure_exit));
+//        sureDial.show(getFragmentManager().beginTransaction(), "programexit");
         break;
 
       default:
         Log.e(TAG, "onNavigationItemSelected: unknown menuentry recived...");
     }
+    if( fTrans != null )
+    {
+      if( BuildConfig.DEBUG)
+      {
+        Log.v(TAG, "onNavigationItemSelected: replace new Fragment...");
+      }
+      fTrans.replace(R.id.main_container, newFrag);
+      fTrans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN | FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+      fTrans.commit();
+    }
+    if( BuildConfig.DEBUG)
+    {
+      if( msgHandler == null )
+      {
+        Log.w(TAG, "set messgeHandler to null");
+      }
+      else
+      {
+        if( newFrag != null )
+        {
+          Log.i(TAG, "set messgeHandler to " + newFrag.getClass().getSimpleName());
+        }
+      }
+    }
+    msgHandler = newFrag;
     DrawerLayout drawer = ( DrawerLayout ) findViewById(R.id.main_drawer_layout);
     drawer.closeDrawer(GravityCompat.START);
     return true;
+  }
+
+  /**
+   * Suche nach BTLE Geräten (wenn uuidArr != null nach allen)
+   *
+   * @param uuidArr
+   * @return konnte der Vorgang gestartet werden?
+   */
+  @Override
+  public boolean discoverDevices(String[] uuidArr)
+  {
+    if( binder != null )
+    {
+      return binder.discoverDevices(uuidArr);
+    }
+    return false;
+  }
+
+  /**
+   * Stoppe die Erkundung der BTLE Geräte falls gerade in Arbeit
+   */
+  @Override
+  public void stopDiscoverDevices()
+  {
+    if( binder != null )
+    {
+      binder.stopDiscoverDevices();
+    }
+  }
+
+  /**
+   * Berbinde zu einem BTLE Modul
+   *
+   * @param addr Adresse des Modules
+   */
+  @Override
+  public void connectTo(String addr)
+  {
+    if( binder != null )
+    {
+      HomeLightSysConfig.setLastConnectedDeviceAddr(getResources(), PreferenceManager.getDefaultSharedPreferences(this), addr);
+      binder.connectTo(addr);
+    }
+  }
+
+  /**
+   * Trenne explizit die Verbindung mit einem BTLE Modul
+   */
+  @Override
+  public void disconnect()
+  {
+    if( binder != null )
+    {
+      HomeLightSysConfig.setLastConnectedDeviceAddr(getResources(), PreferenceManager.getDefaultSharedPreferences(this), null);
+      binder.disconnect();
+    }
+  }
+
+  /**
+   * Frage nach dem Onlinestatus des Services
+   */
+  @Override
+  public int askModulOnlineStatus()
+  {
+    if( binder != null )
+    {
+      return binder.askModulOnlineStatus();
+    }
+    return( ProjectConst.STATUS_CONNECT_ERROR );
+  }
+
+  /**
+   * Frage welches Modul verbunden ist
+   *
+   * @return Moduladresse oder NULL
+   */
+  @Override
+  public String askConnectedModul()
+  {
+    if( binder != null )
+    {
+      return binder.askConnectedModul();
+    }
+    return( null );
+  }
+
+  /**
+   * Frage (noch einmal) nach dem Modultyp
+   */
+  @Override
+  public void askModulForType()
+  {
+    if( binder != null )
+    {
+      binder.askModulForType();
+    }
+  }
+
+  /**
+   * Fragt das Modul nach seinem Namen
+   */
+  @Override
+  public void askModulForName()
+  {
+    if( binder != null )
+    {
+      binder.askModulForName();
+    }
+  }
+
+  /**
+   * Frage das Modul nach der aktuellen RGBW Einstellung (Roh)
+   */
+  @Override
+  public void askModulForRGBW()
+  {
+    if( binder != null )
+    {
+      binder.askModulForRGBW();
+    }
   }
 }

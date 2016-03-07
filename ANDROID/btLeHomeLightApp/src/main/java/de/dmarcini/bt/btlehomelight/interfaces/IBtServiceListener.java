@@ -102,4 +102,11 @@ public interface IBtServiceListener
    * @param msg
    */
   void msgReciveWriteTmeout(final BlueThoothMessage msg);
+
+  /**
+   * BEhandle ankommende Daten
+   *
+   * @param msg Nachricht mit eingeschlossenen Daten
+   */
+  void msgDataRecived( final BlueThoothMessage msg );
 }

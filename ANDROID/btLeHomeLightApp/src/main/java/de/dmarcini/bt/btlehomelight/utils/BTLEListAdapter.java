@@ -65,12 +65,15 @@ public class BTLEListAdapter extends BaseAdapter
    */
   public void setConnectedDevice(BluetoothDevice connectedDevice)
   {
-    for( int i = 0; i < getCount(); i++ )
+    if( connectedDevice != null )
     {
-      if( connectedDevice.equals(getDevice(i)) )
+      for( int i = 0; i < getCount(); i++ )
       {
-        this.connectedDevice = getDevice(i);
-        return;
+        if( connectedDevice.equals(getDevice(i)) )
+        {
+          this.connectedDevice = getDevice(i);
+          return;
+        }
       }
     }
     this.connectedDevice = null;

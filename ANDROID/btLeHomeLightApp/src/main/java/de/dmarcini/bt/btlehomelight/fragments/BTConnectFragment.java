@@ -1,12 +1,14 @@
 package de.dmarcini.bt.btlehomelight.fragments;
 
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Locale;
 
 import de.dmarcini.bt.btlehomelight.BuildConfig;
 import de.dmarcini.bt.btlehomelight.ProjectConst;
@@ -21,11 +24,12 @@ import de.dmarcini.bt.btlehomelight.R;
 import de.dmarcini.bt.btlehomelight.interfaces.IBtCommand;
 import de.dmarcini.bt.btlehomelight.utils.BTLEListAdapter;
 import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
+import de.dmarcini.bt.btlehomelight.utils.HM10GattAttributes;
 
 /**
  * Created by dmarc on 28.02.2016.
  */
-public class BTConnectFragment extends LightRootFragment implements View.OnClickListener
+public class BTConnectFragment extends LightRootFragment implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener
 {
   private static final String                     TAG             = BTConnectFragment.class.getSimpleName();
   private static final ArrayList<BluetoothDevice> foundDevices    = new ArrayList<>();
@@ -65,7 +69,7 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
     }
     if( BuildConfig.DEBUG )
     {
-      Log.d(TAG, "make brightness fragment...");
+      Log.d(TAG, "make connect fragment...");
     }
     rootView = inflater.inflate(R.layout.fragment_connect_and_discover, container, false);
     //
@@ -75,6 +79,10 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
     scanProgress = ( ProgressBar ) rootView.findViewById(R.id.scanProgress);
     scanButton = ( Button ) rootView.findViewById(R.id.scanButton);
     discoverList = ( ListView ) rootView.findViewById(R.id.discoverList);
+    mBTLEDeviceListAdapter = new BTLEListAdapter(getActivity());
+    discoverList.setAdapter(mBTLEDeviceListAdapter);
+    discoverList.setOnItemClickListener(this);
+    discoverList.setOnItemLongClickListener(this);
     scanButton.setOnClickListener(this);
     if( BuildConfig.DEBUG )
     {
@@ -122,11 +130,33 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
         msgConnected(msg);
         break;
 
+      case ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERING:
+        msgDiscovering(msg);
+        break;
+
       case ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERED:
         msgBtLeDeviceDiscovered(msg);
         break;
+
+      case ProjectConst.MESSAGE_BTLE_DEVICE_END_DISCOVERING:
+        if( BuildConfig.DEBUG )
+        {
+          Log.v(TAG, "recive MESSAGE_BTLE_DEVICE_END_DISCOVERING");
+        }
+        break;
+
       case ProjectConst.MESSAGE_GATT_SERVICES_DISCOVERED:
-      case ProjectConst.MESSAGE_BTLE_CHARACTERISTIC:
+        break;
+
+      case ProjectConst.MESSAGE_BTLE_DATA:
+        msgDataRecived( msg );
+        break;
+
+      default:
+        if( BuildConfig.DEBUG )
+        {
+          Log.v(TAG, "recive unhandled Message...:" + msg.getMsgType());
+        }
         break;
     }
   }
@@ -155,9 +185,23 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
     //
     // Gerät noch nicht in der Liste
     //
-    mBTLEDeviceListAdapter.addDevice(mDev);
-    mBTLEDeviceListAdapter.notifyDataSetChanged();
+    if( mDev != null )
+    {
+      mBTLEDeviceListAdapter.addDevice(mDev);
+      //
+      // ist das Modul verbunden?
+      //
+      if( runningActivity.askConnectedModul() != null && runningActivity.askConnectedModul().equals(mDev.getAddress()) )
+      {
+        mBTLEDeviceListAdapter.setConnectedDevice(mDev);
+      }
+      mBTLEDeviceListAdapter.notifyDataSetChanged();
+    }
+  }
 
+  public void msgDiscovering(BlueThoothMessage msg)
+  {
+    prepareHeader();
   }
 
   /**
@@ -170,7 +214,7 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
   @Override
   public void msgConnecting(BlueThoothMessage msg)
   {
-
+    prepareHeader();
   }
 
   /**
@@ -183,7 +227,25 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
   @Override
   public void msgConnected(BlueThoothMessage msg)
   {
-
+    //
+    // Versuche das Verbundene Gerät in der Liste zu finden und zu markieren
+    //
+    if( mBTLEDeviceListAdapter != null && msg != null )
+    {
+      for( int i = 0; i < mBTLEDeviceListAdapter.getCount(); i++ )
+      {
+        BluetoothDevice btDev = mBTLEDeviceListAdapter.getDevice(0);
+        if( btDev.getAddress().equals(msg.getDevice().getAddress()) )
+        {
+          Log.i(TAG, "connected marked");
+          mBTLEDeviceListAdapter.setConnectedDevice(btDev);
+          discoverList.setAdapter(mBTLEDeviceListAdapter);
+          break;
+        }
+      }
+    }
+    prepareHeader();
+    // TODO: Noch das Gerät kennzeichnen
   }
 
   /**
@@ -196,7 +258,36 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
   @Override
   public void msgDisconnected(BlueThoothMessage msg)
   {
+    //
+    // Kein Gerät als verbunden kennzeichnen
+    //
+    if( mBTLEDeviceListAdapter != null )
+    {
+      mBTLEDeviceListAdapter.setConnectedDevice(null);
+      discoverList.setAdapter(mBTLEDeviceListAdapter);
+    }
+    prepareHeader();
+  }
 
+  /**
+   * Daten angekommen...
+   *
+   * @param msg
+   */
+  @Override
+  public void msgDataRecived( BlueThoothMessage msg )
+  {
+    if( msg.getData() != null )
+    {
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, "data recived! <" + msg.getData() + ">");
+      }
+    }
+    else
+    {
+      Log.w(TAG, "NO DATA!");
+    }
   }
 
   /**
@@ -222,6 +313,7 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
   @Override
   public void msgConnectError(BlueThoothMessage msg)
   {
+    // TODO: Fehlermeldung aus der message anzeigen
 
   }
 
@@ -246,6 +338,7 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
   @Override
   public void onClick(View clickedView)
   {
+    String filters[] = {HM10GattAttributes.HM_RXTX_UUID.toString()  }; // Suche nur nach Modulen mit dieser Kennung
     //
     // Checke mal, ob das was für mich ist
     //
@@ -253,32 +346,35 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
     {
       // Feedback geben
       clickedView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+      //
+      // Abhängig vom Status
+      //
       switch( runningActivity.askModulOnlineStatus() )
       {
+        case ProjectConst.STATUS_CONNECT_ERROR:
         case ProjectConst.STATUS_DISCONNECTED:
           foundDevices.clear();
+          runningActivity.discoverDevices(filters);
           prepareHeader();
-          runningActivity.discoverDevices(null);
           break;
 
         case ProjectConst.STATUS_CONNECTING:
         case ProjectConst.STATUS_CONNECTED:
           foundDevices.clear();
-          prepareHeader();
           runningActivity.disconnect();
-          runningActivity.discoverDevices(null);
+          //runningActivity.discoverDevices(filters);
+          prepareHeader();
           break;
 
         case ProjectConst.STATUS_DISCOVERING:
-          prepareHeader();
           runningActivity.stopDiscoverDevices();
+          prepareHeader();
           break;
 
-        case ProjectConst.STATUS_CONNECT_ERROR:
         default:
-          prepareHeader();
           foundDevices.clear();
-          Log.e(TAG, "connection error (not connected with service?");
+          Log.e(TAG, "unknown connection status, connect programmer!");
+          prepareHeader();
           //TODO: Usernachricht
       }
     }
@@ -292,7 +388,14 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
         scanProgress.setVisibility(View.VISIBLE);
         break;
 
+      case ProjectConst.STATUS_CONNECT_ERROR:
       case ProjectConst.STATUS_DISCONNECTED:
+        // getrennt
+        discoverHeadLine.setText(getResources().getString(R.string.discovering_headline_devices));
+        scanButton.setText(getResources().getString(R.string.discovering_headline_search));
+        scanProgress.setVisibility(View.INVISIBLE);
+        break;
+
       case ProjectConst.STATUS_CONNECTED:
         // Verbunden
         discoverHeadLine.setText(getResources().getString(R.string.discovering_headline_devices));
@@ -303,12 +406,82 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
       case ProjectConst.STATUS_DISCOVERING:
         discoverHeadLine.setText(getResources().getString(R.string.discovering_headline_search));
         scanButton.setText(getResources().getString(R.string.discovering_stop));
+        scanProgress.setVisibility(View.VISIBLE);
         break;
 
-      case ProjectConst.STATUS_CONNECT_ERROR:
       default:
         scanButton.setText(getResources().getString(R.string.discovering_scan));
         scanProgress.setVisibility(View.INVISIBLE);
     }
+  }
+
+  /**
+   * Callback method to be invoked when an item in this AdapterView has
+   * been clicked.
+   * <p/>
+   * Implementers can call getItemAtPosition(position) if they need
+   * to access the data associated with the selected item.
+   *
+   * @param parent      The AdapterView where the click happened.
+   * @param clickedView The view within the AdapterView that was clicked (this
+   *                    will be a view provided by the adapter)
+   * @param position    The position of the view in the adapter.
+   * @param id          The row id of the item that was clicked.
+   */
+  @Override
+  public void onItemClick(AdapterView<?> parent, View clickedView, int position, long id)
+  {
+    // Feedback geben
+    clickedView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+    //
+    final BluetoothDevice device = mBTLEDeviceListAdapter.getDevice(position);
+    if( device == null )
+    {
+      Log.e(TAG, "not device found an clicked position!");
+      return;
+    }
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, String.format(Locale.ENGLISH, "connect to device %s...", device.getAddress()));
+    }
+    //
+    // wenn er noch am scannen ist, erst mal abschalten
+    //
+    switch( runningActivity.askModulOnlineStatus() )
+    {
+      case ProjectConst.STATUS_DISCOVERING:
+        runningActivity.stopDiscoverDevices();
+        break;
+      case ProjectConst.STATUS_CONNECTING:
+      case ProjectConst.STATUS_CONNECTED:
+        runningActivity.disconnect();
+        break;
+    }
+    Log.d(TAG, String.format(Locale.ENGLISH, "try BTLE connect to device <%s> <%s>...", device.getName(), device.getAddress()));
+    runningActivity.connectTo(device.getAddress());
+  }
+
+  /**
+   * Callback method to be invoked when an item in this view has been
+   * clicked and held.
+   * <p/>
+   * Implementers can call getItemAtPosition(position) if they need to access
+   * the data associated with the selected item.
+   *
+   * @param parent   The AbsListView where the click happened
+   * @param view     The view within the AbsListView that was clicked
+   * @param position The position of the view in the list
+   * @param id       The row id of the item that was clicked
+   * @return true if the callback consumed the long click, false otherwise
+   * //TODO: Aktionen zum Gerät ausführen
+   */
+  @Override
+  public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+  {
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "LONG click on entry " + position);
+    }
+    return false;
   }
 }

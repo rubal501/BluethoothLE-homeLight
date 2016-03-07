@@ -40,7 +40,7 @@ public class HM10GattAttributes
   public static String UUID_GENERIC_ACCESS               = "00001800-0000-1000-8000-00805f9b34fb";
   public static UUID   HM_RXTX_UUID                      = UUID.fromString(UUID_HM_RX_TX);
   public static UUID   HM_10_CONF_UUID                   = UUID.fromString(UUID_HM_10_CONF);
-  private static HashMap<String, String> attributes                   = new HashMap();
+  private static HashMap<String, String> attributes      = new HashMap();
 
   static
   {

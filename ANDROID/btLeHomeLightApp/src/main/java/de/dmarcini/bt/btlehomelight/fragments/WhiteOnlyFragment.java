@@ -1,0 +1,219 @@
+package de.dmarcini.bt.btlehomelight.fragments;
+
+import android.content.res.Configuration;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.larswerkman.holocolorpicker.ValueBar;
+
+import java.util.Locale;
+
+import de.dmarcini.bt.btlehomelight.BuildConfig;
+import de.dmarcini.bt.btlehomelight.R;
+import de.dmarcini.bt.btlehomelight.interfaces.IBtCommand;
+import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
+
+/**
+ * Fragment für den Helligkeitsregler in WEISS
+ */
+public class WhiteOnlyFragment extends LightRootFragment implements ValueBar.OnValueChangedListener, View.OnTouchListener
+{
+  private static final String       TAG             = WhiteOnlyFragment.class.getSimpleName();
+  private IBtCommand runningActivity = null;
+  private ValueBar brightnessSeekBar;
+  private TextView brightnessHeaderTextView;
+  private String   brightnessValueString;
+
+  @Override
+  public void onCreate(Bundle savedInstanceState)
+  {
+    super.onCreate(savedInstanceState);
+    if( BuildConfig.DEBUG )
+    {
+      Log.d(TAG, "onCreate...");
+    }
+  }
+
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+  {
+    View rootView;
+
+    if( BuildConfig.DEBUG )
+    {
+      Log.d(TAG, "onCreateView...");
+    }
+    //
+    // wenn kein Container vorhanden ist, dann gibts auch keinen View
+    //
+    if( container == null )
+    {
+      Log.e(TAG, "onCreateView: container is NULL ...");
+      return (null);
+    }
+    if( BuildConfig.DEBUG )
+    {
+      Log.d(TAG, "make brightness fragment...");
+    }
+    rootView = inflater.inflate(R.layout.fragment_brightness_only, container, false);
+    //
+    // Adressen der GUI Objekte bestimmen
+    //
+    brightnessHeaderTextView = ( TextView ) rootView.findViewById(R.id.brightnessHeaderTextView);
+    brightnessValueString = getActivity().getString(R.string.brigtness_header_vals);
+    brightnessSeekBar = ( ValueBar ) rootView.findViewById(R.id.brightnessValueBar);
+    brightnessSeekBar.setOnValueChangedListener(this);
+    brightnessSeekBar.setOnTouchListener(this);
+    brightnessSeekBar.setColor(0xffffffff);
+    brightnessSeekBar.setBarPointerHaloPaintColor(getResources().getColor(R.color.valuebar_holo_pointer_br_color));
+
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "onCreateView...OK");
+    }
+    return (rootView);
+  }
+
+  @Override
+  public void onActivityCreated(Bundle savedInstanceState)
+  {
+    super.onActivityCreated(savedInstanceState);
+    runningActivity = ( IBtCommand ) getActivity();
+    if( BuildConfig.DEBUG )
+    {
+      Log.d(TAG, "onActivityCreated: ...");
+    }
+  }
+
+  /**
+   * Behandle alle ankommenden Nachrichten
+   * <p/>
+   * Stand: 16.11.2013
+   *
+   * @param msg
+   */
+  @Override
+  public void handleMessages(BlueThoothMessage msg)
+  {
+
+  }
+
+  /**
+   * Behandle ankommende Nachricht über den Versuch eine Verbindung aufzubauen
+   * <p/>
+   * Stand: 16.11.2013
+   *
+   * @param msg
+   */
+  @Override
+  public void msgConnecting(BlueThoothMessage msg)
+  {
+
+  }
+
+  /**
+   * Behandle Nachricht über den erfolgreichen Aufbau einer Verbindung zum BT Gerät
+   * <p/>
+   * Stand: 16.11.2013
+   *
+   * @param msg
+   */
+  @Override
+  public void msgConnected(BlueThoothMessage msg)
+  {
+
+  }
+
+  /**
+   * Behandle Nachricht über den Verlust der BT-Verbindung
+   * <p/>
+   * Stand: 16.11.2013
+   *
+   * @param msg
+   */
+  @Override
+  public void msgDisconnected(BlueThoothMessage msg)
+  {
+
+  }
+
+  /**
+   * Behandle TICK-Nachricht vom Service
+   * <p/>
+   * Stand: 16.11.2013
+   *
+   * @param msg
+   */
+  @Override
+  public void msgRecivedTick(BlueThoothMessage msg)
+  {
+
+  }
+
+  /**
+   * Behandle die Nachricht vom Service, dass der Verbindungsversuch erfolglos war
+   * <p/>
+   * Stand: 16.11.2013
+   *
+   * @param msg
+   */
+  @Override
+  public void msgConnectError(BlueThoothMessage msg)
+  {
+
+  }
+
+  /**
+   * Behandle die _Nachricht, dass es einen Timeout beim schreiben zum BT-Gerät gab
+   * <p/>
+   * Stand: 16.11.2013
+   *
+   * @param msg
+   */
+  @Override
+  public void msgReciveWriteTmeout(BlueThoothMessage msg)
+  {
+
+  }
+
+  /**
+   * BEhandle ankommende Daten
+   *
+   * @param msg Nachricht mit eingeschlossenen Daten
+   */
+  @Override
+  public void msgDataRecived(BlueThoothMessage msg)
+  {
+
+  }
+
+  @Override
+  public void onValueChanged(int color)
+  {
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, String.format(Locale.ENGLISH, "color changed to %08X!", color ));
+    }
+
+  }
+
+  /**
+   * Called when a touch event is dispatched to a view. This allows listeners to
+   * get a chance to respond before the target view.
+   *
+   * @param touchedView     The view the touch event has been dispatched to.
+   * @param event The MotionEvent object containing full information about
+   *              the event.
+   * @return True if the listener has consumed the event, false otherwise.
+   */
+  @Override
+  public boolean onTouch(View touchedView, MotionEvent event)
+  {
+    return false;
+  }
+}

@@ -383,7 +383,6 @@ public class DiscoveringFragment extends AppFragment implements IFragmentInterfa
     {
       Log.v(TAG, "onPause()");
     }
-
   }
 
   @Override
