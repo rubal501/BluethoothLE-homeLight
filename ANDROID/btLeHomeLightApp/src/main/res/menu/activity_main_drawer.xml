@@ -7,7 +7,7 @@
         android:icon="@drawable/ic_lightbulb_outline_color_24dp"
         android:title="@string/nav_color_circle"/>
     <item
-        android:id="@+id/navColorOnlyWhite"
+        android:id="@+id/navColorBrightness"
         android:icon="@drawable/ic_lightbulb_outline_black_24dp"
         android:title="@string/nav_color_brightness"/>
     <item
@@ -22,23 +22,29 @@
 
   <item android:title="@string/nav_comm">
     <menu>
-      <item
-          android:id="@+id/navCommBT"
-          android:icon="@drawable/ic_bluetooth_black_24dp"
-          android:title="@string/nav_comm_bt"/>
+      <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navCommBT"
+            android:icon="@drawable/ic_bluetooth_black_24dp"
+            android:title="@string/nav_comm_bt"/>
+      </group>
+
     </menu>
   </item>
 
   <item android:title="@string/nav_prop">
     <menu>
-      <item
-          android:id="@+id/navPropertys"
-          android:icon="@drawable/ic_settings_black_24dp"
-          android:title="@string/nav_prop_prog"/>
-      <item
-          android:id="@+id/navQuit"
-          android:icon="@drawable/ic_done_all_black_24dp"
-          android:title="@string/nav_quit_prog"/>
+      <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navPropertys"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/nav_prop_prog"/>
+        <item
+            android:id="@+id/navQuit"
+            android:icon="@drawable/ic_done_all_black_24dp"
+            android:title="@string/nav_quit_prog"/>
+      </group>
     </menu>
   </item>
+  -->
 </menu>
