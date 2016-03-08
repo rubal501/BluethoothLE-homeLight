@@ -93,11 +93,11 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
   public void onActivityCreated(Bundle savedInstanceState)
   {
     super.onActivityCreated(savedInstanceState);
-    runningActivity = ( IBtCommand ) getActivity();
     if( BuildConfig.DEBUG )
     {
       Log.d(TAG, "onActivityCreated: ...");
     }
+    runningActivity = ( IBtCommand ) getActivity();
   }
 
   @Override
