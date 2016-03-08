@@ -27,7 +27,6 @@ package de.dmarcini.bt.btlehomelight.utils;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
-import de.dmarcini.bt.btlehomelight.ProjectConst;
 import de.dmarcini.bt.btlehomelight.R;
 
 /**
@@ -42,7 +41,6 @@ public final class HomeLightSysConfig
   private static boolean showBrightnessOnly      = true;
   private static boolean showPredefColors        = true;
   private static boolean isAppDebugging          = false;
-  private static int     defaultPageOnConnect    = ProjectConst.DEFAULT_CONNECT_PAGE;
   private static String  lastConnectedDeviceAddr = null;
   private static String  lastConnectedDeviceName = null;
 
@@ -61,7 +59,7 @@ public final class HomeLightSysConfig
     return showColorWheel;
   }
 
-  public static boolean isShowPredefColors()
+  public static boolean isShowColorPresets()
   {
     return showPredefColors;
   }
@@ -107,21 +105,11 @@ public final class HomeLightSysConfig
   }
 
   /**
-   * Welche Seite wird von der Discover Seite aus angezeigt, wenn Gerät verbunden wird
-   *
-   * @return ID der Seite
-   */
-  public static int getDefaultPageOnConnect()
-  {
-    return defaultPageOnConnect;
-  }
-
-  /**
    * Soll das Fragment zur Direkten Kontrolle gezeigt werden?
    *
    * @return Ja oder nein
    */
-  public static boolean isShowDirectControl()
+  public static boolean isShowEqualizer()
   {
     return showDirectControl;
   }
@@ -156,7 +144,6 @@ public final class HomeLightSysConfig
     //
     autoReconnect = pref.getBoolean(res.getString(R.string.pref_sys_autoReconnect), false);
     isAppDebugging = pref.getBoolean(res.getString(R.string.pref_sys_debugging_stat), true);
-    defaultPageOnConnect = pref.getInt(res.getString(R.string.pref_sys_page_on_connect), ProjectConst.DEFAULT_CONNECT_PAGE);
     lastConnectedDeviceAddr = pref.getString(res.getString(R.string.pref_sys_lastConnectedDeviceAddr), null);
     lastConnectedDeviceName = pref.getString(res.getString(R.string.pref_sys_lastConnectedDeviceName), null);
   }
