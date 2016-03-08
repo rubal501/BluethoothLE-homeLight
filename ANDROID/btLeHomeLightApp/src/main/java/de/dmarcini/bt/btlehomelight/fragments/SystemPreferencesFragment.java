@@ -1,6 +1,5 @@
 package de.dmarcini.bt.btlehomelight.fragments;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
@@ -36,9 +35,12 @@ public class SystemPreferencesFragment extends PreferenceFragment implements Sha
   @Override
   public void onPause()
   {
-    Intent intent;
     super.onPause();
     Log.v(TAG, "onPause()...");
+    //
+    // lösche Listener, der überwacht, wenn Preferenzen geändert wurden
+    //
+    getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
   }
 
   @Override
@@ -51,6 +53,7 @@ public class SystemPreferencesFragment extends PreferenceFragment implements Sha
     //
     getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
   }
+
 
   /**
    * Called when a shared preference is changed, added, or removed. This
