@@ -24,7 +24,6 @@ import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
 public class WhiteOnlyFragment extends LightRootFragment implements ValueBar.OnValueChangedListener, View.OnTouchListener
 {
   private static final String       TAG             = WhiteOnlyFragment.class.getSimpleName();
-  private IBtCommand runningActivity = null;
   private ValueBar brightnessSeekBar;
   private TextView brightnessHeaderTextView;
   private String   brightnessValueString;

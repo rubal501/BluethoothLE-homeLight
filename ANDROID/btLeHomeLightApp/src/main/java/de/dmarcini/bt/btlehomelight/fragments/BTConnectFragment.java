@@ -31,7 +31,6 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
 {
   private static final String                     TAG             = BTConnectFragment.class.getSimpleName();
   private static final ArrayList<BluetoothDevice> foundDevices    = new ArrayList<>();
-  private              IBtCommand                 runningActivity = null;
   private BTLEListAdapter mBTLEDeviceListAdapter;
   private TextView        discoverHeadLine;
   private ProgressBar     scanProgress;

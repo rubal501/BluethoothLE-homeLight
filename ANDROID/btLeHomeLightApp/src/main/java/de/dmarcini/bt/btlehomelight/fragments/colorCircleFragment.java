@@ -25,7 +25,6 @@ import de.dmarcini.bt.btlehomelight.views.ColorPicker;
 public class ColorCircleFragment extends LightRootFragment implements ColorPicker.OnColorChangedListener, ColorPicker.OnColorSelectedListener, View.OnClickListener
 {
   private static final String     TAG             = ColorCircleFragment.class.getSimpleName();
-  private              IBtCommand runningActivity = null;
   private int          currColor;
   private ColorPicker  picker;
   private ToggleButton calToggleButton;
@@ -251,7 +250,7 @@ public class ColorCircleFragment extends LightRootFragment implements ColorPicke
     {
       Log.v(TAG, String.format(Locale.ENGLISH, "color changed to %08X!", color));
     }
-    sendColor(color);
+    sendColor(color, !calToggleButton.isChecked());
   }
 
   @Override
@@ -261,38 +260,9 @@ public class ColorCircleFragment extends LightRootFragment implements ColorPicke
     {
       Log.v(TAG, String.format(Locale.ENGLISH, "color selected to %08X!", color));
     }
-    sendColor(color);
+    sendColor(color, !calToggleButton.isChecked());
   }
 
-  private void sendColor(int color)
-  {
-    short[] rgbw = new short[ 4 ];
-    //
-    rgbw[ 0 ] = ( short ) ((color >> 16) & 0xff);
-    rgbw[ 1 ] = ( short ) ((color >> 8) & 0xff);
-    rgbw[ 2 ] = ( short ) (color & 0xff);
-    rgbw[ 3 ] = 0;
-
-    if( timeToSend < System.currentTimeMillis() )
-    {
-      //
-      // Mal wieder zum Contoller senden!
-      //
-      if( calToggleButton.isChecked() )
-      {
-        runningActivity.setModulRGB4Calibrate(rgbw);
-      }
-      else
-      {
-        runningActivity.setModulRawRGBW(rgbw);
-      }
-      //
-      // Neue Deadline setzen
-      //
-      timeToSend = System.currentTimeMillis() + ProjectConst.TIMEDIFF_TO_SEND;
-    }
-
-  }
 
   /**
    * Called when a view has been clicked.

@@ -23,7 +23,6 @@ import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
 public class PlaceholderFragment extends LightRootFragment
 {
   private static final String       TAG             = PlaceholderFragment.class.getSimpleName();
-  private              IBtCommand   runningActivity = null;
 
   @Override
   public void onCreate(Bundle savedInstanceState)

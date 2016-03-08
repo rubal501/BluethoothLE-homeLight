@@ -41,22 +41,19 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/BTConnectFragment.java" line="243" mnemonic="8" />
+    <bookmark url="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/BTConnectFragment.java" line="242" mnemonic="8" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5239c00f-696b-4edb-9b54-3ceaa8eedeb2" name="Default" comment="Umstellung auf FragmentInterface und AppFragment von abstract zu &quot;echter&quot; Klasse">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/exceptions/BufferOverflowException.java" />
       <change type="MOVED" beforePath="C:\DATEN\Entwicklung\androidStudioWorkspace\BlueThoothLE\ANDROID\btLeHomeLightApp\src\main\java\de\dmarcini\bt\btlehomelight\fragments\colorCircleFragment.java" afterPath="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/ColorCircleFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/views/ColorPicker.java" afterPath="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/views/ColorPicker.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/MainActivity.java" afterPath="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/app_bar_main.xml" afterPath="$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/app_bar_main.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btLeHomeLightApp/src/main/res/values/dimens.xml" afterPath="$PROJECT_DIR$/btLeHomeLightApp/src/main/res/values/dimens.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/fragment_colors_wheel_land.xml" afterPath="$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/fragment_colors_wheel_land.xml" />
+      <change type="MOVED" beforePath="C:\DATEN\Entwicklung\androidStudioWorkspace\BlueThoothLE\ANDROID\btLeHomeLightApp\src\main\java\de\dmarcini\bt\btlehomelight\fragments\lightRootFragment.java" afterPath="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/LightRootFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/BTConnectFragment.java" afterPath="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/BTConnectFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/PlaceholderFragment.java" afterPath="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/PlaceholderFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/SystemPreferencesFragment.java" afterPath="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/SystemPreferencesFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/WhiteOnlyFragment.java" afterPath="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/WhiteOnlyFragment.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
-    <list id="cab2b5aa-c3da-43da-95d4-d267fd6818d8" name="Failed commit: Default" comment="gemeinsame Variable und Funktionen zugefügt">
-      <change type="MOVED" beforePath="C:\DATEN\Entwicklung\androidStudioWorkspace\BlueThoothLE\ANDROID\btLeHomeLightApp\src\main\java\de\dmarcini\bt\btlehomelight\fragments\lightRootFragment.java" afterPath="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/LightRootFragment.java" />
-    </list>
+    <list id="cab2b5aa-c3da-43da-95d4-d267fd6818d8" name="Failed commit: Default" comment="gemeinsame Variable und Funktionen zugefügt" />
     <ignored path="ANDROID.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -92,32 +89,16 @@
               <caret line="577" column="14" selection-start-line="577" selection-start-column="14" selection-end-line="577" selection-end-column="14" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3393#4157#0" expanded="true" />
-                <element signature="e#4156#4157#0" expanded="true" />
-                <element signature="e#9315#9366#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ColorCircleFragment.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ColorCircleFragment.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/ColorCircleFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.73754555">
-              <caret line="264" column="0" selection-start-line="264" selection-start-column="0" selection-end-line="264" selection-end-column="0" />
-              <folding>
-                <element signature="e#12317#12448#0" expanded="true" />
-                <element signature="e#12447#12448#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ColorSelectFragment.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/btlehomelight/src/main/java/de/dmarcini/bt/homelight/fragments/ColorSelectFragment.java">
-          <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="263" column="14" selection-start-line="263" selection-start-column="14" selection-end-line="263" selection-end-column="14" />
+              <caret line="252" column="49" selection-start-line="252" selection-start-column="49" selection-end-line="252" selection-end-column="49" />
               <folding />
             </state>
           </provider>
@@ -127,7 +108,37 @@
         <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/LightRootFragment.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="16" column="4" selection-start-line="16" selection-start-column="4" selection-end-line="16" selection-end-column="4" />
+              <caret line="73" column="5" selection-start-line="73" selection-start-column="5" selection-end-line="73" selection-end-column="5" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PlaceholderFragment.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/PlaceholderFragment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SystemPreferencesFragment.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/SystemPreferencesFragment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="72" column="0" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WhiteOnlyFragment.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/WhiteOnlyFragment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.59052247">
+              <caret line="43" column="18" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -139,20 +150,24 @@
             <state vertical-scroll-proportion="0.0">
               <caret line="930" column="0" selection-start-line="930" selection-start-column="0" selection-end-line="930" selection-end-column="0" />
               <folding>
-                <element signature="e#7204#7237#0" expanded="true" />
-                <element signature="e#9441#9481#0" expanded="true" />
-                <element signature="e#12744#12745#0" expanded="true" />
-                <element signature="e#12807#12808#0" expanded="true" />
-                <element signature="e#13528#14067#0" expanded="true" />
-                <element signature="e#14066#14067#0" expanded="true" />
-                <element signature="e#21828#21941#0" expanded="true" />
-                <element signature="e#21940#21941#0" expanded="true" />
-                <element signature="e#25078#25079#0" expanded="true" />
-                <element signature="e#25126#25127#0" expanded="true" />
-                <element signature="e#33153#33195#0" expanded="true" />
-                <element signature="e#34028#34061#0" expanded="true" />
-                <element signature="e#38243#38244#0" expanded="true" />
-                <element signature="e#38305#38306#0" expanded="true" />
+                <element signature="e#0#1315#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#21895#21896#0" expanded="false" />
+                <element signature="e#21934#21935#0" expanded="false" />
+                <element signature="e#34587#34588#0" expanded="false" />
+                <element signature="e#34638#34639#0" expanded="false" />
+                <element signature="e#36466#36467#0" expanded="false" />
+                <element signature="e#36532#36533#0" expanded="false" />
+                <element signature="e#36690#36691#0" expanded="false" />
+                <element signature="e#36748#36749#0" expanded="false" />
+                <element signature="e#36864#36865#0" expanded="false" />
+                <element signature="e#36921#36922#0" expanded="false" />
+                <element signature="e#37871#37872#0" expanded="false" />
+                <element signature="e#37933#37934#0" expanded="false" />
+                <element signature="e#38045#38046#0" expanded="false" />
+                <element signature="e#38107#38108#0" expanded="false" />
+                <element signature="e#38417#38418#0" expanded="false" />
+                <element signature="e#38477#38478#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -3353,17 +3368,13 @@
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/utils/BlueThoothMessage.java" />
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/fragment_placeholder.xml" />
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/interfaces/IBtServiceListener.java" />
-        <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/WhiteOnlyFragment.java" />
-        <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/PlaceholderFragment.java" />
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/fragment_colors_wheel_land.xml" />
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/res/values/dimens.xml" />
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/views/ColorPicker.java" />
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/res/menu/activity_main_drawer.xml" />
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/PreferencesFragment.java" />
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/app_bar_main.xml" />
-        <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/SystemPreferencesFragment.java" />
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/res/values/strings.xml" />
-        <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/BTConnectFragment.java" />
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/res/xml/system_prop.xml" />
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/utils/HomeLightSysConfig.java" />
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/MainActivity.java" />
@@ -3373,8 +3384,12 @@
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/utils/BTReaderThread.java" />
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/ProjectConst.java" />
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/interfaces/IBtCommand.java" />
-        <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/LightRootFragment.java" />
         <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/ColorCircleFragment.java" />
+        <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/LightRootFragment.java" />
+        <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/BTConnectFragment.java" />
+        <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/PlaceholderFragment.java" />
+        <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/SystemPreferencesFragment.java" />
+        <option value="$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/WhiteOnlyFragment.java" />
       </list>
     </option>
   </component>
@@ -3436,59 +3451,6 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
-      <pane id="Scratches" />
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ANDROID" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ANDROID" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ANDROID" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ANDROID" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ANDROID" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="btLeHomeLightApp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ANDROID" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ANDROID" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="btLeHomeLightApp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -3710,6 +3672,59 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="fragments" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scratches" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="btLeHomeLightApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="btLeHomeLightApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -4120,7 +4135,6 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3278496" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="true" weight="0.32902467" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" x="2839" y="-13" width="1449" height="976" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32902467" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32902467" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -4128,10 +4142,9 @@
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32902467" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17000955" sideWeight="0.4958872" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32902467" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17000955" sideWeight="0.4958872" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Gradle" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3296332" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25262654" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25262654" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Android Model" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32923076" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" weight="0.39952996" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="2651" y="5" width="1463" height="929" />
@@ -4141,6 +4154,8 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32902467" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -4195,7 +4210,6 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Kleine Umformatierungen" />
     <MESSAGE value="public ist obsolet, interfaces sind public" />
     <MESSAGE value="erste Version zum Testen" />
     <MESSAGE value="Version mit Connect Fragment" />
@@ -4220,7 +4234,8 @@
     <MESSAGE value="gemeinsame Variablen und Funktionen ergänzt" />
     <MESSAGE value="gemeinsame Variable und Funktionen zugefügt" />
     <MESSAGE value="Funktionstüchtig. TODO Voreinstellungen-Taste" />
-    <option name="LAST_COMMIT_MESSAGE" value="Funktionstüchtig. TODO Voreinstellungen-Taste" />
+    <MESSAGE value="gemeinsam genutzte Variablen in Parentobjekt" />
+    <option name="LAST_COMMIT_MESSAGE" value="gemeinsam genutzte Variablen in Parentobjekt" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -4245,32 +4260,29 @@
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/fragment_connect_and_discover.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="1.813602">
           <caret line="80" column="29" selection-start-line="80" selection-start-column="23" selection-end-line="80" selection-end-column="35" />
-          <folding />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/listitem_device.xml">
       <provider editor-type-id="android-designer">
         <state />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/listitem_device.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.31989923">
           <caret line="35" column="29" selection-start-line="35" selection-start-column="19" selection-end-line="35" selection-end-column="29" />
-          <folding />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/res/values/styles.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-3.3333333">
           <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4318,24 +4330,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/WhiteOnlyFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.61603886">
-          <caret line="191" column="4" selection-start-line="191" selection-start-column="4" selection-end-line="191" selection-end-column="4" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/PlaceholderFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="41" selection-start-line="20" selection-start-column="41" selection-end-line="20" selection-end-column="41" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/utils/BTLEListAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -4345,32 +4339,29 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/fragment_colors_wheel_land.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="40" column="51" selection-start-line="40" selection-start-column="51" selection-end-line="40" selection-end-column="51" />
-          <folding />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/fragment_colors_wheel_port.xml">
       <provider selected="true" editor-type-id="android-designer">
         <state />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/fragment_colors_wheel_port.xml">
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="42" column="42" selection-start-line="42" selection-start-column="3" selection-end-line="42" selection-end-column="49" />
-          <folding />
         </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/res/values/dimens.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.15309842">
           <caret line="7" column="28" selection-start-line="7" selection-start-column="28" selection-end-line="7" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4386,7 +4377,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4394,36 +4384,23 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.9562576">
           <caret line="45" column="14" selection-start-line="45" selection-start-column="14" selection-end-line="45" selection-end-column="14" />
-          <folding>
-            <element signature="e#289#315#0" expanded="true" />
-            <element signature="e#460#490#0" expanded="true" />
-            <element signature="e#626#649#0" expanded="true" />
-            <element signature="e#783#810#0" expanded="true" />
-            <element signature="e#847#865#0" expanded="true" />
-            <element signature="e#1068#1089#0" expanded="true" />
-            <element signature="e#1153#1171#0" expanded="true" />
-            <element signature="e#1376#1399#0" expanded="true" />
-            <element signature="e#1540#1563#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/fragment_placeholder.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
-          <folding />
         </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/interfaces/IBtServiceListener.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="108" column="52" selection-start-line="108" selection-start-column="52" selection-end-line="108" selection-end-column="52" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4431,7 +4408,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4439,7 +4415,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.72864324">
           <caret line="149" column="14" selection-start-line="108" selection-start-column="1" selection-end-line="158" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4447,7 +4422,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="92" column="13" selection-start-line="89" selection-start-column="1" selection-end-line="93" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4455,54 +4429,47 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/btlehomelight/src/main/res/layout/activity_home_light_main.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/nav_header_main.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/content_main.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-6.206897">
           <caret line="10" column="23" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
-          <folding>
-            <element signature="e#510#543#0" expanded="false" />
-          </folding>
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/activity_main.xml">
       <provider editor-type-id="android-designer">
         <state />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/activity_main.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-1.2413793">
           <caret line="2" column="31" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
-          <folding />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/res/drawable-hdpi/ic_pause_circle_filled_white_48dp.png">
@@ -4521,50 +4488,19 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/res/layout/app_bar_main.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7959698">
           <caret line="44" column="62" selection-start-line="44" selection-start-column="62" selection-end-line="44" selection-end-column="62" />
-          <folding />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/SystemPreferencesFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2563791">
-          <caret line="40" column="13" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-4.0">
           <caret line="6" column="59" selection-start-line="6" selection-start-column="59" selection-end-line="6" selection-end-column="59" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/BTConnectFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.12636694">
-          <caret line="132" column="14" selection-start-line="132" selection-start-column="14" selection-end-line="132" selection-end-column="14" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#5807#5808#0" expanded="true" />
-            <element signature="e#5832#5833#0" expanded="true" />
-            <element signature="e#10236#10299#0" expanded="true" />
-            <element signature="e#10329#10391#0" expanded="true" />
-            <element signature="e#10558#10621#0" expanded="true" />
-            <element signature="e#10651#10708#0" expanded="true" />
-            <element signature="e#10856#10918#0" expanded="true" />
-            <element signature="e#10948#10999#0" expanded="true" />
-            <element signature="e#11110#11161#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -4572,49 +4508,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.47509113">
           <caret line="81" column="0" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
-          <folding>
-            <element signature="e#2029#2056#0" expanded="false" />
-            <element signature="e#2100#2137#0" expanded="false" />
-            <element signature="e#2158#2190#0" expanded="false" />
-            <element signature="e#2271#2309#0" expanded="false" />
-            <element signature="e#2337#2384#0" expanded="false" />
-            <element signature="e#2411#2457#0" expanded="false" />
-            <element signature="e#2488#2534#0" expanded="false" />
-            <element signature="e#2564#2609#0" expanded="false" />
-            <element signature="e#2632#2672#0" expanded="false" />
-            <element signature="e#2754#2792#0" expanded="false" />
-            <element signature="e#2820#2867#0" expanded="false" />
-            <element signature="e#2894#2940#0" expanded="false" />
-            <element signature="e#2971#3017#0" expanded="false" />
-            <element signature="e#3047#3092#0" expanded="false" />
-            <element signature="e#3115#3155#0" expanded="false" />
-            <element signature="e#3237#3271#0" expanded="false" />
-            <element signature="e#3299#3350#0" expanded="false" />
-            <element signature="e#3377#3427#0" expanded="false" />
-            <element signature="e#3458#3508#0" expanded="false" />
-            <element signature="e#3538#3587#0" expanded="false" />
-            <element signature="e#3610#3654#0" expanded="false" />
-            <element signature="e#3736#3776#0" expanded="false" />
-            <element signature="e#3804#3847#0" expanded="false" />
-            <element signature="e#3874#3916#0" expanded="false" />
-            <element signature="e#3947#3989#0" expanded="false" />
-            <element signature="e#4019#4060#0" expanded="false" />
-            <element signature="e#4083#4119#0" expanded="false" />
-            <element signature="e#4201#4240#0" expanded="false" />
-            <element signature="e#4268#4313#0" expanded="false" />
-            <element signature="e#4340#4384#0" expanded="false" />
-            <element signature="e#4415#4459#0" expanded="false" />
-            <element signature="e#4489#4532#0" expanded="false" />
-            <element signature="e#4555#4593#0" expanded="false" />
-            <element signature="e#4662#4694#0" expanded="false" />
-            <element signature="e#4715#4743#0" expanded="false" />
-            <element signature="e#4825#4858#0" expanded="false" />
-            <element signature="e#4886#4922#0" expanded="false" />
-            <element signature="e#4949#4984#0" expanded="false" />
-            <element signature="e#5015#5050#0" expanded="false" />
-            <element signature="e#5080#5114#0" expanded="false" />
-            <element signature="e#5137#5172#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -4633,7 +4526,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.75941676">
           <caret line="119" column="0" selection-start-line="111" selection-start-column="0" selection-end-line="119" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4641,7 +4533,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-1.3074119">
           <caret line="72" column="38" selection-start-line="72" selection-start-column="38" selection-end-line="72" selection-end-column="38" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4649,7 +4540,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.19684082">
           <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4657,22 +4547,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="18.590523">
           <caret line="890" column="24" selection-start-line="890" selection-start-column="24" selection-end-line="890" selection-end-column="24" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="577" column="14" selection-start-line="577" selection-start-column="14" selection-end-line="577" selection-end-column="14" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#3393#4157#0" expanded="true" />
-            <element signature="e#4156#4157#0" expanded="true" />
-            <element signature="e#9315#9366#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -4680,7 +4554,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.021871204">
           <caret line="135" column="25" selection-start-line="135" selection-start-column="25" selection-end-line="135" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4688,7 +4561,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3547995">
           <caret line="51" column="0" selection-start-line="50" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4704,9 +4576,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.9623329">
           <caret line="78" column="39" selection-start-line="78" selection-start-column="39" selection-end-line="78" selection-end-column="39" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -4723,20 +4592,24 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="930" column="0" selection-start-line="930" selection-start-column="0" selection-end-line="930" selection-end-column="0" />
           <folding>
-            <element signature="e#7204#7237#0" expanded="true" />
-            <element signature="e#9441#9481#0" expanded="true" />
-            <element signature="e#12744#12745#0" expanded="true" />
-            <element signature="e#12807#12808#0" expanded="true" />
-            <element signature="e#13528#14067#0" expanded="true" />
-            <element signature="e#14066#14067#0" expanded="true" />
-            <element signature="e#21828#21941#0" expanded="true" />
-            <element signature="e#21940#21941#0" expanded="true" />
-            <element signature="e#25078#25079#0" expanded="true" />
-            <element signature="e#25126#25127#0" expanded="true" />
-            <element signature="e#33153#33195#0" expanded="true" />
-            <element signature="e#34028#34061#0" expanded="true" />
-            <element signature="e#38243#38244#0" expanded="true" />
-            <element signature="e#38305#38306#0" expanded="true" />
+            <element signature="e#0#1315#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#21895#21896#0" expanded="false" />
+            <element signature="e#21934#21935#0" expanded="false" />
+            <element signature="e#34587#34588#0" expanded="false" />
+            <element signature="e#34638#34639#0" expanded="false" />
+            <element signature="e#36466#36467#0" expanded="false" />
+            <element signature="e#36532#36533#0" expanded="false" />
+            <element signature="e#36690#36691#0" expanded="false" />
+            <element signature="e#36748#36749#0" expanded="false" />
+            <element signature="e#36864#36865#0" expanded="false" />
+            <element signature="e#36921#36922#0" expanded="false" />
+            <element signature="e#37871#37872#0" expanded="false" />
+            <element signature="e#37933#37934#0" expanded="false" />
+            <element signature="e#38045#38046#0" expanded="false" />
+            <element signature="e#38107#38108#0" expanded="false" />
+            <element signature="e#38417#38418#0" expanded="false" />
+            <element signature="e#38477#38478#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -4749,22 +4622,61 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/LightRootFragment.java">
+    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="16" column="4" selection-start-line="16" selection-start-column="4" selection-end-line="16" selection-end-column="4" />
-          <folding />
+          <caret line="577" column="14" selection-start-line="577" selection-start-column="14" selection-end-line="577" selection-end-column="14" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/ColorCircleFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.73754555">
-          <caret line="264" column="0" selection-start-line="264" selection-start-column="0" selection-end-line="264" selection-end-column="0" />
-          <folding>
-            <element signature="e#12317#12448#0" expanded="true" />
-            <element signature="e#12447#12448#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.0">
+          <caret line="252" column="49" selection-start-line="252" selection-start-column="49" selection-end-line="252" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/BTConnectFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.24058323">
+          <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/LightRootFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="73" column="5" selection-start-line="73" selection-start-column="5" selection-end-line="73" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/PlaceholderFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/SystemPreferencesFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="72" column="0" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/btLeHomeLightApp/src/main/java/de/dmarcini/bt/btlehomelight/fragments/WhiteOnlyFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.59052247">
+          <caret line="43" column="18" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="18" />
+          <folding />
         </state>
       </provider>
     </entry>

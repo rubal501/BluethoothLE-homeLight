@@ -16,7 +16,6 @@ import de.dmarcini.bt.btlehomelight.utils.HomeLightSysConfig;
 public class SystemPreferencesFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener
 {
   private static final String TAG = SystemPreferencesFragment.class.getSimpleName();
-  private boolean hasChanged;
 
   //
   @Override
@@ -29,7 +28,6 @@ public class SystemPreferencesFragment extends PreferenceFragment implements Sha
     }
     // Load the preferences from an XML resource
     addPreferencesFromResource(R.xml.system_prop);
-    hasChanged = false;
   }
 
   @Override
@@ -72,7 +70,6 @@ public class SystemPreferencesFragment extends PreferenceFragment implements Sha
     {
       Log.v(TAG, "preference <" + key + "> changed!");
     }
-    hasChanged = true;
 
     if( BuildConfig.DEBUG )
     {
