@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~                                                                           ~
+  ~      project: ANDROID                                                     ~
+  ~      module: btlehomelight                                                ~
+  ~      class: system_prop.xml                                               ~
+  ~      date: 2016-01-15                                                     ~
+  ~                                                                           ~
+  ~      Copyright (C) 2016  Dirk Marciniak                                   ~
+  ~                                                                           ~
+  ~      This program is free software: you can redistribute it and/or modify ~
+  ~      it under the terms of the GNU General Public License as published by ~
+  ~      the Free Software Foundation, either version 3 of the License, or    ~
+  ~      (at your option) any later version.                                  ~
+  ~                                                                           ~
+  ~      This program is distributed in the hope that it will be useful,      ~
+  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of       ~
+  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        ~
+  ~      GNU General Public License for more details.                         ~
+  ~                                                                           ~
+  ~      You should have received a copy of the GNU General Public License    ~
+  ~      along with this program.  If not, see <http://www.gnu.org/licenses/  ~
+  ~                                                                           ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<PreferenceScreen
+    android:id="@+id/conf_prog_preferencescreen"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/pref_sys_headline">
+
+
+  <PreferenceCategory
+      android:key="@string/pref_sys_cat_direct_control"
+      android:title="@string/pref_sys_pages_control">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/pref_sys_showpage_colorwheel"
+        android:summaryOff="@string/pref_sys_pages_colorwheel_summary_off"
+        android:summaryOn="@string/pref_sys_pages_colorwheel_summary_on"
+        android:switchTextOff="@string/pref_sys_pages_colorwheel_switch_off"
+        android:switchTextOn="@string/pref_sys_pages_colorwheel_switch_on"
+        android:title="@string/pref_sys_pages_colorwheel_head"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/pref_sys_showpage_brightness"
+        android:summaryOff="@string/pref_sys_pages_brightness_summary_off"
+        android:summaryOn="@string/pref_sys_pages_brightness_summary_on"
+        android:switchTextOff="@string/pref_sys_pages_brightness_switch_off"
+        android:switchTextOn="@string/pref_sys_pages_brightness_switch_on"
+        android:title="@string/pref_sys_pages_brightness_head"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/pref_sys_showpage_direct"
+        android:summaryOff="@string/pref_sys_pages_direct_control_summary_off"
+        android:summaryOn="@string/pref_sys_pages_direct_control_summary_on"
+        android:switchTextOff="@string/pref_sys_pages_direct_control_switch_off"
+        android:switchTextOn="@string/pref_sys_pages_direct_control_switch_on"
+        android:title="@string/pref_sys_pages_direct_control_head"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/pref_sys_showpage_predefcolors"
+        android:summaryOff="@string/pref_sys_pages_predef_summary_off"
+        android:summaryOn="@string/pref_sys_pages_predef_summary_on"
+        android:switchTextOff="@string/pref_sys_pages_predef_switch_off"
+        android:switchTextOn="@string/pref_sys_pages_predef_switch_on"
+        android:title="@string/pref_sys_pages_predef_head"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/pref_sys_showpage_discovering"
+        android:summaryOff="@string/pref_sys_pages_discover_summary_off"
+        android:summaryOn="@string/pref_sys_pages_discover_summary_on"
+        android:switchTextOff="@string/pref_sys_pages_discover_switch_off"
+        android:switchTextOn="@string/pref_sys_pages_discover_switch_on"
+        android:title="@string/pref_sys_pages_discover_head"/>
+
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:key="@string/pref_sys_cat_debugging"
+      android:title="@string/pref_sys_debugging">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_sys_debugging_stat"
+        android:summaryOff="@string/pref_sys_debug_summary_off"
+        android:summaryOn="@string/pref_sys_debug_summary_on"
+        android:switchTextOff="@string/pref_sys_debug_switch_off"
+        android:switchTextOn="@string/pref_sys_debug_switch_on"
+        android:title="@string/pref_sys_debugging_header"/>
+  </PreferenceCategory>
+
+
+</PreferenceScreen>
+
