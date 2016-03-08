@@ -1,7 +1,6 @@
 package de.dmarcini.bt.btlehomelight.fragments;
 
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGattCharacteristic;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
@@ -15,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Locale;
 
 import de.dmarcini.bt.btlehomelight.BuildConfig;
@@ -102,6 +100,28 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
     }
   }
 
+  @Override
+  public void onResume()
+  {
+    super.onResume();
+    //
+    if( BuildConfig.DEBUG )
+    {
+      Log.d(TAG, "onResume: ...");
+    }
+    if( runningActivity != null )
+    {
+      BluetoothDevice dev = runningActivity.askConnectedModul();
+      if( dev != null )
+      {
+        mBTLEDeviceListAdapter.addDevice(dev);
+        mBTLEDeviceListAdapter.setConnectedDevice(dev);
+        mBTLEDeviceListAdapter.notifyDataSetChanged();
+        prepareHeader();
+      }
+    }
+  }
+
   /**
    * Behandle alle ankommenden Nachrichten
    * <p/>
@@ -161,39 +181,26 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
     }
   }
 
+  /**
+   * Wenn ein Gerät gefunden wurde und hinzugefügt wird
+   *
+   * @param msg
+   */
   private void msgBtLeDeviceDiscovered(BlueThoothMessage msg)
   {
-    BluetoothDevice           mDev, cDev;
-    Iterator<BluetoothDevice> it = foundDevices.iterator();
-
-    mDev = msg.getDevice();
-    //
-    // teste ob das Device schon vorhanden ist
-    // Kriterium ist die adresse (sollte eindeutig sein)
-    //
-    while( it.hasNext() )
-    {
-      cDev = it.next();
-      if( cDev.getAddress().equals(mDev.getAddress()) )
-      {
-        //
-        // Das Teil ist schon hier, mache nix weiter!
-        //
-        return;
-      }
-    }
     //
     // Gerät noch nicht in der Liste
     //
-    if( mDev != null )
+    BluetoothDevice dev = msg.getDevice();
+    if( dev != null )
     {
-      mBTLEDeviceListAdapter.addDevice(mDev);
+      mBTLEDeviceListAdapter.addDevice(dev);
       //
       // ist das Modul verbunden?
       //
-      if( runningActivity.askConnectedModul() != null && runningActivity.askConnectedModul().equals(mDev.getAddress()) )
+      if( runningActivity.askConnectedModul() != null && runningActivity.askConnectedModul().equals(dev.getAddress()) )
       {
-        mBTLEDeviceListAdapter.setConnectedDevice(mDev);
+        mBTLEDeviceListAdapter.setConnectedDevice(dev);
       }
       mBTLEDeviceListAdapter.notifyDataSetChanged();
     }
@@ -234,7 +241,7 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
     {
       for( int i = 0; i < mBTLEDeviceListAdapter.getCount(); i++ )
       {
-        BluetoothDevice btDev = mBTLEDeviceListAdapter.getDevice(0);
+        BluetoothDevice btDev = mBTLEDeviceListAdapter.getDevice(i);
         if( btDev.getAddress().equals(msg.getDevice().getAddress()) )
         {
           Log.i(TAG, "connected marked");
@@ -245,7 +252,7 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
       }
     }
     prepareHeader();
-    // TODO: Noch das Gerät kennzeichnen
+    // TODO: Nach dem Verbinden nach RGBW fragen... private Handler mHandler         = new Handler();
   }
 
   /**
