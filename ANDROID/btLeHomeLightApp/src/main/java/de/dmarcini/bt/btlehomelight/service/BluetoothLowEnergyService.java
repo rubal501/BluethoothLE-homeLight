@@ -99,13 +99,18 @@ public class BluetoothLowEnergyService extends Service
       //
       if( newState == BluetoothProfile.STATE_CONNECTED )
       {
-        setConnectionState( ProjectConst.STATUS_CONNECTED );
+        //
+        // erschoben zu computeData, wenn ein Korrektes Modul gemeldet wird
+        // setConnectionState( ProjectConst.STATUS_CONNECTED );
+        // dafür nur Status setzen, ohne Benachrichtigung
+        //
+        setConnectionState(ProjectConst.STATUS_TEST_MODULE);
         if( BuildConfig.DEBUG )
         {
-          Log.i(TAGCG, "Connected to GATT server.");
+          Log.i(TAGCG, "Connected to GATT server.Check services...");
         }
         //
-        // versuche Services zu finden
+        // versuche Services zu finden, wenn gefunden Modultyp abfragen (bei den Services)
         //
         if( BuildConfig.DEBUG )
         {
@@ -121,7 +126,7 @@ public class BluetoothLowEnergyService extends Service
       //
       else if( newState == BluetoothProfile.STATE_DISCONNECTED )
       {
-        setConnectionState( ProjectConst.STATUS_DISCONNECTED );
+        setConnectionState(ProjectConst.STATUS_DISCONNECTED);
         if( BuildConfig.DEBUG )
         {
           Log.i(TAGCG, "Disconnected from GATT server.");
@@ -158,7 +163,7 @@ public class BluetoothLowEnergyService extends Service
           //
           // Keine Services gefunden => FEHLER
           //
-          setConnectionState( ProjectConst.STATUS_CONNECT_ERROR, R.string.service_err_not_services);
+          setConnectionState(ProjectConst.STATUS_CONNECT_ERROR, R.string.service_err_not_services);
           return;
         }
         //
@@ -186,7 +191,8 @@ public class BluetoothLowEnergyService extends Service
             characteristicTX = gattService.getCharacteristic(HM10GattAttributes.HM_10_CONF_UUID);
             characteristicRX = gattService.getCharacteristic(HM10GattAttributes.HM_10_CONF_UUID);
             //
-            // wenn die Kommunikation sichergestellt ist, frage nach dem Modul
+            // wenn die Kommunikation sichergestellt ist, frage nach dem Modul,
+            // wenn es das Richtige ist, CONNECT Meldung senden
             //
             askModulForType();
             return;
@@ -205,13 +211,8 @@ public class BluetoothLowEnergyService extends Service
         if( characteristicTX == null || characteristicRX == null )
         {
           characteristicTX = characteristicRX = null;
-          if( btEventHandler != null )
-          {
-            BlueThoothMessage msg1 = new BlueThoothMessage(ProjectConst.MESSAGE_CONNECT_ERROR);
-            btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECT_ERROR, msg1).sendToTarget();
-            BlueThoothMessage msg2 = new BlueThoothMessage(ProjectConst.MESSAGE_DISCONNECTED);
-            btEventHandler.obtainMessage(ProjectConst.MESSAGE_GATT_SERVICES_DISCOVERED, msg2).sendToTarget();
-          }
+          Log.e(TAGCG, "it was not characteristic there!");
+          setConnectionState(ProjectConst.STATUS_CONNECT_ERROR, R.string.service_err_not_characteristics);
           return;
         }
       }
@@ -280,17 +281,21 @@ public class BluetoothLowEnergyService extends Service
           if( recMsg.matches(ProjectConst.MODULTYPPATTERN) )
           {
             //
-            // Jetzt wichtig: ISt ees ein zugelassener Modultyp oder nicht?
+            // Jetzt wichtig: Ist ees ein zugelassener Modultyp oder nicht?
             //
             if( recMsg.matches(ProjectConst.MY_MODULTYPPATTERN) )
             {
               isCorrectConnectedModule = true;
               Log.i(TAGCG, "connected modul is an correct type");
+              //TODO: schauen ob das hier so klappt
+              setConnectionState(ProjectConst.STATUS_CONNECTED);
+              return;
             }
             else
             {
               Log.e(TAGCG, "connected modul is an incorrect type!");
               setConnectionState(ProjectConst.STATUS_CONNECT_ERROR, R.string.service_err_incorrect_module_type);
+              return;
             }
           }
           //
@@ -762,9 +767,9 @@ public class BluetoothLowEnergyService extends Service
    *
    * @param connectionState Der neue Verbindungsstatus
    */
-  private void setConnectionState(int connectionState )
+  private void setConnectionState(int connectionState)
   {
-    setConnectionState( connectionState, 0  );
+    setConnectionState(connectionState, 0);
   }
 
   /**
@@ -773,7 +778,7 @@ public class BluetoothLowEnergyService extends Service
    * @param connectionState Neuer Verbindungsstatus
    * @param errResourceId Resource-Id der Fehlermeldung in Strings
    */
-  private void setConnectionState(int connectionState, int errResourceId )
+  private void setConnectionState(int connectionState, int errResourceId)
   {
     //
     // sind da noch aktionen auszuführen?
@@ -819,6 +824,10 @@ public class BluetoothLowEnergyService extends Service
           BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERING);
           btEventHandler.obtainMessage(ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERING, msg).sendToTarget();
         }
+        isCorrectConnectedModule = false;
+        break;
+
+      case ProjectConst.STATUS_TEST_MODULE:
         isCorrectConnectedModule = false;
         break;
 
@@ -880,13 +889,27 @@ public class BluetoothLowEnergyService extends Service
   }
 
   /**
+   * schalte den Pausenmodus um
+   */
+  private void setModulPause()
+  {
+    String kommandoString;
+    //
+    // Kommando zusammenbauen
+    //
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X%s", ProjectConst.STX, ProjectConst.C_ONOFF, ProjectConst.ETX);
+    Log.d(TAG, "send light on/off =" + kommandoString);
+    sendKdoToModule(kommandoString);
+  }
+
+  /**
    * Sende den Kommandostring (incl ETX und STX) zum Modul, wenn Verbunden
    *
    * @param kdo String mit ETC und STX
    */
   private boolean sendKdoToModule(final String kdo)
   {
-    if( mConnectionState == ProjectConst.STATUS_CONNECTED && characteristicRX != null && characteristicTX != null && mBluetoothGatt != null )
+    if( (mConnectionState == ProjectConst.STATUS_CONNECTED || mConnectionState == ProjectConst.STATUS_TEST_MODULE) && characteristicRX != null && characteristicTX != null && mBluetoothGatt != null )
     {
       byte[] tx = kdo.getBytes();
       characteristicTX.setValue(tx);
@@ -1059,6 +1082,15 @@ public class BluetoothLowEnergyService extends Service
     public void askModulForRGBW()
     {
       //TODO implementieren
+    }
+
+    /**
+     * Schaltet das Modul dunkel oder hell
+     */
+    @Override
+    public void setModulPause()
+    {
+      BluetoothLowEnergyService.this.setModulPause();
     }
   }
 }
