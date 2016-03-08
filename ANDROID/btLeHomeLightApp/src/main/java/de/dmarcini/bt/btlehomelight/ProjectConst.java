@@ -46,6 +46,7 @@ public class ProjectConst
   public static final int    STATUS_CONNECTING                   = 1;
   public static final int    STATUS_CONNECTED                    = 2;
   public static final int    STATUS_DISCOVERING                  = 3;
+  public static final int    STATUS_TEST_MODULE = 4;
   public static final int    STATUS_CONNECT_ERROR                = -1;
   //
   // Message-ID für BT Service Messages
@@ -97,9 +98,16 @@ public class ProjectConst
   // Suchpattern für Kommando
   //
   public static final String KOMANDPATTERN                       = "\\d{2}(\\:.*)?";
-  public static final String PDUPATTERN                          = STX + KOMANDPATTERN + ETX;
-  public static final String MODULTYPPATTERN                     = String.format(Locale.ENGLISH, "%s%02X\\:.*%s", STX, C_ASKTYP, ETX);
-  public static final String MY_MODULTYPPATTERN                  = String.format(Locale.ENGLISH, "%s%02X\\:%s%s", STX, C_ASKTYP, MY_MODULTYPE, ETX);
+  public static final String MODULTYPPATTERN    = String.format(Locale.ENGLISH, "%02X\\:.*", C_ASKTYP);
+  public static final String MY_MODULTYPPATTERN = String.format(Locale.ENGLISH, "%02X\\:%s", C_ASKTYP, MY_MODULTYPE);
+  //
+  // Länge der Kommandoketten für Farbe
+  //
+  public static final int    C_ASKRGB_LEN       = 5;
+  //
+  // Zeit bis zum Senden neuer RGBW Werte, wenn der User kontinuierlich schiebt
+  //
+  public static final long   TIMEDIFF_TO_SEND   = 100L;
 
   //
   // Benamsung
