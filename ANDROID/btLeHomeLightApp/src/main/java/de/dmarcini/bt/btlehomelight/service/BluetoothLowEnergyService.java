@@ -48,17 +48,21 @@ import android.os.IBinder;
 import android.os.ParcelUuid;
 import android.util.Log;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.Vector;
 
 import de.dmarcini.bt.btlehomelight.BuildConfig;
 import de.dmarcini.bt.btlehomelight.ProjectConst;
 import de.dmarcini.bt.btlehomelight.R;
 import de.dmarcini.bt.btlehomelight.interfaces.IBtCommand;
+import de.dmarcini.bt.btlehomelight.utils.BTReaderThread;
 import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
+import de.dmarcini.bt.btlehomelight.utils.CircularByteBuffer;
 import de.dmarcini.bt.btlehomelight.utils.HM10GattAttributes;
 
 /**
@@ -67,13 +71,17 @@ import de.dmarcini.bt.btlehomelight.utils.HM10GattAttributes;
  */
 public class BluetoothLowEnergyService extends Service
 {
-  private final static String  TAG              = BluetoothLowEnergyService.class.getSimpleName();
+  private final static String             TAG                      = BluetoothLowEnergyService.class.getSimpleName();
   //private final static String  servicePrefix    = BluetoothLowEnergyService.class.getName();
-  private final        IBinder mBinder          = new LocalBinder();
-  private              int     mConnectionState = ProjectConst.STATUS_DISCONNECTED;
-  private boolean isCorrectConnectedModule = false;
-  private              Handler btEventHandler   = null;
-  private              Handler mHandler         = new Handler();
+  private final        IBinder            mBinder                  = new LocalBinder();
+  private final        CircularByteBuffer ringBuffer               = new CircularByteBuffer(1024);
+  private final        Vector<String>     cmdBuffer                = new Vector<>();
+  private final        CRunnable          cmdQueueReader           = new CRunnable();
+  private              int                mConnectionState         = ProjectConst.STATUS_DISCONNECTED;
+  private              boolean            isCorrectConnectedModule = false;
+  private              Handler            btEventHandler           = null;
+  private              Handler            mHandler                 = new Handler();
+  private BTReaderThread              readerThread;
   private BluetoothManager            mBluetoothManager;
   private BluetoothAdapter            mBluetoothAdapter;
   private String                      mBluetoothDeviceAddress;
@@ -85,9 +93,10 @@ public class BluetoothLowEnergyService extends Service
   // bearbeiten soll.
   // Beispielsweise Verbindungsänderungen und Service descovering
   //
-  private final BluetoothGattCallback btLeGattCallback = new BluetoothGattCallback()
+  private final BluetoothGattCallback           btLeGattCallback   = new BluetoothGattCallback()
   {
     private final String TAGCG = BluetoothGattCallback.class.getSimpleName();
+
     //
     // Verbindungsstatus ändert sich
     //
@@ -100,7 +109,7 @@ public class BluetoothLowEnergyService extends Service
       if( newState == BluetoothProfile.STATE_CONNECTED )
       {
         //
-        // erschoben zu computeData, wenn ein Korrektes Modul gemeldet wird
+        // erschoben zu dataToRingBuffer, wenn ein Korrektes Modul gemeldet wird
         // setConnectionState( ProjectConst.STATUS_CONNECTED );
         // dafür nur Status setzen, ohne Benachrichtigung
         //
@@ -127,6 +136,15 @@ public class BluetoothLowEnergyService extends Service
       else if( newState == BluetoothProfile.STATE_DISCONNECTED )
       {
         setConnectionState(ProjectConst.STATUS_DISCONNECTED);
+        //
+        // Falls der Thread noch läuft, erst mal stoppen
+        //
+        if( readerThread != null )
+        {
+          readerThread.doStop();
+          readerThread = null;
+        }
+        cmdBuffer.clear();
         if( BuildConfig.DEBUG )
         {
           Log.i(TAGCG, "Disconnected from GATT server.");
@@ -135,8 +153,8 @@ public class BluetoothLowEnergyService extends Service
     }
 
     //
-    // Service gefunden!
-    //
+// Service gefunden!
+//
     @Override
     public void onServicesDiscovered(BluetoothGatt gatt, int status)
     {
@@ -191,6 +209,18 @@ public class BluetoothLowEnergyService extends Service
             characteristicTX = gattService.getCharacteristic(HM10GattAttributes.HM_10_CONF_UUID);
             characteristicRX = gattService.getCharacteristic(HM10GattAttributes.HM_10_CONF_UUID);
             //
+            // Falls der Thread schon läuft, erst mal stoppen
+            //
+            if( readerThread != null )
+            {
+              readerThread.doStop();
+              readerThread = null;
+            }
+            cmdBuffer.clear();
+            readerThread = new BTReaderThread(ringBuffer, cmdBuffer);
+            Thread rThread = new Thread(readerThread, "reader_thread");
+            rThread.start();
+            //
             // wenn die Kommunikation sichergestellt ist, frage nach dem Modul,
             // wenn es das Richtige ist, CONNECT Meldung senden
             //
@@ -229,8 +259,8 @@ public class BluetoothLowEnergyService extends Service
     }
 
     //
-    // Es wurden Daten empfangen, bitte abholen!
-    //
+// Es wurden Daten empfangen, bitte abholen!
+//
     @Override
     public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status)
     {
@@ -239,7 +269,7 @@ public class BluetoothLowEnergyService extends Service
       //
       if( status == BluetoothGatt.GATT_SUCCESS )
       {
-        computeData(characteristic);
+        dataToRingBuffer(characteristic);
       }
     }
 
@@ -249,7 +279,8 @@ public class BluetoothLowEnergyService extends Service
      * @param characteristic Der Datenkanal aus dem die Daten kommen
      * TODO: Hier erst mal direkt, wobei ich davon ausgehe, dass die datensätze zusammenhängend empfangen werden. Später Ringpuffer implementieren und Daten daraus versenden
      */
-    private void computeData(BluetoothGattCharacteristic characteristic)
+
+    private void dataToRingBuffer(BluetoothGattCharacteristic characteristic)
     {
       byte   data[];
       String recMsg;
@@ -263,86 +294,47 @@ public class BluetoothLowEnergyService extends Service
       if( data != null && data.length > 0 )
       {
         //
-        // Lese Daten
+        // verbundenes BT Gerät hat Daten empfangen
+        // Datenblöcke werden bis 20 Byte am Stück übertragen (BT 4.0)
+        // Daten in den Ringpuffer, leider kommen die Daten nicht immer am Stück
         //
-        recMsg = String.format("%s", new String(data));
-        //
-        // Sind die Daten als Komando korrekt formatiert?
-        //
-        if( recMsg.matches(ProjectConst.PDUPATTERN) )
-        {
-          if( BuildConfig.DEBUG )
-          {
-            Log.v(TAGCG, "readed data ist valid PDU, recived: " + recMsg);
-          }
-          //
-          // entspricht das dem Kommando sende Modultyp ?
-          //
-          if( recMsg.matches(ProjectConst.MODULTYPPATTERN) )
-          {
-            //
-            // Jetzt wichtig: Ist ees ein zugelassener Modultyp oder nicht?
-            //
-            if( recMsg.matches(ProjectConst.MY_MODULTYPPATTERN) )
-            {
-              isCorrectConnectedModule = true;
-              Log.i(TAGCG, "connected modul is an correct type");
-              //TODO: schauen ob das hier so klappt
-              setConnectionState(ProjectConst.STATUS_CONNECTED);
-              return;
-            }
-            else
-            {
-              Log.e(TAGCG, "connected modul is an incorrect type!");
-              setConnectionState(ProjectConst.STATUS_CONNECT_ERROR, R.string.service_err_incorrect_module_type);
-              return;
-            }
-          }
-          //
-          // An Activity senden, wenn Handler gesetzt ist
-          //
-          if( btEventHandler != null && isCorrectConnectedModule )
-          {
-            BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_BTLE_DATA, recMsg);
-            btEventHandler.obtainMessage(ProjectConst.MESSAGE_BTLE_DATA, msg).sendToTarget();
-          }
-        }
-        else
+        try
         {
           //
-          // Daten sind ungültig
+          // Daten in den Ringpufer schicken, um die Verarbeitung
+          // kümmert sich der ReaderThread
           //
-          if( BuildConfig.DEBUG )
+          ringBuffer.getOutputStream().write(data);
+          // Thread bescheid geben, da war doch was...
+          synchronized( ringBuffer )
           {
-            Log.v(TAGCG, "readet data ist NOT valid PDU, recived: " + recMsg);
+            //
+            // beende die Wartezeit des ReaderThreads, es sind ja Daten gekommen!
+            //
+            ringBuffer.notifyAll();
           }
-          setConnectionState(ProjectConst.STATUS_CONNECT_ERROR, R.string.service_err_data_corrupt);
         }
-      }
-      else
-      {
-        //
-        // Ups, da waren keine Daten drin!
-        //
-        Log.w(TAGCG, "NO DATA!");
+        catch( IOException ex )
+        {
+          Log.e(TAG, "IOException while read from BT decice..." + ex.getLocalizedMessage());
+        }
       }
     }
 
     //
-    // eine "characteristic" hat sich geändert
-    //
+// eine "characteristic" hat sich geändert
+//
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic)
     {
-      computeData(characteristic);
+      dataToRingBuffer(characteristic);
     }
   };
-
   /**
    * Callback Methode beim Scannen von BTLE Geräten
    */
   @SuppressLint( "NewApi" )
-  private ScanCallback scanCallback = new ScanCallback()
+  private       ScanCallback                    scanCallback       = new ScanCallback()
   {
 
     @Override
@@ -388,11 +380,10 @@ public class BluetoothLowEnergyService extends Service
       }
     }
   };
-
   /**
    * Callback für Androis < Lollipop
    */
-  private BluetoothAdapter.LeScanCallback oldApiScanCallback = new BluetoothAdapter.LeScanCallback()
+  private       BluetoothAdapter.LeScanCallback oldApiScanCallback = new BluetoothAdapter.LeScanCallback()
   {
 
     @Override
@@ -419,6 +410,13 @@ public class BluetoothLowEnergyService extends Service
   @Override
   public IBinder onBind(Intent intent)
   {
+//    if( BuildConfig.DEBUG )
+//    {
+//      Log.v(TAG, "start recived commands queue thread");
+//    }
+//    Thread th = new Thread(cmdQueueReader);
+//    th.setName("readBTDataThread");
+//    th.start();
     return mBinder;
   }
 
@@ -431,6 +429,16 @@ public class BluetoothLowEnergyService extends Service
   @Override
   public boolean onUnbind(Intent intent)
   {
+//    if( cmdQueueReader != null )
+//    {
+//      cmdQueueReader.stopThread();
+//      {
+//        if( BuildConfig.DEBUG )
+//        {
+//          Log.v(TAG, "stop recived commands queue thread");
+//        }
+//      }
+//    }
     //
     // Wenn ein Gerät nicht mehr genutzt wird, soll BluetoothGatt.close() aufgerufen werden
     // um Resourcen wieder freizugeben. Hier erledigt das die Funktion close()
@@ -472,6 +480,13 @@ public class BluetoothLowEnergyService extends Service
     {
       Log.e(TAG, "Unable to obtain a BluetoothAdapter.");
     }
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "start recived commands queue thread");
+    }
+    Thread th = new Thread(cmdQueueReader);
+    th.setName("readBTDataThread");
+    th.start();
   }
 
   /**
@@ -516,18 +531,18 @@ public class BluetoothLowEnergyService extends Service
       }
       else
       {
-        //
-        // Neu verbinden schlug fehl, versuche GATT zu empfangen
-        //
+//
+// Neu verbinden schlug fehl, versuche GATT zu empfangen
+//
         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         mBluetoothGatt = device.connectGatt(this, false, btLeGattCallback);
         mBluetoothDeviceAddress = address;
         return false;
       }
     }
-    //
-    // Kein neuverbinden, also Verbindung zum entfernten Gerät aufbauen
-    //
+//
+// Kein neuverbinden, also Verbindung zum entfernten Gerät aufbauen
+//
     final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
     if( device == null )
     {
@@ -776,7 +791,7 @@ public class BluetoothLowEnergyService extends Service
    * Verbindungsstatus mit Fehlermeldung setzten
    *
    * @param connectionState Neuer Verbindungsstatus
-   * @param errResourceId Resource-Id der Fehlermeldung in Strings
+   * @param errResourceId   Resource-Id der Fehlermeldung in Strings
    */
   private void setConnectionState(int connectionState, int errResourceId)
   {
@@ -835,7 +850,7 @@ public class BluetoothLowEnergyService extends Service
       default:
         if( btEventHandler != null )
         {
-          BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_CONNECT_ERROR, errResourceId );
+          BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_CONNECT_ERROR, errResourceId);
           btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECT_ERROR, msg).sendToTarget();
           BlueThoothMessage msg2 = new BlueThoothMessage(ProjectConst.MESSAGE_DISCONNECTED);
           btEventHandler.obtainMessage(mConnectionState, msg2).sendToTarget();
@@ -888,6 +903,33 @@ public class BluetoothLowEnergyService extends Service
     sendKdoToModule(kommandoString);
   }
 
+  public void setModulRawRGBW(short[] rgbw)
+  {
+    String kommandoString;
+    //
+    // Kommando zusammenbauen
+    //
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X:%02X:%02X:%02X:%02X%s", ProjectConst.STX, ProjectConst.C_SETCOLOR, rgbw[ 0 ], rgbw[ 1 ], rgbw[ 2 ], rgbw[ 3 ], ProjectConst.ETX);
+    Log.d(TAG, "send set RGBW =" + kommandoString);
+    sendKdoToModule(kommandoString);
+  }
+
+  /**
+   * Setze Farben als RGB, Modul kalibriert nach RGBW
+   *
+   * @param rgbw RGB Werte, White wird ignoriert
+   */
+  public void setModulRGB4Calibrate(short[] rgbw)
+  {
+    String kommandoString;
+    //
+    // Kommando zusammenbauen
+    //
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X:%02X:%02X:%02X:%02X%s", ProjectConst.STX, ProjectConst.C_SETCALRGB, rgbw[ 0 ], rgbw[ 1 ], rgbw[ 2 ], 0, ProjectConst.ETX);
+    Log.d(TAG, "send set RGBW =" + kommandoString);
+    sendKdoToModule(kommandoString);
+  }
+
   /**
    * schalte den Pausenmodus um
    */
@@ -925,6 +967,109 @@ public class BluetoothLowEnergyService extends Service
     {
       Log.w(TAG, "send NOT OK, not connected?");
       return (false);
+    }
+  }
+
+  /**
+   * Private Klasse zum Auslesen der MessageQueue und Weiterleiten an die App
+   */
+  private class CRunnable implements Runnable
+  {
+    private static final String RTAG = "cmdQueueReader";
+    private boolean isRunning;
+
+    @Override
+    public void run()
+    {
+      isRunning = true;
+      while( isRunning )
+      {
+        if( cmdBuffer.isEmpty() )
+        {
+          synchronized( cmdBuffer )
+          {
+            try
+            {
+              cmdBuffer.wait(100);
+            }
+            catch( InterruptedException ex )
+            {
+              Log.e(RTAG, ex.getLocalizedMessage());
+              //TODO Meldung machen?
+            }
+          }
+        }
+        else
+        {
+          String recMsg = cmdBuffer.remove(0);
+          //
+          // Sind die Daten als Komando korrekt formatiert?
+          //
+          if( recMsg.matches(ProjectConst.KOMANDPATTERN) )
+          {
+            //
+            // Es gibt ein gültiges Kommando / Nachricht
+            //
+            if( BuildConfig.DEBUG )
+            {
+              Log.v(RTAG, "readed data ist valid PDU, recived: " + recMsg);
+            }
+            //
+            // Ist es eine Nachricht über den Typ des Modules ?
+            //
+            if( recMsg.matches(ProjectConst.MODULTYPPATTERN) )
+            {
+              //
+              // Jetzt wichtig: Ist es ein zugelassener Modultyp oder nicht?
+              //
+              if( recMsg.matches(ProjectConst.MY_MODULTYPPATTERN) )
+              {
+                isCorrectConnectedModule = true;
+                Log.i(RTAG, "connected modul is an correct type");
+                setConnectionState(ProjectConst.STATUS_CONNECTED);
+              }
+              else
+              {
+                Log.e(RTAG, "connected modul is an incorrect type!");
+                setConnectionState(ProjectConst.STATUS_CONNECT_ERROR, R.string.service_err_incorrect_module_type);
+              }
+            }
+            else
+            {
+              //
+              // Keine Modultypnachricht
+              // An Activity senden, wenn Handler gesetzt ist
+              //
+              if( btEventHandler != null && isCorrectConnectedModule )
+              {
+                BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_BTLE_DATA, recMsg);
+                btEventHandler.obtainMessage(ProjectConst.MESSAGE_BTLE_DATA, msg).sendToTarget();
+              }
+            }
+          }
+          else
+          {
+            //
+            // Daten sind ungültig
+            //
+            if( BuildConfig.DEBUG )
+            {
+              Log.v(RTAG, "readet data ist NOT valid PDU, recived: " + recMsg);
+            }
+            setConnectionState(ProjectConst.STATUS_CONNECT_ERROR, R.string.service_err_data_corrupt);
+          }
+        }
+      }
+    }
+
+    public void stopThread()
+    {
+      isRunning = false;
+      Log.v(RTAG, "CRunable stopping");
+      synchronized( cmdBuffer )
+      {
+        cmdBuffer.notifyAll();
+      }
     }
   }
 
@@ -1081,7 +1226,7 @@ public class BluetoothLowEnergyService extends Service
     @Override
     public void askModulForRGBW()
     {
-      //TODO implementieren
+      BluetoothLowEnergyService.this.askModulForRGBW();
     }
 
     /**
@@ -1091,6 +1236,28 @@ public class BluetoothLowEnergyService extends Service
     public void setModulPause()
     {
       BluetoothLowEnergyService.this.setModulPause();
+    }
+
+    /**
+     * Setze Farben als RGB
+     *
+     * @param rgbw RGB Werte
+     */
+    @Override
+    public void setModulRawRGBW(short[] rgbw)
+    {
+      BluetoothLowEnergyService.this.setModulRawRGBW(rgbw);
+    }
+
+    /**
+     * Setze Farben als RGB, Modul kalibriert nach RGBW
+     *
+     * @param rgbw RGB Werte, White wird ignoriert
+     */
+    @Override
+    public void setModulRGB4Calibrate(short[] rgbw)
+    {
+      BluetoothLowEnergyService.this.setModulRGB4Calibrate(rgbw);
     }
   }
 }
