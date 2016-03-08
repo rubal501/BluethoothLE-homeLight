@@ -65,5 +65,17 @@ public interface IBtCommand
    */
   void setModulPause();
 
+  /**
+   * Setze Farben als RGB
+   *
+   * @param rgbw RGB Werte
+   */
+  void setModulRawRGBW(short[] rgbw);
 
+  /**
+   * Setze Farben als RGB, Modul kalibriert nach RGBW
+   *
+   * @param rgbw RGB Werte, White wird ignoriert
+   */
+  void setModulRGB4Calibrate(short[] rgbw);
 }
