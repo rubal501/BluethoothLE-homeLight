@@ -4,6 +4,7 @@
   <string name="app_dummy_text">dummy</string>
 
   <string name="main_btle_not_supported">Bluethooth LE nicht unterstützt!</string>
+  <string name="main_modul_pause">Pause im Modul umschalten</string>
 
   <string name="nav_title">Funktionsmenü</string>
   <string name="nav_mail">dirk_marciniak@online.de</string>
@@ -27,7 +28,7 @@
   <string name="service_err_not_services">Keine entfernten Services gefunden</string>
   <string name="service_err_incorrect_module_type">falscher Modultyp verbunden</string>
   <string name="service_err_data_corrupt">inkorrekte Daten empfangen</string>
-
+  <string name="service_err_not_characteristics">keine characteristics gefunden</string>
 
   <!-- Discovering Fragment -->
   <string name="discovering_no_data">Kein Gerät verfügbar</string>
@@ -56,12 +57,54 @@
   <string name="pref_sys_showpage_colorwheel">keySystemColorwheelSwitch</string>
   <string name="pref_sys_showpage_brightness">keySystemBrightnessOnlySwitch</string>
   <string name="pref_sys_showpage_predefcolors">keySystemPredefColorsSwitch</string>
-  <!--string name="pref_sys_jump_to_page_on_connect">keySystemJumpToDefaultPageOnConnect</string-->
   <string name="pref_sys_page_on_connect">KeySystemJumpToPageNumberOnConnect</string>
   <string name="pref_sys_debugging_stat">keySystemDebuggingStatus</string>
   <string name="pref_sys_lastConnectedDeviceAddr">keySystemLastConnectedDeviceAddr</string>
   <string name="pref_sys_lastConnectedDeviceName">keySystemLastConnectedDeviceName</string>
   <string name="pref_sys_autoReconnect">keySystemAutoReconnect</string>
+
+  <!-- Programmeinstellungen -->
+  <string name="pref_sys_headline">Programmeinstellungen</string>
+  <!-- cat pages -->
+  <string name="pref_sys_pages_control">Seiten anzeigen</string>
+  <!-- discover -->
+  <string name="pref_sys_pages_discover_head">Lichtsteuerung suchen</string>
+  <string name="pref_sys_pages_discover_summary_on">Seite anzeigen AN</string>
+  <string name="pref_sys_pages_discover_summary_off">Seite anzeigen AUS</string>
+  <string name="pref_sys_pages_discover_switch_on">zeigen</string>
+  <string name="pref_sys_pages_discover_switch_off">vergbergen</string>
+  <!-- direct control -->
+  <string name="pref_sys_pages_direct_control_head">Seite Equalizer</string>
+  <string name="pref_sys_pages_direct_control_summary_on">Equalizer Seite AN</string>
+  <string name="pref_sys_pages_direct_control_summary_off">Equalizer Seite AUS</string>
+  <string name="pref_sys_pages_direct_control_switch_on">zeigen</string>
+  <string name="pref_sys_pages_direct_control_switch_off">vergbergen</string>
+  <!-- colorwheel -->
+  <string name="pref_sys_pages_colorwheel_head">Seite für Farbkreis</string>
+  <string name="pref_sys_pages_colorwheel_summary_on">Farbkreis Seite AN</string>
+  <string name="pref_sys_pages_colorwheel_summary_off">Farbkreis Seite AUS</string>
+  <string name="pref_sys_pages_colorwheel_switch_on">zeigen</string>
+  <string name="pref_sys_pages_colorwheel_switch_off">vergbergen</string>
+  <!-- colorwheel -->
+  <string name="pref_sys_pages_brightness_head">Seite für Helligkeit</string>
+  <string name="pref_sys_pages_brightness_summary_on">Helligkeit AN</string>
+  <string name="pref_sys_pages_brightness_summary_off">Helligkeit AUS</string>
+  <string name="pref_sys_pages_brightness_switch_on">zeigen</string>
+  <string name="pref_sys_pages_brightness_switch_off">vergbergen</string>
+  <!-- predefColors -->
+  <string name="pref_sys_pages_predef_head">Seite gespeicherte Farben</string>
+  <string name="pref_sys_pages_predef_summary_on">Voreingestellte Farben AN</string>
+  <string name="pref_sys_pages_predef_summary_off">Voreingestellte Farben AUS</string>
+  <string name="pref_sys_pages_predef_switch_on">zeigen</string>
+  <string name="pref_sys_pages_predef_switch_off">vergbergen</string>
+  <!-- cat Einstellunge fürs debugging -->
+  <string name="pref_sys_debugging">Debugging Einstellungen</string>
+  <string name="pref_sys_debugging_header">Debugging</string>
+  <string name="pref_sys_debug_summary_on">Debugging Ausgaben EIN</string>
+  <string name="pref_sys_debug_summary_off">Keine Debugging Ausgaben</string>
+  <string name="pref_sys_debug_switch_on">EIN</string>
+  <string name="pref_sys_debug_switch_off">AUS</string>
+
 
   <!-- BTLE List Adapter -->
   <string name="list_adapter_unknown_device">unbekannt</string>
