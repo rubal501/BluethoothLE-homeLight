@@ -1018,7 +1018,7 @@ public class BluetoothLowEnergyService extends Service
      * @return Moduladresse oder NULL
      */
     @Override
-    public String askConnectedModul()
+    public BluetoothDevice askConnectedModul()
     {
       if( mConnectionState == ProjectConst.STATUS_CONNECTED )
       {
@@ -1027,7 +1027,7 @@ public class BluetoothLowEnergyService extends Service
         {
           if( !mBluetoothManager.getConnectedDevices(BluetoothProfile.GATT).get(0).getAddress().isEmpty() )
           {
-            return (mBluetoothManager.getConnectedDevices(BluetoothProfile.GATT).get(0).getAddress());
+            return (mBluetoothManager.getConnectedDevices(BluetoothProfile.GATT).get(0));
           }
         }
       }
