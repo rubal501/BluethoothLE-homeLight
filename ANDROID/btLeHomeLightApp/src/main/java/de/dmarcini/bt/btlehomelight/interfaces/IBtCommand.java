@@ -1,5 +1,7 @@
 package de.dmarcini.bt.btlehomelight.interfaces;
 
+import android.bluetooth.BluetoothDevice;
+
 /**
  * Created by dmarc on 28.02.2016.
  */
@@ -41,7 +43,7 @@ public interface IBtCommand
    *
    * @return Moduladresse oder NULL
    */
-  String askConnectedModul();
+  BluetoothDevice askConnectedModul();
 
   /**
    * Frage (noch einmal) nach dem Modultyp
@@ -57,6 +59,11 @@ public interface IBtCommand
    * Frage das Modul nach der aktuellen RGBW Einstellung (Roh)
    */
   void askModulForRGBW();
+
+  /**
+   * Schaltet das Modul dunkel oder hell
+   */
+  void setModulPause();
 
 
 }
