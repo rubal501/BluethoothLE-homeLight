@@ -3,6 +3,7 @@ package de.dmarcini.bt.btlehomelight;
 import android.annotation.SuppressLint;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -23,6 +24,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,9 +33,10 @@ import android.widget.Toast;
 import java.util.Locale;
 
 import de.dmarcini.bt.btlehomelight.fragments.BTConnectFragment;
-import de.dmarcini.bt.btlehomelight.fragments.LightRootFragment;
 import de.dmarcini.bt.btlehomelight.fragments.ColorCircleFragment;
+import de.dmarcini.bt.btlehomelight.fragments.LightRootFragment;
 import de.dmarcini.bt.btlehomelight.fragments.PlaceholderFragment;
+import de.dmarcini.bt.btlehomelight.fragments.SystemPreferencesFragment;
 import de.dmarcini.bt.btlehomelight.fragments.WhiteOnlyFragment;
 import de.dmarcini.bt.btlehomelight.interfaces.IBtCommand;
 import de.dmarcini.bt.btlehomelight.interfaces.IBtServiceListener;
@@ -45,35 +48,6 @@ import de.dmarcini.bt.btlehomelight.utils.HomeLightSysConfig;
 public class MainActivity extends AppCompatActivity implements IBtCommand, NavigationView.OnNavigationItemSelectedListener
 {
   private static final String                    TAG         = MainActivity.class.getSimpleName();
-  //
-  // Ein Messagehandler, der vom Service kommende Messages bearbeitet
-  //
-  @SuppressLint( "HandlerLeak" )
-  private final        Handler                   mHandler    = new Handler()
-  {
-    @Override
-    public void handleMessage(Message msg)
-    {
-      if( !(msg.obj instanceof BlueThoothMessage) )
-      {
-        Log.e(TAG, "Handler::handleMessage: Recived Message is NOT type of BlueThoothMessage!");
-        return;
-      }
-      BlueThoothMessage smsg = ( BlueThoothMessage ) msg.obj;
-      if( BuildConfig.DEBUG )
-      {
-        Log.v(TAG, String.format(Locale.ENGLISH, "Message Typ %s recived.", ProjectConst.getMsgName(smsg.getMsgType())));
-      }
-      if( smsg.getData() != null && smsg.getData().length() > 0 && BuildConfig.DEBUG )
-      {
-        Log.d(TAG, "Handler::handleMessage: <" + smsg.getData() + ">");
-      }
-      if( msgHandler != null )
-      {
-        msgHandler.handleMessages( smsg );
-      }
-    }
-  };
   private       LocalBinder        binder      = null;
   //
   // Lebensdauer des Service wird beim binden / unbinden benutzt
@@ -114,6 +88,35 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
     }
   };
   private       IBtServiceListener msgHandler  = null;
+  //
+  // Ein Messagehandler, der vom Service kommende Messages bearbeitet
+  //
+  @SuppressLint( "HandlerLeak" )
+  private final Handler            mHandler    = new Handler()
+  {
+    @Override
+    public void handleMessage(Message msg)
+    {
+      if( !(msg.obj instanceof BlueThoothMessage) )
+      {
+        Log.e(TAG, "Handler::handleMessage: Recived Message is NOT type of BlueThoothMessage!");
+        return;
+      }
+      BlueThoothMessage smsg = ( BlueThoothMessage ) msg.obj;
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, String.format(Locale.ENGLISH, "Message Typ %s recived.", ProjectConst.getMsgName(smsg.getMsgType())));
+      }
+      if( smsg.getData() != null && smsg.getData().length() > 0 && BuildConfig.DEBUG )
+      {
+        Log.d(TAG, "Handler::handleMessage: <" + smsg.getData() + ">");
+      }
+      if( msgHandler != null )
+      {
+        msgHandler.handleMessages(smsg);
+      }
+    }
+  };
 
   @Override
   public void onStart()
@@ -151,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
    */
   private void tryReconnectToDevice()
   {
-    if( (binder != null) && (HomeLightSysConfig.getLastConnectedDeviceAddr() != null) &&  HomeLightSysConfig.isAutoReconnect() )
+    if( (binder != null) && (HomeLightSysConfig.getLastConnectedDeviceAddr() != null) && HomeLightSysConfig.isAutoReconnect() )
     {
       Log.i(TAG, String.format(Locale.ENGLISH, "request to reconnect to device <%s>", HomeLightSysConfig.getLastConnectedDeviceAddr()));
       binder.connectTo(HomeLightSysConfig.getLastConnectedDeviceAddr());
@@ -232,6 +235,14 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
     // Systemeinstellungen neu einlesen
     //
     HomeLightSysConfig.readSysPrefs(getResources(), PreferenceManager.getDefaultSharedPreferences(this));
+    NavigationView navigationView = ( NavigationView ) findViewById(R.id.nav_view);
+    //
+    // Anzeigen oder verstecken der Menüpunkte nach Systemeinstellungen
+    //
+    navigationView.getMenu().findItem(R.id.navColorCircle).setVisible(HomeLightSysConfig.isShowColorWheel());
+    navigationView.getMenu().findItem(R.id.navColorBrightness).setVisible(HomeLightSysConfig.isShowBrightnessOnly());
+    navigationView.getMenu().findItem(R.id.navColorEqualizer).setVisible(HomeLightSysConfig.isShowEqualizer());
+    navigationView.getMenu().findItem(R.id.navColorPresets).setVisible(HomeLightSysConfig.isShowColorPresets());
     //
     // Stelle sicher, dass der BT Adapter aktiviert wurde
     // erzeuge einen Intend (eine Absicht) und schicke diese an das System
@@ -264,13 +275,18 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
    */
   private void makeFloatingButtons()
   {
+    //
+    // Vorerst nur der Platzhalter für ein Spielerchen später
+    //
     FloatingActionButton fab = ( FloatingActionButton ) findViewById(R.id.fab);
     fab.setOnClickListener(new View.OnClickListener()
     {
       @Override
       public void onClick(View view)
       {
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+        setModulPause();
+        Snackbar.make(view, getResources().getString(R.string.main_modul_pause), Snackbar.LENGTH_LONG).setAction("Action", null).show();
       }
     });
   }
@@ -372,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
         fTrans = getFragmentManager().beginTransaction();
         break;
 
-      case R.id.navColorOnlyWhite:
+      case R.id.navColorBrightness:
         if( BuildConfig.DEBUG )
         {
           Log.v(TAG, "onNavigationDrawerItemSelected: make only brightness slider fragment...");
@@ -413,8 +429,12 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
         {
           Log.v(TAG, "onNavigationItemSelected: make program propertys fragment...");
         }
-        newFrag = new PlaceholderFragment();
+        SystemPreferencesFragment pFrag = new SystemPreferencesFragment();
         fTrans = getFragmentManager().beginTransaction();
+        fTrans.replace(R.id.main_container, pFrag);
+        fTrans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN | FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        fTrans.commit();
+        fTrans = null;
         break;
 
       case R.id.navQuit:
@@ -439,6 +459,7 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
       fTrans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN | FragmentTransaction.TRANSIT_FRAGMENT_FADE);
       fTrans.commit();
     }
+    msgHandler = newFrag;
     if( BuildConfig.DEBUG)
     {
       if( msgHandler == null )
@@ -453,7 +474,6 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
         }
       }
     }
-    msgHandler = newFrag;
     DrawerLayout drawer = ( DrawerLayout ) findViewById(R.id.main_drawer_layout);
     drawer.closeDrawer(GravityCompat.START);
     return true;
@@ -534,7 +554,7 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
    * @return Moduladresse oder NULL
    */
   @Override
-  public String askConnectedModul()
+  public BluetoothDevice askConnectedModul()
   {
     if( binder != null )
     {
@@ -576,6 +596,18 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
     if( binder != null )
     {
       binder.askModulForRGBW();
+    }
+  }
+
+  /**
+   * Schaltet das Modul dunkel oder hell
+   */
+  @Override
+  public void setModulPause()
+  {
+    if( binder != null )
+    {
+      binder.setModulPause();
     }
   }
 }
