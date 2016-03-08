@@ -353,29 +353,9 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
     {
       Log.v(TAG, String.format(Locale.ENGLISH, "onNavigationDrawerItemSelected: id: <%d>...", id));
     }
-
-//    if( getConnectionStatus() == ProjectConst.CONN_STATE_CONNECTED )
-//    {
-//      isOnline = true;
-//    }
-//    //
-//    // das richtige Icon setzen
-//    //
-//    if( isOnline )
-//    {
-//      getActionBar().setLogo(ContentSwitcher.getProgItemForId(pItem.nId).resIdOnline);
-//    }
-//    else
-//    {
-//      // wenn der SPX OFFLINE ist, nur OFFLINE Funktionen freigeben
-//      getActionBar().setLogo(ContentSwitcher.getProgItemForId(pItem.nId).resIdOffline);
-//    }
-//    //
-//    // Argumente für die Fragmente füllen
-//    //
-//    arguments.putString(ProjectConst.ARG_ITEM_CONTENT, pItem.content);
-//    arguments.putInt(ProjectConst.ARG_ITEM_ID, pItem.nId);
-
+    //
+    // Entsprechend der selektierten Navigator-Id
+    //
     switch( id )
     {
       case R.id.navColorCircle:
@@ -471,6 +451,10 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
         if( newFrag != null )
         {
           Log.i(TAG, "set messgeHandler to " + newFrag.getClass().getSimpleName());
+        }
+        else
+        {
+          Log.e(TAG, "set messgeHandler to unknown type of fragment");
         }
       }
     }
@@ -608,6 +592,34 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
     if( binder != null )
     {
       binder.setModulPause();
+    }
+  }
+
+  /**
+   * Setze Farben als RGB
+   *
+   * @param rgbw RGB Werte
+   */
+  @Override
+  public void setModulRawRGBW(short[] rgbw)
+  {
+    if( binder != null )
+    {
+      binder.setModulRawRGBW(rgbw);
+    }
+  }
+
+  /**
+   * Setze Farben als RGB, Modul kalibriert nach RGBW
+   *
+   * @param rgbw RGB Werte, White wird ignoriert
+   */
+  @Override
+  public void setModulRGB4Calibrate(short[] rgbw)
+  {
+    if( binder != null )
+    {
+      binder.setModulRGB4Calibrate(rgbw);
     }
   }
 }

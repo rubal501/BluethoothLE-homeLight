@@ -13,6 +13,7 @@ import android.widget.ToggleButton;
 import java.util.Locale;
 
 import de.dmarcini.bt.btlehomelight.BuildConfig;
+import de.dmarcini.bt.btlehomelight.ProjectConst;
 import de.dmarcini.bt.btlehomelight.R;
 import de.dmarcini.bt.btlehomelight.interfaces.IBtCommand;
 import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
@@ -104,8 +105,19 @@ public class ColorCircleFragment extends LightRootFragment implements ColorPicke
     {
       Log.d(TAG, "onActivityCreated: ...");
     }
+  }
+
+  @Override
+  public void onResume()
+  {
+    super.onResume();
+    if( BuildConfig.DEBUG )
+    {
+      Log.d(TAG, "onResume: ...");
+    }
     runningActivity.askModulForRGBW();
   }
+
 
   /**
    * Zeiger (Referenzen) und Callbacks vorbereiten
@@ -239,6 +251,7 @@ public class ColorCircleFragment extends LightRootFragment implements ColorPicke
     {
       Log.v(TAG, String.format(Locale.ENGLISH, "color changed to %08X!", color));
     }
+    sendColor(color);
   }
 
   @Override
@@ -248,6 +261,37 @@ public class ColorCircleFragment extends LightRootFragment implements ColorPicke
     {
       Log.v(TAG, String.format(Locale.ENGLISH, "color selected to %08X!", color));
     }
+    sendColor(color);
+  }
+
+  private void sendColor(int color)
+  {
+    short[] rgbw = new short[ 4 ];
+    //
+    rgbw[ 0 ] = ( short ) ((color >> 16) & 0xff);
+    rgbw[ 1 ] = ( short ) ((color >> 8) & 0xff);
+    rgbw[ 2 ] = ( short ) (color & 0xff);
+    rgbw[ 3 ] = 0;
+
+    if( timeToSend < System.currentTimeMillis() )
+    {
+      //
+      // Mal wieder zum Contoller senden!
+      //
+      if( calToggleButton.isChecked() )
+      {
+        runningActivity.setModulRGB4Calibrate(rgbw);
+      }
+      else
+      {
+        runningActivity.setModulRawRGBW(rgbw);
+      }
+      //
+      // Neue Deadline setzen
+      //
+      timeToSend = System.currentTimeMillis() + ProjectConst.TIMEDIFF_TO_SEND;
+    }
+
   }
 
   /**
@@ -294,6 +338,27 @@ public class ColorCircleFragment extends LightRootFragment implements ColorPicke
     if( BuildConfig.DEBUG )
     {
       Log.v(TAG, "message recived!");
+    }
+    switch( msg.getMsgType() )
+    {
+      case ProjectConst.MESSAGE_NONE:
+      case ProjectConst.MESSAGE_TICK:
+      case ProjectConst.MESSAGE_DISCONNECTED:
+      case ProjectConst.MESSAGE_CONNECTING:
+      case ProjectConst.MESSAGE_CONNECTED:
+      case ProjectConst.MESSAGE_CONNECT_ERROR:
+      case ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERING:
+      case ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERED:
+      case ProjectConst.MESSAGE_BTLE_DEVICE_END_DISCOVERING:
+      case ProjectConst.MESSAGE_GATT_SERVICES_DISCOVERED:
+        break;
+
+      case ProjectConst.MESSAGE_BTLE_DATA:
+        msgDataRecived(msg);
+        break;
+
+      default:
+        Log.e(TAG, "unhandled message recived: " + msg.getMsgType());
     }
   }
 
@@ -376,13 +441,91 @@ public class ColorCircleFragment extends LightRootFragment implements ColorPicke
   }
 
   /**
-   * BEhandle ankommende Daten
+   * Die SeekBars nach dem RGBW Array setzen
+   */
+  private void setColorWheel(final short[] rgbw)
+  {
+    Log.e(TAG, "setColorWheel...");
+    currColor = ((rgbw[ 0 ] << 16) | (rgbw[ 1 ] << 8) | (rgbw[ 2 ]));
+    picker.setColor(currColor);
+  }
+
+  /**
+   * Behandle ankommende Daten
    *
    * @param msg Nachricht mit eingeschlossenen Daten
    */
   @Override
   public void msgDataRecived(BlueThoothMessage msg)
   {
+    final short[] rgbw;
+    if( msg.getData() == null || msg.getData().isEmpty() )
+    {
+      Log.w(TAG, "not data in message!");
+      return;
+    }
+    //
+    // Jetzt guck mal nach den Daten
+    //
+    String[] param;
+    int      cmdNum;
+    //
+    // Kommando empfangen
+    //
+    param = msg.getData().split(":");
+    if( param.length > 0 )
+    {
+      //
+      // Hier mal das Kommando finden und umrechnen
+      //
+      try
+      {
+        cmdNum = Integer.parseInt(param[ 0 ], 16);
+      }
+      catch( NumberFormatException ex )
+      {
+        cmdNum = ProjectConst.C_UNKNOWN;
+      }
+      //
+      // Jetzt Kommando auswerten
+      //
+      switch( cmdNum )
+      {
+        //
+        // Unbekanntes Kommando
+        //
+        default:
+        case ProjectConst.C_UNKNOWN:
+          Log.e(TAG, "unknown command recived! Ignored.");
+          return;
+        //
+        // Frage nach RGBW
+        //
+        case ProjectConst.C_ASKRGBW:
+          //
+          // Weitergeben an die Fragmente
+          //
+          if( BuildConfig.DEBUG )
+          {
+            Log.v(TAG, "RGBW from module <" + msg.getData() + ">");
+          }
+          if( param.length != ProjectConst.C_ASKRGB_LEN )
+          {
+            return;
+          }
+          rgbw = fillValuesInArray(param);
+          picker.post(new Runnable()
+          {
+            public void run()
+            {
+              setColorWheel(rgbw);
+            }
+          });
+          return;
 
+        //
+      }
+
+    }
   }
 }
