@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~                                                                           ~
+  ~      project: ANDROID                                                     ~
+  ~      module: btlehomelight                                                ~
+  ~      class: array_with_color_adapter_view.xml                             ~
+  ~      date: 2016-01-08                                                     ~
+  ~                                                                           ~
+  ~      Copyright (C) 2016  Dirk Marciniak                                   ~
+  ~                                                                           ~
+  ~      This program is free software: you can redistribute it and/or modify ~
+  ~      it under the terms of the GNU General Public License as published by ~
+  ~      the Free Software Foundation, either version 3 of the License, or    ~
+  ~      (at your option) any later version.                                  ~
+  ~                                                                           ~
+  ~      This program is distributed in the hope that it will be useful,      ~
+  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of       ~
+  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        ~
+  ~      GNU General Public License for more details.                         ~
+  ~                                                                           ~
+  ~      You should have received a copy of the GNU General Public License    ~
+  ~      along with this program.  If not, see <http://www.gnu.org/licenses/  ~
+  ~                                                                           ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+  <ImageView
+      android:id="@+id/arrayListColorView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentLeft="true"
+      android:layout_centerVertical="true"
+      android:layout_gravity="center_vertical"
+      android:layout_marginBottom="2dp"
+      android:layout_marginLeft="10dp"
+      android:layout_marginTop="2dp"
+      android:background="#808080"
+      android:minHeight="35dp"
+      android:minWidth="35dp"/>
+
+
+  <TextView
+      android:id="@+id/arrayListTextView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="false"
+      android:layout_alignParentStart="false"
+      android:layout_centerVertical="true"
+      android:layout_toEndOf="@+id/arrayListColorView"
+      android:layout_toRightOf="@+id/arrayListColorView"
+      android:paddingStart="25dp"
+      android:text="@string/app_dummy_text"/>
+  <!-- android:textAppearance="@style/menuTextAppearance" /-->
+
+</RelativeLayout>

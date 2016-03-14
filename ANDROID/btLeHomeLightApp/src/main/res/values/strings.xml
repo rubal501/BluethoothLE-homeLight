@@ -15,6 +15,16 @@
   <string name="dialog_exit_button">BEENDEN</string>
   <string name="dialog_cancel_button">ABBRUCH</string>
 
+  <!-- Dialog edit modul name -->
+  <string name="module_name_change_headline">Modulname ändern</string>
+  <string name="module_name_change_ok_button">Andern</string>
+  <string name="module_name_change_cancel_button">Abbruch</string>
+
+  <!-- Farbe speichern Dialog -->
+  <string name="color_dialog_headline">Farbe sichern</string>
+  <string name="color_dialog_save_button">Sichern</string>
+  <string name="color_dialog_cancel_button">Abbruch</string>
+
   <string name="nav_title">Funktionsmenü</string>
   <string name="nav_mail">dirk_marciniak@online.de</string>
   <string name="nav_color_circle">Farbkreis</string>
