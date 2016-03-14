@@ -1,5 +1,5 @@
 <resources>
-  <string name="app_name">BTLE Home Light APP</string>
+  <string name="app_name">BTLE Home Light</string>
   <string name="app_header">Lichtsteuerung</string>
   <string name="app_dummy_text">dummy</string>
 
@@ -24,6 +24,9 @@
   <string name="color_dialog_headline">Farbe sichern</string>
   <string name="color_dialog_save_button">Sichern</string>
   <string name="color_dialog_cancel_button">Abbruch</string>
+
+  <!-- Farbe für Voreinstellung ändern Dialog -->
+  <string name="color_change_dialog_headline" format="raw">Farbe #%02d</string>
 
   <string name="nav_title">Funktionsmenü</string>
   <string name="nav_mail">dirk_marciniak@online.de</string>
@@ -50,29 +53,35 @@
   <string name="service_err_not_characteristics">keine characteristics gefunden</string>
 
   <!-- Discovering Fragment -->
-  <string name="discovering_no_data">Kein Gerät verfügbar</string>
-  <string name="discovering_headline_search">Suche Geräte</string>
-  <string name="discovering_headline_devices">Geräte</string>
-  <string name="discovering_scan">suchen...</string>
-  <string name="discovering_stop">suche beenden.</string>
-  <string name="discovering_disconnect">trennen</string>
+  <string name="bt_connect_fragment_name">Geräte suchen und verbinden</string>
+  <string name="bt_connect_no_data">Kein Gerät verfügbar</string>
+  <string name="bt_connect_headline_search">Suche Geräte</string>
+  <string name="bt_connect_headline_devices">Geräte</string>
+  <string name="bt_connect_discovering_scan">suchen...</string>
+  <string name="bt_connect_discovering_stop">suche beenden.</string>
+  <string name="bt_connect_disconnect">trennen</string>
 
   <!-- Color wheel fragment -->
-  <string name="color_wheel_save_color_button_text">In Voreinstellungen merken!</string>
-  <string name="color_wheel_toggle_button_text">RGBW</string>
-  <string name="color_wheel_toggle_button_text_on">RGBW</string>
-  <string name="color_wheel_toggle_button_text_off">RGB</string>
+  <string name="color_circle_fragment_name">Farbe wählen und speichern</string>
+  <string name="color_circle_save_color_button_text">In Voreinstellungen merken!</string>
+  <string name="color_circle_toggle_button_text">RGBW</string>
+  <string name="color_circle_toggle_button_text_on">RGBW</string>
+  <string name="color_circle_toggle_button_text_off">RGB</string>
 
   <!-- Prefefinierte Farben Fragment -->
-  <string name="predef_headline">Vordefinierte Farben</string>
+  <string name="predef_color_fragment_name">Vordefinierte Farben</string>
   <string name="predef_color_name_red">Rot</string>
   <string name="predef_color_name_green">Grün</string>
   <string name="predef_color_name_blue">Blau</string>
   <string name="predef_color_name_white">Weiß</string>
 
   <!-- Brightness Fragment -->
+  <string name="brightness_fragment_name">Helligkeit</string>
   <string name="brigtness_header">Helligkeit</string>
   <string name="brigtness_header_vals" format="raw">Helligkeit: %02d </string>
+
+  <!-- Farb-Equalizer Fragment -->
+  <string name="equalizer_fragment_name">Equalizer</string>
 
   <!-- System Einstellungen Keys NICHT LOKALISIEREN! -->
   <string name="pref_sys_cat_direct_control">keySystemDirectControlCat</string>

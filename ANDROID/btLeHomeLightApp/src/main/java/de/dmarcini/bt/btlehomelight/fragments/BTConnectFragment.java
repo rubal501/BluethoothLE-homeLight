@@ -112,7 +112,7 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
     }
     if( runningActivity != null )
     {
-      BluetoothDevice dev = runningActivity.askConnectedModul();
+      BluetoothDevice dev = runningActivity.getConnectedModul();
       if( dev != null )
       {
         mBTLEDeviceListAdapter.addDevice(dev);
@@ -199,7 +199,7 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
       //
       // ist das Modul verbunden?
       //
-      if( runningActivity.askConnectedModul() != null && runningActivity.askConnectedModul().equals(dev.getAddress()) )
+      if( runningActivity.getConnectedModul() != null && runningActivity.getConnectedModul().equals(dev.getAddress()) )
       {
         mBTLEDeviceListAdapter.setConnectedDevice(dev);
       }
@@ -379,7 +379,7 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
       //
       // Abhängig vom Status
       //
-      switch( runningActivity.askModulOnlineStatus() )
+      switch( runningActivity.getModulOnlineStatus() )
       {
         case ProjectConst.STATUS_CONNECT_ERROR:
         case ProjectConst.STATUS_DISCONNECTED:
@@ -412,7 +412,7 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
 
   private void prepareHeader()
   {
-    switch( runningActivity.askModulOnlineStatus() )
+    switch( runningActivity.getModulOnlineStatus() )
     {
       case ProjectConst.STATUS_CONNECTING:
         scanProgress.setVisibility(View.VISIBLE);
@@ -421,26 +421,26 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
       case ProjectConst.STATUS_CONNECT_ERROR:
       case ProjectConst.STATUS_DISCONNECTED:
         // getrennt
-        discoverHeadLine.setText(getResources().getString(R.string.discovering_headline_devices));
-        scanButton.setText(getResources().getString(R.string.discovering_headline_search));
+        discoverHeadLine.setText(getResources().getString(R.string.bt_connect_headline_devices));
+        scanButton.setText(getResources().getString(R.string.bt_connect_headline_search));
         scanProgress.setVisibility(View.INVISIBLE);
         break;
 
       case ProjectConst.STATUS_CONNECTED:
         // Verbunden
-        discoverHeadLine.setText(getResources().getString(R.string.discovering_headline_devices));
-        scanButton.setText(getResources().getString(R.string.discovering_disconnect));
+        discoverHeadLine.setText(getResources().getString(R.string.bt_connect_headline_devices));
+        scanButton.setText(getResources().getString(R.string.bt_connect_disconnect));
         scanProgress.setVisibility(View.INVISIBLE);
         break;
 
       case ProjectConst.STATUS_DISCOVERING:
-        discoverHeadLine.setText(getResources().getString(R.string.discovering_headline_search));
-        scanButton.setText(getResources().getString(R.string.discovering_stop));
+        discoverHeadLine.setText(getResources().getString(R.string.bt_connect_headline_search));
+        scanButton.setText(getResources().getString(R.string.bt_connect_discovering_stop));
         scanProgress.setVisibility(View.VISIBLE);
         break;
 
       default:
-        scanButton.setText(getResources().getString(R.string.discovering_scan));
+        scanButton.setText(getResources().getString(R.string.bt_connect_discovering_scan));
         scanProgress.setVisibility(View.INVISIBLE);
     }
   }
@@ -477,7 +477,7 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
     //
     // wenn er noch am scannen ist, erst mal abschalten
     //
-    switch( runningActivity.askModulOnlineStatus() )
+    switch( runningActivity.getModulOnlineStatus() )
     {
       case ProjectConst.STATUS_DISCOVERING:
         runningActivity.stopDiscoverDevices();
@@ -526,7 +526,7 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
     //
     // ist das selektierte Gerät auch online?
     //
-    if( runningActivity.askConnectedModul() != null  && runningActivity.askConnectedModul().getAddress().equals(device.getAddress()) )
+    if( runningActivity.getConnectedModul() != null  && runningActivity.getConnectedModul().getAddress().equals(device.getAddress()) )
     {
       if( BuildConfig.DEBUG )
       {

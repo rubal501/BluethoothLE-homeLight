@@ -49,28 +49,31 @@ public abstract class LightRootFragment extends Fragment implements IBtServiceLi
   {
     short[] rgbw = new short[ 4 ];
     //
-    rgbw[ 0 ] = ( short ) ((color >> 16) & 0xff);
-    rgbw[ 1 ] = ( short ) ((color >> 8) & 0xff);
-    rgbw[ 2 ] = ( short ) (color & 0xff);
-    rgbw[ 3 ] = 0;
-
-    if( timeToSend < System.currentTimeMillis() )
+    if( runningActivity != null && runningActivity.getModulOnlineStatus() == ProjectConst.STATUS_CONNECTED )
     {
-      //
-      // Mal wieder zum Contoller senden!
-      //
-      if( isRaw )
+      rgbw[ 0 ] = ( short ) ((color >> 16) & 0xff);
+      rgbw[ 1 ] = ( short ) ((color >> 8) & 0xff);
+      rgbw[ 2 ] = ( short ) (color & 0xff);
+      rgbw[ 3 ] = 0;
+
+      if( timeToSend < System.currentTimeMillis() )
       {
-        runningActivity.setModulRawRGBW(rgbw);
+        //
+        // Mal wieder zum Contoller senden!
+        //
+        if( isRaw )
+        {
+          runningActivity.setModulRawRGBW(rgbw);
+        }
+        else
+        {
+          runningActivity.setModulRGB4Calibrate(rgbw);
+        }
+        //
+        // Neue Deadline setzen
+        //
+        timeToSend = System.currentTimeMillis() + ProjectConst.TIMEDIFF_TO_SEND;
       }
-      else
-      {
-        runningActivity.setModulRGB4Calibrate(rgbw);
-      }
-      //
-      // Neue Deadline setzen
-      //
-      timeToSend = System.currentTimeMillis() + ProjectConst.TIMEDIFF_TO_SEND;
     }
   }
 

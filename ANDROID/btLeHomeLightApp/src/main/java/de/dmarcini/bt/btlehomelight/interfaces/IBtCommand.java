@@ -34,16 +34,16 @@ public interface IBtCommand
   /**
    * Frage, ob eine Verbindung zu einem BT Device besteht
    *
-   * @return VErbuunden ?
+   * @return Verbuunden ?
    */
-  int askModulOnlineStatus();
+  int getModulOnlineStatus();
 
   /**
    * Frage welches Modul verbunden ist
    *
    * @return Moduladresse oder NULL
    */
-  BluetoothDevice askConnectedModul();
+  BluetoothDevice getConnectedModul();
 
   /**
    * Frage (noch einmal) nach dem Modultyp

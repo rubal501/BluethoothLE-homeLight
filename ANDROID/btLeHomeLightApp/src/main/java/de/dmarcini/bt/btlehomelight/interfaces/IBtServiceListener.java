@@ -125,4 +125,5 @@ public interface IBtServiceListener
    * @param dialog der Dialog, welcher aufrief
    */
   public void onDialogNegativeClick(DialogFragment dialog);
+
 }

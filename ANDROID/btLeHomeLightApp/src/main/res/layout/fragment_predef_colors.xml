@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~                                                                           ~
+  ~      project: ANDROID                                                     ~
+  ~      module: btlehomelight                                                ~
+  ~      class: fragment_predef_colors.xml                                    ~
+  ~      date: 2016-01-10                                                     ~
+  ~                                                                           ~
+  ~      Copyright (C) 2016  Dirk Marciniak                                   ~
+  ~                                                                           ~
+  ~      This program is free software: you can redistribute it and/or modify ~
+  ~      it under the terms of the GNU General Public License as published by ~
+  ~      the Free Software Foundation, either version 3 of the License, or    ~
+  ~      (at your option) any later version.                                  ~
+  ~                                                                           ~
+  ~      This program is distributed in the hope that it will be useful,      ~
+  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of       ~
+  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        ~
+  ~      GNU General Public License for more details.                         ~
+  ~                                                                           ~
+  ~      You should have received a copy of the GNU General Public License    ~
+  ~      along with this program.  If not, see <http://www.gnu.org/licenses/  ~
+  ~                                                                           ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_weight="1.0"
+              android:orientation="vertical">
+
+  <TableLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:paddingLeft="15dp"
+      android:paddingRight="15dp">
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        >
+
+      <Button
+          android:id="@+id/predefRedButton"
+          android:layout_width="wrap_content"
+          android:layout_height="fill_parent"
+          android:layout_column="0"
+          android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
+          android:layout_weight="0.5"
+          android:background="#ff0000"
+          android:padding="6dp"
+          android:text="@string/predef_color_name_red"
+          android:textColor="@color/colorPrimary"/>
+
+      <Button
+          android:id="@+id/predefGreenButton"
+          android:layout_width="wrap_content"
+          android:layout_height="fill_parent"
+          android:layout_column="1"
+          android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
+          android:layout_weight="0.5"
+          android:background="#00ff00"
+          android:padding="6dp"
+          android:text="@string/predef_color_name_green"
+          android:textColor="@color/colorAccent"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.2"
+        >
+
+      <Button
+          android:id="@+id/predefBlueButton"
+          android:layout_width="wrap_content"
+          android:layout_height="fill_parent"
+          android:layout_column="0"
+          android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
+          android:layout_weight="0.5"
+          android:background="#ff0000ff"
+          android:padding="6dp"
+          android:text="@string/predef_color_name_blue"
+          android:textColor="@color/colorAccent"/>
+
+      <Button
+          android:id="@+id/predefWhiteButton"
+          android:layout_width="wrap_content"
+          android:layout_height="fill_parent"
+          android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
+          android:layout_weight="0.5"
+          android:background="#ffffffff"
+          android:padding="6dp"
+          android:text="@string/predef_color_name_white"
+          android:textColor="@color/colorAccent"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.2"
+        >
+
+      <Button
+          android:id="@+id/predefUserButton01"
+          android:layout_width="wrap_content"
+          android:layout_height="fill_parent"
+          android:layout_column="0"
+          android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
+          android:layout_weight="0.5"
+          android:background="#ff888888"
+          android:padding="6dp"
+          android:text="#01"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:textColor="@color/colorAccent"/>
+
+      <Button
+          android:id="@+id/predefUserButton02"
+          android:layout_width="wrap_content"
+          android:layout_height="fill_parent"
+          android:layout_column="1"
+          android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
+          android:layout_weight="0.5"
+          android:background="#ff888888"
+          android:padding="6dp"
+          android:text="#02"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:textColor="@color/colorAccent"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.2"
+        >
+
+      <Button
+          android:id="@+id/predefUserButton03"
+          android:layout_width="wrap_content"
+          android:layout_height="fill_parent"
+          android:layout_column="0"
+          android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
+          android:layout_weight="0.5"
+          android:background="#ff888888"
+          android:padding="6dp"
+          android:text="#03"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:textColor="@color/colorAccent"/>
+
+      <Button
+          android:id="@+id/predefUserButton04"
+          android:layout_width="wrap_content"
+          android:layout_height="fill_parent"
+          android:layout_column="1"
+          android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
+          android:layout_weight="0.5"
+          android:background="#ff888888"
+          android:padding="6dp"
+          android:text="#04"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:textColor="@color/colorAccent"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.2"
+        >
+
+      <Button
+          android:id="@+id/predefUserButton05"
+          android:layout_width="wrap_content"
+          android:layout_height="fill_parent"
+          android:layout_column="0"
+          android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
+          android:layout_weight="0.5"
+          android:background="#ff888888"
+          android:padding="6dp"
+          android:text="#05"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:textColor="@color/colorAccent"/>
+
+      <Button
+          android:id="@+id/predefUserButton06"
+          android:layout_width="wrap_content"
+          android:layout_height="fill_parent"
+          android:layout_column="1"
+          android:layout_gravity="center_vertical"
+          android:layout_margin="3dp"
+          android:layout_weight="0.5"
+          android:background="#ff888888"
+          android:padding="6dp"
+          android:text="#06"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:textColor="@color/colorAccent"/>
+    </TableRow>
+  </TableLayout>
+
+</LinearLayout>

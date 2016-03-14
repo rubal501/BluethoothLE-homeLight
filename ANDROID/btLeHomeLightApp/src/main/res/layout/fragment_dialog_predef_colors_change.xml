@@ -3,8 +3,8 @@
   ~                                                                           ~
   ~      project: ANDROID                                                     ~
   ~      module: btlehomelight                                                ~
-  ~      class: fragment_colors_wheel_port.xml                                ~
-  ~      date: 2016-01-04                                                     ~
+  ~      class: fragment_dialog_predef_colors_change.xml                      ~
+  ~      date: 2016-01-10                                                     ~
   ~                                                                           ~
   ~      Copyright (C) 2016  Dirk Marciniak                                   ~
   ~                                                                           ~
@@ -33,51 +33,45 @@
     >
 
 
-  <LinearLayout
-      android:id="@+id/colorPickerLayout"
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_width="match_parent"
+  <TextView
+      android:id="@+id/colorPrefChangeHeadline"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:orientation="vertical">
+      android:layout_gravity="center_horizontal"
+      android:layout_marginTop="4dp"
+      android:text="@string/app_dummy_text"
+      android:textAppearance="?android:attr/textAppearanceLarge"
+      android:textColor="@color/colorAccent"/>
+
+  <ImageView
+      android:id="@+id/imageView"
+      android:layout_width="fill_parent"
+      android:layout_height="2dp"
+      android:layout_gravity="center_horizontal"
+      android:layout_marginBottom="4dp"
+      android:layout_marginLeft="6dp"
+      android:layout_marginRight="6dp"
+      android:background="@color/colorAccent"/>
 
   <de.dmarcini.bt.btlehomelight.views.ColorPicker
       android:id="@+id/colorPicker"
-      android:layout_width="wrap_content"
+      android:layout_width="fill_parent"
       android:layout_height="0dp"
       android:layout_gravity="center"
       android:layout_weight="1.0"/>
 
-  </LinearLayout>
 
-  <LinearLayout
-      android:id="@+id/buttonsLayout"
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_gravity="right"
-      android:layout_marginLeft="8dp"
-      android:layout_marginRight="8dp"
-      android:orientation="vertical"
-      >
-
-    <ToggleButton
+  <ToggleButton
       android:id="@+id/RGBWToggleButton"
       android:layout_width="fill_parent"
       android:layout_height="60dp"
       android:layout_gravity="center_horizontal"
+      android:layout_marginLeft="8dp"
+      android:layout_marginRight="8dp"
       android:contentDescription="RGBW Mischung"
       android:labelFor="@id/RGBWToggleButton"
       android:text="@string/color_circle_toggle_button_text"
       android:textOff="@string/color_circle_toggle_button_text_off"
       android:textOn="@string/color_circle_toggle_button_text_on"/>
 
-    <Button
-        style="?android:attr/buttonBarButtonStyle"
-        android:id="@+id/colorWheelSaveColorButton"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:text="@string/color_circle_save_color_button_text"/>
-
-  </LinearLayout>
 </LinearLayout>

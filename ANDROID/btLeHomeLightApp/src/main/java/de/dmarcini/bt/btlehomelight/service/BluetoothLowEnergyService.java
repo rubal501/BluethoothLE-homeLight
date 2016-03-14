@@ -1218,14 +1218,8 @@ public class BluetoothLowEnergyService extends Service
     }
 
     @Override
-    public int askModulOnlineStatus()
+    public int getModulOnlineStatus()
     {
-/*
-      if( btEventHandler != null )
-      {
-        btEventHandler.obtainMessage(mConnectionState, null).sendToTarget();
-      }
-*/
       return (mConnectionState);
     }
 
@@ -1235,7 +1229,7 @@ public class BluetoothLowEnergyService extends Service
      * @return Moduladresse oder NULL
      */
     @Override
-    public BluetoothDevice askConnectedModul()
+    public BluetoothDevice getConnectedModul()
     {
       if( mConnectionState == ProjectConst.STATUS_CONNECTED )
       {

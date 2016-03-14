@@ -49,7 +49,7 @@
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="4dp"
-        android:text="@string/discovering_headline_search"
+        android:text="@string/bt_connect_headline_search"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/colorAccent"
         android:textStyle="bold"/>
@@ -72,7 +72,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="16dp"
         android:paddingEnd="8dp"
-        android:text="@string/discovering_scan"/>
+        android:text="@string/bt_connect_discovering_scan"/>
 
 
   </RelativeLayout>

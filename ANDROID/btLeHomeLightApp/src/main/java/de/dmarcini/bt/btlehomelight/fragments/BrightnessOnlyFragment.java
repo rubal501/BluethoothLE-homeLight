@@ -1,7 +1,6 @@
 package de.dmarcini.bt.btlehomelight.fragments;
 
 import android.app.DialogFragment;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,9 +21,9 @@ import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
 /**
  * Fragment für den Helligkeitsregler in WEISS
  */
-public class WhiteOnlyFragment extends LightRootFragment implements ValueBar.OnValueChangedListener, View.OnTouchListener
+public class BrightnessOnlyFragment extends LightRootFragment implements ValueBar.OnValueChangedListener, View.OnTouchListener
 {
-  private static final String       TAG             = WhiteOnlyFragment.class.getSimpleName();
+  private static final String       TAG             = BrightnessOnlyFragment.class.getSimpleName();
   private ValueBar brightnessSeekBar;
   private TextView brightnessHeaderTextView;
   private String   brightnessValueString;

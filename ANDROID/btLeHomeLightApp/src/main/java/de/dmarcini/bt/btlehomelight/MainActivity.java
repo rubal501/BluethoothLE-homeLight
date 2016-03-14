@@ -35,14 +35,14 @@ import android.widget.Toast;
 import java.util.Locale;
 
 import de.dmarcini.bt.btlehomelight.dialogs.AreYouSureDialogFragment;
-import de.dmarcini.bt.btlehomelight.dialogs.ColorPrefSaveDialog;
 import de.dmarcini.bt.btlehomelight.dialogs.EditModuleNameDialogFragment;
 import de.dmarcini.bt.btlehomelight.fragments.BTConnectFragment;
 import de.dmarcini.bt.btlehomelight.fragments.ColorCircleFragment;
 import de.dmarcini.bt.btlehomelight.fragments.LightRootFragment;
 import de.dmarcini.bt.btlehomelight.fragments.PlaceholderFragment;
+import de.dmarcini.bt.btlehomelight.fragments.PredefColorsFragment;
 import de.dmarcini.bt.btlehomelight.fragments.SystemPreferencesFragment;
-import de.dmarcini.bt.btlehomelight.fragments.WhiteOnlyFragment;
+import de.dmarcini.bt.btlehomelight.fragments.BrightnessOnlyFragment;
 import de.dmarcini.bt.btlehomelight.interfaces.IBtCommand;
 import de.dmarcini.bt.btlehomelight.interfaces.IBtServiceListener;
 import de.dmarcini.bt.btlehomelight.interfaces.INoticeDialogListener;
@@ -245,6 +245,8 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, INoti
     fTrans.commit();
     msgHandler = newFrag;
     drawer.closeDrawer(GravityCompat.START);
+    getSupportActionBar().setTitle(getResources().getString(R.string.app_header));
+    getSupportActionBar().setSubtitle( getResources().getString(R.string.bt_connect_fragment_name));
   }
 
   @Override
@@ -386,6 +388,7 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, INoti
         }
         newFrag = new ColorCircleFragment();
         fTrans = getFragmentManager().beginTransaction();
+        getSupportActionBar().setSubtitle( getResources().getString(R.string.color_circle_fragment_name));
         break;
 
       case R.id.navColorBrightness:
@@ -393,8 +396,9 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, INoti
         {
           Log.v(TAG, "onNavigationDrawerItemSelected: make only brightness slider fragment...");
         }
-        newFrag = new WhiteOnlyFragment();
+        newFrag = new BrightnessOnlyFragment();
         fTrans = getFragmentManager().beginTransaction();
+        getSupportActionBar().setSubtitle( getResources().getString(R.string.brightness_fragment_name));
         break;
 
       case R.id.navColorEqualizer:
@@ -404,6 +408,7 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, INoti
         }
         newFrag = new PlaceholderFragment();
         fTrans = getFragmentManager().beginTransaction();
+        getSupportActionBar().setSubtitle( getResources().getString(R.string.equalizer_fragment_name));
         break;
 
       case R.id.navColorPresets:
@@ -411,8 +416,9 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, INoti
         {
           Log.v(TAG, "onNavigationItemSelected: make color presets fragment...");
         }
-        newFrag = new PlaceholderFragment();
+        newFrag = new PredefColorsFragment();
         fTrans = getFragmentManager().beginTransaction();
+        getSupportActionBar().setSubtitle( getResources().getString(R.string.predef_color_fragment_name));
         break;
 
       case R.id.navCommBT:
@@ -422,6 +428,7 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, INoti
         }
         newFrag = new BTConnectFragment();
         fTrans = getFragmentManager().beginTransaction();
+        getSupportActionBar().setSubtitle( getResources().getString(R.string.bt_connect_fragment_name));
         break;
 
       case R.id.navPropertys:
@@ -435,6 +442,7 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, INoti
         fTrans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN | FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fTrans.commit();
         fTrans = null;
+        getSupportActionBar().setSubtitle( getResources().getString(R.string.pref_sys_headline));
         break;
 
       case R.id.navQuit:
@@ -467,10 +475,12 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, INoti
     {
       if( msgHandler == null )
       {
+        getSupportActionBar().setSubtitle("");
         Log.w(TAG, "set messgeHandler to null");
       }
       else
       {
+        //
         if( newFrag != null )
         {
           Log.i(TAG, "set messgeHandler to " + newFrag.getClass().getSimpleName());
@@ -546,11 +556,11 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, INoti
    * Frage nach dem Onlinestatus des Services
    */
   @Override
-  public int askModulOnlineStatus()
+  public int getModulOnlineStatus()
   {
     if( binder != null )
     {
-      return binder.askModulOnlineStatus();
+      return binder.getModulOnlineStatus();
     }
     return( ProjectConst.STATUS_CONNECT_ERROR );
   }
@@ -561,11 +571,11 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, INoti
    * @return Moduladresse oder NULL
    */
   @Override
-  public BluetoothDevice askConnectedModul()
+  public BluetoothDevice getConnectedModul()
   {
     if( binder != null )
     {
-      return binder.askConnectedModul();
+      return binder.getConnectedModul();
     }
     return( null );
   }
