@@ -256,6 +256,7 @@ public class ColorCircleFragment extends LightRootFragment implements ColorPicke
     {
       Log.v(TAG, String.format(Locale.ENGLISH, "color changed to %08X!", color));
     }
+    currColor = color;
     sendColor(color, !calToggleButton.isChecked());
   }
 
@@ -266,6 +267,7 @@ public class ColorCircleFragment extends LightRootFragment implements ColorPicke
     {
       Log.v(TAG, String.format(Locale.ENGLISH, "color selected to %08X!", color));
     }
+    currColor = color;
     sendColor(color, !calToggleButton.isChecked());
   }
 
