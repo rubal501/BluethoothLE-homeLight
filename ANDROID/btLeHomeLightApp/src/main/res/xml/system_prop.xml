@@ -80,6 +80,21 @@
 
   </PreferenceCategory>
 
+
+  <PreferenceCategory
+      android:key="@string/pref_sys_cat_bt_props"
+      android:title="@string/pref_sys_cat_bt">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_sys_disableBTonEXIT"
+        android:summaryOff="@string/pref_sys_disableBT_summary_off"
+        android:summaryOn="@string/pref_sys_disableBT_summary_on"
+        android:switchTextOff="@string/pref_sys_disableBT_switch_off"
+        android:switchTextOn="@string/pref_sys_disableBT_switch_on"
+        android:title="@string/pref_sys_disableBT_header"/>
+  </PreferenceCategory>
+
   <PreferenceCategory
       android:key="@string/pref_sys_cat_debugging"
       android:title="@string/pref_sys_debugging">

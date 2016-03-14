@@ -3,8 +3,17 @@
   <string name="app_header">Lichtsteuerung</string>
   <string name="app_dummy_text">dummy</string>
 
+  <!-- MainApp Strings -->
   <string name="main_btle_not_supported">Bluethooth LE nicht unterstützt!</string>
   <string name="main_modul_pause">Pause im Modul umschalten</string>
+
+  <!-- Toasts in der App -->
+  <string name="toast_exit">Beende APP...</string>
+
+  <!-- Dialog EXIT -->
+  <string name="dialog_sure_exit">App wirklich beenden?</string>
+  <string name="dialog_exit_button">BEENDEN</string>
+  <string name="dialog_cancel_button">ABBRUCH</string>
 
   <string name="nav_title">Funktionsmenü</string>
   <string name="nav_mail">dirk_marciniak@online.de</string>
@@ -51,6 +60,7 @@
   <!-- System Einstellungen Keys NICHT LOKALISIEREN! -->
   <string name="pref_sys_cat_direct_control">keySystemDirectControlCat</string>
   <string name="pref_sys_cat_on_connect">keySystemOnConnectCat</string>
+  <string name="pref_sys_cat_bt_props">keySystemBTCat</string>
   <string name="pref_sys_cat_debugging">keySystemDebuggingCat</string>
   <string name="pref_sys_showpage_direct">keySystemDirectControlSwitch</string>
   <string name="pref_sys_showpage_discovering">keySystemDiscoverSwitch</string>
@@ -62,6 +72,7 @@
   <string name="pref_sys_lastConnectedDeviceAddr">keySystemLastConnectedDeviceAddr</string>
   <string name="pref_sys_lastConnectedDeviceName">keySystemLastConnectedDeviceName</string>
   <string name="pref_sys_autoReconnect">keySystemAutoReconnect</string>
+  <string name="pref_sys_disableBTonEXIT">keySystemDisableBTOnExit</string>
 
   <!-- Programmeinstellungen -->
   <string name="pref_sys_headline">Programmeinstellungen</string>
@@ -97,6 +108,14 @@
   <string name="pref_sys_pages_predef_summary_off">Voreingestellte Farben AUS</string>
   <string name="pref_sys_pages_predef_switch_on">zeigen</string>
   <string name="pref_sys_pages_predef_switch_off">vergbergen</string>
+  <!-- cat Bluethooth-Device -->
+  <string name="pref_sys_cat_bt">Bluethooth Einstellungen</string>
+  <string name="pref_sys_disableBT_header">Bluethooth abschalten?</string>
+  <string name="pref_sys_disableBT_summary_off">BT Einstellungen unverändert lassen</string>
+  <string name="pref_sys_disableBT_summary_on">BT beim Beenden abschalten</string>
+  <string name="pref_sys_disableBT_switch_on">BT schalten</string>
+  <string name="pref_sys_disableBT_switch_off">BT lassen</string>
+
   <!-- cat Einstellunge fürs debugging -->
   <string name="pref_sys_debugging">Debugging Einstellungen</string>
   <string name="pref_sys_debugging_header">Debugging</string>
