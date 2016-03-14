@@ -14,12 +14,14 @@ import com.larswerkman.holocolorpicker.ValueBar;
 import java.util.Locale;
 
 import de.dmarcini.bt.btlehomelight.BuildConfig;
+import de.dmarcini.bt.btlehomelight.ProjectConst;
 import de.dmarcini.bt.btlehomelight.R;
 import de.dmarcini.bt.btlehomelight.interfaces.IBtCommand;
 import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
 
 /**
- * Fragment für den Helligkeitsregler in WEISS
+ * Fragment für den Helligkeitsregler
+ * TODO: RGBW und RGB unterstützen
  */
 public class BrightnessOnlyFragment extends LightRootFragment implements ValueBar.OnValueChangedListener, View.OnTouchListener
 {
@@ -27,6 +29,7 @@ public class BrightnessOnlyFragment extends LightRootFragment implements ValueBa
   private ValueBar brightnessSeekBar;
   private TextView brightnessHeaderTextView;
   private String   brightnessValueString;
+  private int currColor;
 
   @Override
   public void onCreate(Bundle savedInstanceState)
@@ -99,6 +102,31 @@ public class BrightnessOnlyFragment extends LightRootFragment implements ValueBa
   @Override
   public void handleMessages(BlueThoothMessage msg)
   {
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "message recived!");
+    }
+    switch( msg.getMsgType() )
+    {
+      case ProjectConst.MESSAGE_NONE:
+      case ProjectConst.MESSAGE_TICK:
+      case ProjectConst.MESSAGE_DISCONNECTED:
+      case ProjectConst.MESSAGE_CONNECTING:
+      case ProjectConst.MESSAGE_CONNECTED:
+      case ProjectConst.MESSAGE_CONNECT_ERROR:
+      case ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERING:
+      case ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERED:
+      case ProjectConst.MESSAGE_BTLE_DEVICE_END_DISCOVERING:
+      case ProjectConst.MESSAGE_GATT_SERVICES_DISCOVERED:
+        break;
+
+      case ProjectConst.MESSAGE_BTLE_DATA:
+        msgDataRecived(msg);
+        break;
+
+      default:
+        Log.e(TAG, "unhandled message recived: " + msg.getMsgType());
+    }
 
   }
 
@@ -139,6 +167,17 @@ public class BrightnessOnlyFragment extends LightRootFragment implements ValueBa
   public void msgDisconnected(BlueThoothMessage msg)
   {
 
+  }
+
+  @Override
+  public void onResume()
+  {
+    super.onResume();
+    if( BuildConfig.DEBUG )
+    {
+      Log.d(TAG, "onResume: ...");
+    }
+    runningActivity.askModulForRGBW();
   }
 
   /**
@@ -188,6 +227,77 @@ public class BrightnessOnlyFragment extends LightRootFragment implements ValueBa
   @Override
   public void msgDataRecived(BlueThoothMessage msg)
   {
+    final short[] rgbw;
+    if( msg.getData() == null || msg.getData().isEmpty() )
+    {
+      Log.w(TAG, "not data in message!");
+      return;
+    }
+    //
+    // Jetzt guck mal nach den Daten
+    //
+    String[] param;
+    int      cmdNum;
+    //
+    // Kommando empfangen
+    //
+    param = msg.getData().split(":");
+    if( param.length > 0 )
+    {
+      //
+      // Hier mal das Kommando finden und umrechnen
+      //
+      try
+      {
+        cmdNum = Integer.parseInt(param[ 0 ], 16);
+      }
+      catch( NumberFormatException ex )
+      {
+        cmdNum = ProjectConst.C_UNKNOWN;
+      }
+      //
+      // Jetzt Kommando auswerten
+      //
+      switch( cmdNum )
+      {
+        //
+        // Unbekanntes Kommando
+        //
+        default:
+        case ProjectConst.C_UNKNOWN:
+          Log.e(TAG, "unknown command recived! Ignored.");
+          return;
+        //
+        // Frage nach RGBW
+        //
+        case ProjectConst.C_ASKRGBW:
+          //
+          // Weitergeben an die Fragmente
+          //
+          if( BuildConfig.DEBUG )
+          {
+            Log.v(TAG, "RGBW from module <" + msg.getData() + ">");
+          }
+          if( param.length != ProjectConst.C_ASKRGB_LEN )
+          {
+            return;
+          }
+          rgbw = fillValuesInArray(param);
+          brightnessSeekBar.post(new Runnable()
+          {
+            public void run()
+            {
+              currColor = ((rgbw[ 0 ] << 16) | (rgbw[ 1 ] << 8) | (rgbw[ 2 ]));
+              Log.v(TAG, String.format(Locale.ENGLISH, "set bar color to %08X", currColor ));
+              brightnessSeekBar.setColor(currColor);
+            }
+          });
+          return;
+
+        //
+      }
+
+    }
 
   }
 
@@ -220,7 +330,16 @@ public class BrightnessOnlyFragment extends LightRootFragment implements ValueBa
     {
       Log.v(TAG, String.format(Locale.ENGLISH, "color changed to %08X!", color ));
     }
-
+    currColor = color;
+    /*
+    short[] rgbw = new short[4];
+    rgbw[0] = (short)((currColor >> 16) & 0xff);
+    rgbw[1] = (short)((currColor >> 8) & 0xff);
+    rgbw[2] = (short)(currColor & 0xff);
+    rgbw[3] = 0;
+    */
+    sendColor( currColor, false );
+    //runningActivity.setModulRawRGBW( rgbw );
   }
 
   /**
