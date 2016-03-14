@@ -63,6 +63,12 @@
   <string name="color_wheel_toggle_button_text_on">RGBW</string>
   <string name="color_wheel_toggle_button_text_off">RGB</string>
 
+  <!-- Prefefinierte Farben Fragment -->
+  <string name="predef_color_name_red">Rot</string>
+  <string name="predef_color_name_green">Grün</string>
+  <string name="predef_color_name_blue">Blau</string>
+  <string name="predef_color_name_white">Weiß</string>
+
   <!-- Brightness Fragment -->
   <string name="brigtness_header">Helligkeit</string>
   <string name="brigtness_header_vals" format="raw">Helligkeit: %02d </string>
