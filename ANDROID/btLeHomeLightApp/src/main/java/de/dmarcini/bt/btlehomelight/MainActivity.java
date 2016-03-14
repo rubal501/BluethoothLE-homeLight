@@ -1,6 +1,7 @@
 package de.dmarcini.bt.btlehomelight;
 
 import android.annotation.SuppressLint;
+import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -9,6 +10,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +34,8 @@ import android.widget.Toast;
 
 import java.util.Locale;
 
+import de.dmarcini.bt.btlehomelight.dialogs.AreYouSureDialogFragment;
+import de.dmarcini.bt.btlehomelight.dialogs.EditModuleNameDialogFragment;
 import de.dmarcini.bt.btlehomelight.fragments.BTConnectFragment;
 import de.dmarcini.bt.btlehomelight.fragments.ColorCircleFragment;
 import de.dmarcini.bt.btlehomelight.fragments.LightRootFragment;
@@ -40,15 +44,46 @@ import de.dmarcini.bt.btlehomelight.fragments.SystemPreferencesFragment;
 import de.dmarcini.bt.btlehomelight.fragments.WhiteOnlyFragment;
 import de.dmarcini.bt.btlehomelight.interfaces.IBtCommand;
 import de.dmarcini.bt.btlehomelight.interfaces.IBtServiceListener;
+import de.dmarcini.bt.btlehomelight.interfaces.INoticeDialogListener;
 import de.dmarcini.bt.btlehomelight.service.BluetoothLowEnergyService;
 import de.dmarcini.bt.btlehomelight.service.BluetoothLowEnergyService.LocalBinder;
 import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
 import de.dmarcini.bt.btlehomelight.utils.HomeLightSysConfig;
 
-public class MainActivity extends AppCompatActivity implements IBtCommand, NavigationView.OnNavigationItemSelectedListener
+public class MainActivity extends AppCompatActivity implements IBtCommand, INoticeDialogListener, NavigationView.OnNavigationItemSelectedListener
 {
   private static final String                    TAG         = MainActivity.class.getSimpleName();
   private       LocalBinder        binder      = null;
+  private       IBtServiceListener msgHandler  = null;
+  //
+  // Ein Messagehandler, der vom Service kommende Messages bearbeitet
+  //
+  @SuppressLint( "HandlerLeak" )
+  private final Handler            mHandler    = new Handler()
+  {
+    @Override
+    public void handleMessage(Message msg)
+    {
+      if( !(msg.obj instanceof BlueThoothMessage) )
+      {
+        Log.e(TAG, "Handler::handleMessage: Recived Message is NOT type of BlueThoothMessage!");
+        return;
+      }
+      BlueThoothMessage smsg = ( BlueThoothMessage ) msg.obj;
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, String.format(Locale.ENGLISH, "Message Typ %s recived.", ProjectConst.getMsgName(smsg.getMsgType())));
+      }
+      if( smsg.getData() != null && smsg.getData().length() > 0 && BuildConfig.DEBUG )
+      {
+        Log.d(TAG, "Handler::handleMessage: <" + smsg.getData() + ">");
+      }
+      if( msgHandler != null )
+      {
+        msgHandler.handleMessages(smsg);
+      }
+    }
+  };
   //
   // Lebensdauer des Service wird beim binden / unbinden benutzt
   //
@@ -85,36 +120,6 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
         binder.unregisterServiceHandler();
       }
       binder = null;
-    }
-  };
-  private       IBtServiceListener msgHandler  = null;
-  //
-  // Ein Messagehandler, der vom Service kommende Messages bearbeitet
-  //
-  @SuppressLint( "HandlerLeak" )
-  private final Handler            mHandler    = new Handler()
-  {
-    @Override
-    public void handleMessage(Message msg)
-    {
-      if( !(msg.obj instanceof BlueThoothMessage) )
-      {
-        Log.e(TAG, "Handler::handleMessage: Recived Message is NOT type of BlueThoothMessage!");
-        return;
-      }
-      BlueThoothMessage smsg = ( BlueThoothMessage ) msg.obj;
-      if( BuildConfig.DEBUG )
-      {
-        Log.v(TAG, String.format(Locale.ENGLISH, "Message Typ %s recived.", ProjectConst.getMsgName(smsg.getMsgType())));
-      }
-      if( smsg.getData() != null && smsg.getData().length() > 0 && BuildConfig.DEBUG )
-      {
-        Log.d(TAG, "Handler::handleMessage: <" + smsg.getData() + ">");
-      }
-      if( msgHandler != null )
-      {
-        msgHandler.handleMessages(smsg);
-      }
     }
   };
 
@@ -225,6 +230,20 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
     toggle.syncState();
     NavigationView navigationView = ( NavigationView ) findViewById(R.id.nav_view);
     navigationView.setNavigationItemSelectedListener(this);
+    //
+    // Zunächst mal das Verbindungsfragment einstellen
+    //
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "onNavigationItemSelected: make and insert connection fragment...");
+    }
+    LightRootFragment   newFrag = new BTConnectFragment();
+    FragmentTransaction fTrans  = getFragmentManager().beginTransaction();
+    fTrans.replace(R.id.main_container, newFrag);
+    fTrans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN | FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+    fTrans.commit();
+    msgHandler = newFrag;
+    drawer.closeDrawer(GravityCompat.START);
   }
 
   @Override
@@ -422,8 +441,11 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
         {
           Log.v(TAG, "onNavigationItemSelected: quit app...");
         }
-//        AreYouSureDialogFragment sureDial = new AreYouSureDialogFragment(getString(R.string.dialog_sure_exit));
-//        sureDial.show(getFragmentManager().beginTransaction(), "programexit");
+        Bundle bu = new Bundle();
+        bu.putString(AreYouSureDialogFragment.HEADLINE, getString(R.string.dialog_sure_exit));
+        AreYouSureDialogFragment sureDial = new AreYouSureDialogFragment();
+        sureDial.setArguments(bu);
+        sureDial.show(getFragmentManager().beginTransaction(), "programexit");
         break;
 
       default:
@@ -572,6 +594,21 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
   }
 
   /**
+   * gib Modulneman zurück, wenn im Service schon ermittelt
+   *
+   * @return Modulname
+   */
+  @Override
+  public String getConnectedModulName()
+  {
+    if( binder != null )
+    {
+      return (binder.getConnectedModulName());
+    }
+    return null;
+  }
+
+  /**
    * Frage das Modul nach der aktuellen RGBW Einstellung (Roh)
    */
   @Override
@@ -621,5 +658,108 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, Navig
     {
       binder.setModulRGB4Calibrate(rgbw);
     }
+  }
+
+  /**
+   * Setze den neuen Modulnamen
+   *
+   * @param newName der Neue Name
+   */
+  @Override
+  public void setModuleName(String newName)
+  {
+    if( binder != null )
+    {
+      binder.setModuleName(newName);
+    }
+  }
+
+  @Override
+  public void onDialogPositiveClick(DialogFragment dialog)
+  {
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "Positive dialog click!");
+    }
+    //
+    // war es ein AreYouSureDialogFragment Dialog?
+    //
+    if( dialog instanceof AreYouSureDialogFragment )
+    {
+      AreYouSureDialogFragment aDial = ( AreYouSureDialogFragment ) dialog;
+      //
+      // War der Tag für den Dialog zum Exit des Programmes?
+      //
+      if( aDial.getTag().equals("programexit") )
+      {
+        Log.i(TAG, "User will close app...");
+        Toast.makeText(this, R.string.toast_exit, Toast.LENGTH_SHORT).show();
+        if( binder != null )
+        {
+          binder.disconnect();
+        }
+        if( BluetoothAdapter.getDefaultAdapter() != null )
+        {
+          // Preferences -> Programmeinstellungen soll das automatisch passieren?
+          SharedPreferences sPref = PreferenceManager.getDefaultSharedPreferences(this);
+          if( HomeLightSysConfig.isDiableBTonEXIT() )
+          {
+            if( BuildConfig.DEBUG )
+            {
+              Log.d(TAG, "disable BT Adapter on exit!");
+            }
+            BluetoothAdapter.getDefaultAdapter().disable();
+          }
+        }
+        // Code nach stackoverflow
+        // online geht das nicht....
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("EXIT", true);
+        startActivity(intent);
+        finish();
+      }
+    }
+    //
+    // Soll der Name des Modules geändert werden?
+    //
+    else if( dialog instanceof EditModuleNameDialogFragment )
+    {
+      EditModuleNameDialogFragment edDial = ( EditModuleNameDialogFragment ) dialog;
+      if( edDial.getTag().equals("changeModuleName") )
+      {
+        // Das ist der Dialog, erfrage den Neuen Namen
+        String newModuleName = edDial.getModuleName();
+        if( getConnectedModulName() != null && !getConnectedModulName().equals(newModuleName) )
+        {
+          Log.i(TAG, "try set new module name...");
+          setModuleName(newModuleName);
+          // Nach einer Wartezeit Verbindung trennen!
+          if( mHandler != null )
+          {
+            mHandler.postDelayed(new Runnable()
+            {
+              public void run()
+              {
+                disconnect();
+              }
+            }, 1200);
+          }
+        }
+
+      }
+
+    }
+  }
+
+  @Override
+  public void onDialogNegativeClick(DialogFragment dialog)
+  {
+    if( BuildConfig.DEBUG )
+    {
+      Log.v(TAG, "Positive negative click!");
+    }
+
   }
 }
