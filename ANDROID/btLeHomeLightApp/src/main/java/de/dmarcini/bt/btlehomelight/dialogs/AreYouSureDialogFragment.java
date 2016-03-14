@@ -60,13 +60,20 @@ public class AreYouSureDialogFragment extends DialogFragment
   public AreYouSureDialogFragment()
   {
     super();
-    Bundle param = getArguments();
-    this.msg = param.getString(HEADLINE, "sure?");
   }
 
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState)
   {
+    Bundle param = getArguments();
+    if( param != null )
+    {
+      this.msg = param.getString(HEADLINE, "sure?");
+    }
+    else
+    {
+      this.msg = "sure?";
+    }
     // Benutze die Builderklasse zum erstellen des Dialogs
     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
     builder.setMessage(msg);
