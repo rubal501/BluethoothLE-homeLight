@@ -1,0 +1,157 @@
+<resources>
+  <string name="app_name">BTLE Home Light</string>
+  <string name="app_header">Lichtsteuerung</string>
+  <string name="app_dummy_text">dummy</string>
+
+  <!-- MainApp Strings -->
+  <string name="main_btle_not_supported">Bluethooth LE nicht unterstützt!</string>
+  <string name="main_modul_pause">Pause im Modul umschalten</string>
+
+  <!-- Toasts in der App -->
+  <string name="toast_exit">Beende APP...</string>
+
+  <!-- Dialog EXIT -->
+  <string name="dialog_sure_exit">App wirklich beenden?</string>
+  <string name="dialog_exit_button">BEENDEN</string>
+  <string name="dialog_cancel_button">ABBRUCH</string>
+
+  <!-- Dialog edit modul name -->
+  <string name="module_name_change_headline">Modulname ändern</string>
+  <string name="module_name_change_ok_button">Andern</string>
+  <string name="module_name_change_cancel_button">Abbruch</string>
+
+  <!-- Farbe speichern Dialog -->
+  <string name="color_dialog_headline">Farbe sichern</string>
+  <string name="color_dialog_save_button">Sichern</string>
+  <string name="color_dialog_cancel_button">Abbruch</string>
+
+  <!-- Farbe für Voreinstellung ändern Dialog -->
+  <string name="color_change_dialog_headline" format="raw">Farbe #%02d</string>
+
+  <string name="nav_title">Funktionsmenü</string>
+  <string name="nav_mail">dirk_marciniak@online.de</string>
+  <string name="nav_color_circle">Farbkreis</string>
+  <string name="nav_color_brightness">Helligkeit</string>
+  <string name="nav_color_equ">Equalizer</string>
+  <string name="nav_color_presets">Gespeicherte Farben</string>
+  <string name="nav_comm">Kommunikation</string>
+  <string name="nav_comm_bt">Gerät verbinden</string>
+  <string name="nav_prop">Einstellungen</string>
+  <string name="nav_prop_prog">Programm</string>
+  <string name="nav_quit_prog">Ende</string>
+
+
+  <string name="navigation_drawer_open">Öffne Navigation</string>
+  <string name="navigation_drawer_close">Schließe Navigation</string>
+
+  <string name="action_settings">Einstellungen</string>
+
+  <!-- Servicve Fehlermeldungen -->
+  <string name="service_err_not_services">Keine entfernten Services gefunden</string>
+  <string name="service_err_incorrect_module_type">falscher Modultyp verbunden</string>
+  <string name="service_err_data_corrupt">inkorrekte Daten empfangen</string>
+  <string name="service_err_not_characteristics">keine characteristics gefunden</string>
+
+  <!-- Discovering Fragment -->
+  <string name="bt_connect_fragment_name">Geräte suchen und verbinden</string>
+  <string name="bt_connect_no_data">Kein Gerät verfügbar</string>
+  <string name="bt_connect_headline_search">Suche Geräte</string>
+  <string name="bt_connect_headline_devices">Geräte</string>
+  <string name="bt_connect_discovering_scan">suchen...</string>
+  <string name="bt_connect_discovering_stop">suche beenden.</string>
+  <string name="bt_connect_disconnect">trennen</string>
+
+  <!-- Color wheel fragment -->
+  <string name="color_circle_fragment_name">Farbe wählen und speichern</string>
+  <string name="color_circle_save_color_button_text">In Voreinstellungen merken!</string>
+  <string name="color_circle_toggle_button_text">RGBW</string>
+  <string name="color_circle_toggle_button_text_on">RGBW</string>
+  <string name="color_circle_toggle_button_text_off">RGB</string>
+
+  <!-- Prefefinierte Farben Fragment -->
+  <string name="predef_color_fragment_name">Vordefinierte Farben</string>
+  <string name="predef_color_name_red">Rot</string>
+  <string name="predef_color_name_green">Grün</string>
+  <string name="predef_color_name_blue">Blau</string>
+  <string name="predef_color_name_white">Weiß</string>
+
+  <!-- Brightness Fragment -->
+  <string name="brightness_fragment_name">Helligkeit</string>
+  <string name="brigtness_header">Helligkeit</string>
+  <string name="brigtness_header_vals" format="raw">Helligkeit: %02d </string>
+
+  <!-- Farb-Equalizer Fragment -->
+  <string name="equalizer_fragment_name">Equalizer</string>
+
+  <!-- System Einstellungen Keys NICHT LOKALISIEREN! -->
+  <string name="pref_sys_cat_direct_control">keySystemDirectControlCat</string>
+  <string name="pref_sys_cat_on_connect">keySystemOnConnectCat</string>
+  <string name="pref_sys_cat_bt_props">keySystemBTCat</string>
+  <string name="pref_sys_cat_debugging">keySystemDebuggingCat</string>
+  <string name="pref_sys_showpage_direct">keySystemDirectControlSwitch</string>
+  <string name="pref_sys_showpage_discovering">keySystemDiscoverSwitch</string>
+  <string name="pref_sys_showpage_colorwheel">keySystemColorwheelSwitch</string>
+  <string name="pref_sys_showpage_brightness">keySystemBrightnessOnlySwitch</string>
+  <string name="pref_sys_showpage_predefcolors">keySystemPredefColorsSwitch</string>
+  <string name="pref_sys_page_on_connect">KeySystemJumpToPageNumberOnConnect</string>
+  <string name="pref_sys_debugging_stat">keySystemDebuggingStatus</string>
+  <string name="pref_sys_lastConnectedDeviceAddr">keySystemLastConnectedDeviceAddr</string>
+  <string name="pref_sys_lastConnectedDeviceName">keySystemLastConnectedDeviceName</string>
+  <string name="pref_sys_autoReconnect">keySystemAutoReconnect</string>
+  <string name="pref_sys_disableBTonEXIT">keySystemDisableBTOnExit</string>
+
+  <!-- Programmeinstellungen -->
+  <string name="pref_sys_headline">Programmeinstellungen</string>
+  <!-- cat pages -->
+  <string name="pref_sys_pages_control">Seiten anzeigen</string>
+  <!-- discover -->
+  <string name="pref_sys_pages_discover_head">Lichtsteuerung suchen</string>
+  <string name="pref_sys_pages_discover_summary_on">Seite anzeigen AN</string>
+  <string name="pref_sys_pages_discover_summary_off">Seite anzeigen AUS</string>
+  <string name="pref_sys_pages_discover_switch_on">zeigen</string>
+  <string name="pref_sys_pages_discover_switch_off">vergbergen</string>
+  <!-- direct control -->
+  <string name="pref_sys_pages_direct_control_head">Seite Equalizer</string>
+  <string name="pref_sys_pages_direct_control_summary_on">Equalizer Seite AN</string>
+  <string name="pref_sys_pages_direct_control_summary_off">Equalizer Seite AUS</string>
+  <string name="pref_sys_pages_direct_control_switch_on">zeigen</string>
+  <string name="pref_sys_pages_direct_control_switch_off">vergbergen</string>
+  <!-- colorwheel -->
+  <string name="pref_sys_pages_colorwheel_head">Seite für Farbkreis</string>
+  <string name="pref_sys_pages_colorwheel_summary_on">Farbkreis Seite AN</string>
+  <string name="pref_sys_pages_colorwheel_summary_off">Farbkreis Seite AUS</string>
+  <string name="pref_sys_pages_colorwheel_switch_on">zeigen</string>
+  <string name="pref_sys_pages_colorwheel_switch_off">vergbergen</string>
+  <!-- colorwheel -->
+  <string name="pref_sys_pages_brightness_head">Seite für Helligkeit</string>
+  <string name="pref_sys_pages_brightness_summary_on">Helligkeit AN</string>
+  <string name="pref_sys_pages_brightness_summary_off">Helligkeit AUS</string>
+  <string name="pref_sys_pages_brightness_switch_on">zeigen</string>
+  <string name="pref_sys_pages_brightness_switch_off">vergbergen</string>
+  <!-- predefColors -->
+  <string name="pref_sys_pages_predef_head">Seite gespeicherte Farben</string>
+  <string name="pref_sys_pages_predef_summary_on">Voreingestellte Farben AN</string>
+  <string name="pref_sys_pages_predef_summary_off">Voreingestellte Farben AUS</string>
+  <string name="pref_sys_pages_predef_switch_on">zeigen</string>
+  <string name="pref_sys_pages_predef_switch_off">vergbergen</string>
+  <!-- cat Bluethooth-Device -->
+  <string name="pref_sys_cat_bt">Bluethooth Einstellungen</string>
+  <string name="pref_sys_disableBT_header">Bluethooth abschalten?</string>
+  <string name="pref_sys_disableBT_summary_off">BT Einstellungen unverändert lassen</string>
+  <string name="pref_sys_disableBT_summary_on">BT beim Beenden abschalten</string>
+  <string name="pref_sys_disableBT_switch_on">BT schalten</string>
+  <string name="pref_sys_disableBT_switch_off">BT lassen</string>
+
+  <!-- cat Einstellunge fürs debugging -->
+  <string name="pref_sys_debugging">Debugging Einstellungen</string>
+  <string name="pref_sys_debugging_header">Debugging</string>
+  <string name="pref_sys_debug_summary_on">Debugging Ausgaben EIN</string>
+  <string name="pref_sys_debug_summary_off">Keine Debugging Ausgaben</string>
+  <string name="pref_sys_debug_switch_on">EIN</string>
+  <string name="pref_sys_debug_switch_off">AUS</string>
+
+
+  <!-- BTLE List Adapter -->
+  <string name="list_adapter_unknown_device">unbekannt</string>
+
+</resources>

@@ -44,8 +44,8 @@ import java.util.List;
 import java.util.UUID;
 
 import de.dmarcini.bt.homelight.BuildConfig;
-import de.dmarcini.bt.homelight.utils.HM10GattAttributes;
 import de.dmarcini.bt.homelight.ProjectConst;
+import de.dmarcini.bt.homelight.utils.HM10GattAttributes;
 
 /**
  * Service for managing connection and data communication with a GATT server hosted on a
@@ -53,24 +53,24 @@ import de.dmarcini.bt.homelight.ProjectConst;
  */
 public class BluetoothLowEnergyService extends Service
 {
+  private final static String  TAG                             = BluetoothLowEnergyService.class.getSimpleName();
   public final static  String  ACTION_GATT_CONNECTED           = "de.dmarcini.bt.homelight.service.ACTION_GATT_CONNECTED";
   public final static  String  ACTION_GATT_DISCONNECTED        = "de.dmarcini.bt.homelight.service.ACTION_GATT_DISCONNECTED";
   public final static  String  ACTION_GATT_SERVICES_DISCOVERED = "de.dmarcini.bt.homelight.service.ACTION_GATT_SERVICES_DISCOVERED";
   public final static  String  ACTION_DATA_AVAILABLE           = "de.dmarcini.bt.homelight.service.ACTION_DATA_AVAILABLE";
   public final static  String  EXTRA_DATA                      = "de.dmarcini.bt.homelight.service.EXTRA_DATA";
-  private final static String  TAG                             = BluetoothLowEnergyService.class.getSimpleName();
   private static final int     STATE_DISCONNECTED              = 0;
   private static final int     STATE_CONNECTING                = 1;
   private static final int     STATE_CONNECTED                 = 2;
   private final        IBinder mBinder                         = new LocalBinder();
+  private              int     mConnectionState                = STATE_DISCONNECTED;
   private BluetoothManager mBluetoothManager;
   private BluetoothAdapter mBluetoothAdapter;
   private String           mBluetoothDeviceAddress;
   private BluetoothGatt    mBluetoothGatt;
-  private       int                   mConnectionState = STATE_DISCONNECTED;
   // Implements callback methods for GATT events that the app cares about.  For example,
   // connection change and services discovered.
-  private final BluetoothGattCallback mGattCallback    = new BluetoothGattCallback()
+  private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback()
   {
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState)

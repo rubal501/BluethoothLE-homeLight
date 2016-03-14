@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ANDROID.iml" filepath="$PROJECT_DIR$/ANDROID.iml" />
+      <module fileurl="file://$PROJECT_DIR$/btLeHomeLightApp/btLeHomeLightApp.iml" filepath="$PROJECT_DIR$/btLeHomeLightApp/btLeHomeLightApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/btlehomelight/btlehomelight.iml" filepath="$PROJECT_DIR$/btlehomelight/btlehomelight.iml" />
       <module fileurl="file://$PROJECT_DIR$/libary/libary.iml" filepath="$PROJECT_DIR$/libary/libary.iml" />
     </modules>
