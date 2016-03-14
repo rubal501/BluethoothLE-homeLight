@@ -21,6 +21,8 @@
 package de.dmarcini.bt.btlehomelight.interfaces;
 
 
+import android.app.DialogFragment;
+
 import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
 
 /**
@@ -109,4 +111,18 @@ public interface IBtServiceListener
    * @param msg Nachricht mit eingeschlossenen Daten
    */
   void msgDataRecived( final BlueThoothMessage msg );
+
+  /**
+   * Reaktion aufgerufener Dialoge POSITIV
+   *
+   * @param dialog der Dialog, welcher aufrief
+   */
+  public void onDialogPositiveClick(DialogFragment dialog);
+
+  /**
+   * Reaktion aufgerufener Dialoge NEGATIV
+   *
+   * @param dialog der Dialog, welcher aufrief
+   */
+  public void onDialogNegativeClick(DialogFragment dialog);
 }

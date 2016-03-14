@@ -35,6 +35,7 @@ import android.widget.Toast;
 import java.util.Locale;
 
 import de.dmarcini.bt.btlehomelight.dialogs.AreYouSureDialogFragment;
+import de.dmarcini.bt.btlehomelight.dialogs.ColorPrefSaveDialog;
 import de.dmarcini.bt.btlehomelight.dialogs.EditModuleNameDialogFragment;
 import de.dmarcini.bt.btlehomelight.fragments.BTConnectFragment;
 import de.dmarcini.bt.btlehomelight.fragments.ColorCircleFragment;
@@ -719,6 +720,7 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, INoti
         intent.putExtra("EXIT", true);
         startActivity(intent);
         finish();
+        return;
       }
     }
     //
@@ -747,9 +749,15 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, INoti
             }, 1200);
           }
         }
-
+        return;
       }
-
+    }
+    //
+    // Weiterrleiten an aktives Fragment
+    //
+    if( msgHandler != null )
+    {
+      msgHandler.onDialogPositiveClick( dialog );
     }
   }
 
@@ -760,6 +768,12 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, INoti
     {
       Log.v(TAG, "Positive negative click!");
     }
-
+    //
+    // Weiterrleiten an aktives Fragment
+    //
+    if( msgHandler != null )
+    {
+      msgHandler.onDialogNegativeClick( dialog );
+    }
   }
 }

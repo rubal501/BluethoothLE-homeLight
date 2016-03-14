@@ -4,14 +4,8 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.larswerkman.holocolorpicker.ValueBar;
-
-import java.util.Locale;
 
 import de.dmarcini.bt.btlehomelight.BuildConfig;
 import de.dmarcini.bt.btlehomelight.R;
@@ -21,9 +15,11 @@ import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
 /**
  * Fragment nicht fertig gestellte Seiten
  */
-public class PlaceholderFragment extends LightRootFragment
+public class PredefColorsFragment extends LightRootFragment
 {
-  private static final String       TAG             = PlaceholderFragment.class.getSimpleName();
+  public static final String ARG_PREFED_COLORLIST = "predef_color_list";
+  public static final String ARG_CURRENT_COLOR = "current_color";
+  private static final String       TAG             = PredefColorsFragment.class.getSimpleName();
 
   @Override
   public void onCreate(Bundle savedInstanceState)

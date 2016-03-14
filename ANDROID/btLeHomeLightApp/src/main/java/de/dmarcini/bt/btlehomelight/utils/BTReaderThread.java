@@ -160,10 +160,11 @@ public class BTReaderThread implements Runnable
               // hier ist start == -1 also nicht gefunden...
               // end ist aber > -1, also ENDE ohne ANFANG
               // alles aus dem Puffer entfernen bis einschliesslich END
-              iStream.skip(end);
-              Log.w(TAG, String.format(Locale.GERMAN, "deleted before and inclusice ETX <%02d> bytes...", end));
-              start = ringBuffer.indexOf(ProjectConst.BSTX);
-              end = ringBuffer.indexOf(ProjectConst.BETX);
+              ringBuffer.clear();
+              //iStream.skip(end);
+              //Log.w(TAG, String.format(Locale.GERMAN, "deleted before and inclusice ETX <%02d> bytes...", end));
+              start = -1;
+              end = -1;
             }
           }
           catch( NullPointerException ex )
@@ -198,10 +199,10 @@ public class BTReaderThread implements Runnable
             //
             // wenn nicht aufgeweckt, dann warte eine Weile
             //
-            ringBuffer.wait(80);
+            ringBuffer.wait(100);
           }
         }
-        catch( InterruptedException ex )
+        catch( NullPointerException|InterruptedException ex )
         {
           //TODO: Was sinnvolles machen
         }

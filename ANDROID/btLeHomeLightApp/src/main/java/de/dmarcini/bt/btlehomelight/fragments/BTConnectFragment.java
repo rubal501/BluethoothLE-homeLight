@@ -1,5 +1,6 @@
 package de.dmarcini.bt.btlehomelight.fragments;
 
+import android.app.DialogFragment;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,7 @@ import java.util.Locale;
 import de.dmarcini.bt.btlehomelight.BuildConfig;
 import de.dmarcini.bt.btlehomelight.ProjectConst;
 import de.dmarcini.bt.btlehomelight.R;
+import de.dmarcini.bt.btlehomelight.dialogs.EditModuleNameDialogFragment;
 import de.dmarcini.bt.btlehomelight.interfaces.IBtCommand;
 import de.dmarcini.bt.btlehomelight.utils.BTLEListAdapter;
 import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
@@ -297,6 +299,28 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
   }
 
   /**
+   * Reaktion aufgerufener Dialoge POSITIV
+   *
+   * @param dialog der Dialog, welcher aufrief
+   */
+  @Override
+  public void onDialogPositiveClick(DialogFragment dialog)
+  {
+
+  }
+
+  /**
+   * Reaktion aufgerufener Dialoge NEGATIV
+   *
+   * @param dialog der Dialog, welcher aufrief
+   */
+  @Override
+  public void onDialogNegativeClick(DialogFragment dialog)
+  {
+
+  }
+
+  /**
    * Behandle TICK-Nachricht vom Service
    * <p/>
    * Stand: 16.11.2013
@@ -475,19 +499,45 @@ public class BTConnectFragment extends LightRootFragment implements View.OnClick
    * the data associated with the selected item.
    *
    * @param parent   The AbsListView where the click happened
-   * @param view     The view within the AbsListView that was clicked
+   * @param clickedView     The view within the AbsListView that was clicked
    * @param position The position of the view in the list
    * @param id       The row id of the item that was clicked
    * @return true if the callback consumed the long click, false otherwise
    * //TODO: Aktionen zum Gerät ausführen
    */
   @Override
-  public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+  public boolean onItemLongClick(AdapterView<?> parent, View clickedView, int position, long id)
   {
+    // Feedback geben
+    clickedView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+    //
+    final BluetoothDevice device = mBTLEDeviceListAdapter.getDevice(position);
+    if( device == null )
+    {
+      return (true);
+    }
+    //
+    // Jepp, hier ist ein BT Device
+    //
     if( BuildConfig.DEBUG )
     {
-      Log.v(TAG, "LONG click on entry " + position);
+      Log.v(TAG, String.format(Locale.ENGLISH, "device <%s>, named <%s> found pn ops %d", device.getAddress(), device.getName(), position));
     }
-    return false;
+    //
+    // ist das selektierte Gerät auch online?
+    //
+    if( runningActivity.askConnectedModul() != null  && runningActivity.askConnectedModul().getAddress().equals(device.getAddress()) )
+    {
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, String.format(Locale.ENGLISH, "propertys for device %s...", device.getAddress()));
+      }
+      EditModuleNameDialogFragment frag = new EditModuleNameDialogFragment();
+      Bundle args = new Bundle();
+      args.putString(EditModuleNameDialogFragment.MODULNAME, device.getName());
+      frag.setArguments(args);
+      frag.show(getActivity().getFragmentManager(), "changeModuleName");
+    }
+    return (true);
   }
 }

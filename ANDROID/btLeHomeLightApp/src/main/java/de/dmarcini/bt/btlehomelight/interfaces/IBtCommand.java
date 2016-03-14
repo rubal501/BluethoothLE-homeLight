@@ -56,6 +56,13 @@ public interface IBtCommand
   void askModulForName();
 
   /**
+   * gib Modulneman zurück, wenn im Service schon ermittelt
+   *
+   * @return Modulname
+   */
+  String getConnectedModulName();
+
+  /**
    * Frage das Modul nach der aktuellen RGBW Einstellung (Roh)
    */
   void askModulForRGBW();
@@ -78,4 +85,11 @@ public interface IBtCommand
    * @param rgbw RGB Werte, White wird ignoriert
    */
   void setModulRGB4Calibrate(short[] rgbw);
+
+  /**
+   * Setze den neuen Modulnamen
+   *
+   * @param newName der Neue Name
+   */
+  void setModuleName( String newName );
 }

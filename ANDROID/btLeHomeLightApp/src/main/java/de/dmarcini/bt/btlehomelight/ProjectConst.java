@@ -100,6 +100,7 @@ public class ProjectConst
   public static final String KOMANDPATTERN                       = "\\d{2}(\\:.*)?";
   public static final String MODULTYPPATTERN    = String.format(Locale.ENGLISH, "%02X\\:.*", C_ASKTYP);
   public static final String MY_MODULTYPPATTERN = String.format(Locale.ENGLISH, "%02X\\:%s", C_ASKTYP, MY_MODULTYPE);
+  public static final String MY_MODULNAMEPATTERN = String.format(Locale.ENGLISH, "%02X\\:.*", C_ASKNAME);
   //
   // Länge der Kommandoketten für Farbe
   //
@@ -107,7 +108,20 @@ public class ProjectConst
   //
   // Zeit bis zum Senden neuer RGBW Werte, wenn der User kontinuierlich schiebt
   //
-  public static final long   TIMEDIFF_TO_SEND   = 100L;
+  public static final long   TIMEDIFF_TO_SEND   = 60L;
+  //
+  // PreferenzenName FARBEN
+  //
+  public static final String COLOR_PREFS          = "BTLE_COLOR_PREFS";
+  //
+  // Einstellungen fuer vordefinierte Farben in den Präferenzen
+  //
+  public static final String KEY_PREDEF_COLOR_01  = "predefColor01";
+  public static final String KEY_PREDEF_COLOR_02  = "predefColor02";
+  public static final String KEY_PREDEF_COLOR_03  = "predefColor03";
+  public static final String KEY_PREDEF_COLOR_04  = "predefColor04";
+  public static final String KEY_PREDEF_COLOR_05  = "predefColor05";
+  public static final String KEY_PREDEF_COLOR_06  = "predefColor06";
 
   //
   // Benamsung

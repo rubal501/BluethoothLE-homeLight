@@ -40,9 +40,15 @@ public final class HomeLightSysConfig
   private static boolean showColorWheel          = true;
   private static boolean showBrightnessOnly      = true;
   private static boolean showPredefColors        = true;
+  private static boolean diableBTonEXIT          = false;
   private static boolean isAppDebugging          = false;
   private static String  lastConnectedDeviceAddr = null;
   private static String  lastConnectedDeviceName = null;
+
+  public static boolean isDiableBTonEXIT()
+  {
+    return diableBTonEXIT;
+  }
 
   public static boolean isAutoReconnect()
   {
@@ -141,6 +147,7 @@ public final class HomeLightSysConfig
     showColorWheel = pref.getBoolean(res.getString(R.string.pref_sys_showpage_colorwheel), true);
     showBrightnessOnly = pref.getBoolean(res.getString(R.string.pref_sys_showpage_brightness), true);
     showPredefColors = pref.getBoolean(res.getString(R.string.pref_sys_showpage_predefcolors), true);
+    diableBTonEXIT = pref.getBoolean(res.getString(R.string.pref_sys_disableBTonEXIT), false );
     //
     autoReconnect = pref.getBoolean(res.getString(R.string.pref_sys_autoReconnect), false);
     isAppDebugging = pref.getBoolean(res.getString(R.string.pref_sys_debugging_stat), true);

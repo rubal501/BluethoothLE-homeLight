@@ -1,5 +1,6 @@
 package de.dmarcini.bt.btlehomelight.fragments;
 
+import android.app.DialogFragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -187,6 +188,28 @@ public class WhiteOnlyFragment extends LightRootFragment implements ValueBar.OnV
    */
   @Override
   public void msgDataRecived(BlueThoothMessage msg)
+  {
+
+  }
+
+  /**
+   * Reaktion aufgerufener Dialoge POSITIV
+   *
+   * @param dialog der Dialog, welcher aufrief
+   */
+  @Override
+  public void onDialogPositiveClick(DialogFragment dialog)
+  {
+
+  }
+
+  /**
+   * Reaktion aufgerufener Dialoge NEGATIV
+   *
+   * @param dialog der Dialog, welcher aufrief
+   */
+  @Override
+  public void onDialogNegativeClick(DialogFragment dialog)
   {
 
   }

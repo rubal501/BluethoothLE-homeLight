@@ -1,8 +1,12 @@
 package de.dmarcini.bt.btlehomelight.fragments;
 
+import android.app.DialogFragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +14,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import de.dmarcini.bt.btlehomelight.BuildConfig;
 import de.dmarcini.bt.btlehomelight.ProjectConst;
 import de.dmarcini.bt.btlehomelight.R;
+import de.dmarcini.bt.btlehomelight.dialogs.ColorPrefSaveDialog;
 import de.dmarcini.bt.btlehomelight.interfaces.IBtCommand;
 import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
 import de.dmarcini.bt.btlehomelight.views.ColorPicker;
@@ -24,7 +30,7 @@ import de.dmarcini.bt.btlehomelight.views.ColorPicker;
  */
 public class ColorCircleFragment extends LightRootFragment implements ColorPicker.OnColorChangedListener, ColorPicker.OnColorSelectedListener, View.OnClickListener
 {
-  private static final String     TAG             = ColorCircleFragment.class.getSimpleName();
+  private static final String TAG = ColorCircleFragment.class.getSimpleName();
   private int          currColor;
   private ColorPicker  picker;
   private ToggleButton calToggleButton;
@@ -272,6 +278,10 @@ public class ColorCircleFragment extends LightRootFragment implements ColorPicke
   @Override
   public void onClick(View clickedView)
   {
+    SharedPreferences pref;
+    // Feedback geben
+    clickedView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+    //
     if( clickedView.getId() == R.id.RGBWToggleButton )
     {
       if( BuildConfig.DEBUG )
@@ -284,6 +294,28 @@ public class ColorCircleFragment extends LightRootFragment implements ColorPicke
       if( BuildConfig.DEBUG )
       {
         Log.v(TAG, "saveColorButton");
+      }
+      if( clickedView.equals(colorWheelSaveColorButton) )
+      {
+        // TODO: aktuelle Farbe als Predef setzen (Dialog öffnen)
+        if( BuildConfig.DEBUG )
+        {
+          Log.i(TAG, "Button save color clicked");
+        }
+        pref = getActivity().getSharedPreferences(ProjectConst.COLOR_PREFS, Context.MODE_PRIVATE);
+        ArrayList<Integer> cl = new ArrayList<>();
+        cl.add(pref.getInt(ProjectConst.KEY_PREDEF_COLOR_01, 0xffa0a0a0));
+        cl.add(pref.getInt(ProjectConst.KEY_PREDEF_COLOR_02, 0xffa0a0a0));
+        cl.add(pref.getInt(ProjectConst.KEY_PREDEF_COLOR_03, 0xffa0a0a0));
+        cl.add(pref.getInt(ProjectConst.KEY_PREDEF_COLOR_04, 0xffa0a0a0));
+        cl.add(pref.getInt(ProjectConst.KEY_PREDEF_COLOR_05, 0xffa0a0a0));
+        cl.add(pref.getInt(ProjectConst.KEY_PREDEF_COLOR_06, 0xffa0a0a0));
+        Bundle arg = new Bundle();
+        arg.putIntegerArrayList(PredefColorsFragment.ARG_PREFED_COLORLIST, cl);
+        arg.putInt(PredefColorsFragment.ARG_CURRENT_COLOR, currColor);
+        ColorPrefSaveDialog colDi = new ColorPrefSaveDialog();
+        colDi.setArguments(arg);
+        colDi.show(getActivity().getFragmentManager(), "savePredefColor");
       }
     }
     else
@@ -497,5 +529,90 @@ public class ColorCircleFragment extends LightRootFragment implements ColorPicke
       }
 
     }
+  }
+
+  /**
+   * Reaktion aufgerufener Dialoge POSITIV
+   *
+   * @param dialog der Dialog, welcher aufrief
+   */
+  @Override
+  public void onDialogPositiveClick(DialogFragment dialog)
+  {
+    if( dialog instanceof ColorPrefSaveDialog )
+    {
+      SharedPreferences pref = getActivity().getSharedPreferences(ProjectConst.COLOR_PREFS, Context.MODE_PRIVATE);
+      String key;
+      int color;
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, "dialog has selected color...");
+      }
+      switch( (( ColorPrefSaveDialog ) dialog).getSelectedColorItem() )
+      {
+        case 0:
+          key = ProjectConst.KEY_PREDEF_COLOR_01;
+          break;
+        case 1:
+          key = ProjectConst.KEY_PREDEF_COLOR_02;
+          break;
+        case 2:
+          key = ProjectConst.KEY_PREDEF_COLOR_03;
+          break;
+        case 3:
+          key = ProjectConst.KEY_PREDEF_COLOR_04;
+          break;
+        case 4:
+          key = ProjectConst.KEY_PREDEF_COLOR_05;
+          break;
+        case 5:
+        default:
+          key = ProjectConst.KEY_PREDEF_COLOR_06;
+      }
+      SharedPreferences.Editor editor = pref.edit();
+      color = (( ColorPrefSaveDialog ) dialog).getSettedColor();
+      if( calToggleButton.isChecked() )
+      {
+        // RGBW
+        color |= 0xff000000;
+        if( BuildConfig.DEBUG )
+        {
+          Log.v(TAG, String.format(Locale.ENGLISH, "dialog has selected color RGBW %08X...", color));
+        }
+      }
+      else
+      {
+        // RGB
+        color &= 0xfeffffff;
+        if( BuildConfig.DEBUG )
+        {
+          Log.v(TAG, String.format(Locale.ENGLISH, "dialog has selected color RGB %08X...", color));
+        }
+      }
+      editor.putInt(key, color);
+      if( editor.commit() )
+      {
+        if( BuildConfig.DEBUG )
+        {
+          Log.d(TAG, "onPositiveDialogFragment: wrote preferences to storage.");
+        }
+      }
+      else
+      {
+        Log.e(TAG, "onPositiveDialogFragment: CAN'T wrote preferences to storage.");
+      }
+      dialog.dismiss();
+    }
+  }
+
+  /**
+   * Reaktion aufgerufener Dialoge NEGATIV
+   *
+   * @param dialog der Dialog, welcher aufrief
+   */
+  @Override
+  public void onDialogNegativeClick(DialogFragment dialog)
+  {
+
   }
 }

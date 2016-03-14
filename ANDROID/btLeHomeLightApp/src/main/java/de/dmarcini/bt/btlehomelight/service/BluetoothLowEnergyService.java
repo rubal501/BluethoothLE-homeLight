@@ -86,6 +86,7 @@ public class BluetoothLowEnergyService extends Service
   private BluetoothAdapter            mBluetoothAdapter;
   private String                      mBluetoothDeviceAddress;
   private BluetoothGatt               mBluetoothGatt;
+  private String mRemoteModulName;
   private BluetoothGattCharacteristic characteristicTX;
   private BluetoothGattCharacteristic characteristicRX;
   //
@@ -814,6 +815,7 @@ public class BluetoothLowEnergyService extends Service
         }
         isCorrectConnectedModule = false;
         characteristicTX = characteristicRX = null;
+        mRemoteModulName = null;
         break;
 
       case ProjectConst.STATUS_CONNECTING:
@@ -823,6 +825,7 @@ public class BluetoothLowEnergyService extends Service
           btEventHandler.obtainMessage(ProjectConst.MESSAGE_CONNECTING, msg).sendToTarget();
         }
         isCorrectConnectedModule = false;
+        mRemoteModulName = null;
         break;
 
       case ProjectConst.STATUS_CONNECTED:
@@ -840,10 +843,12 @@ public class BluetoothLowEnergyService extends Service
           btEventHandler.obtainMessage(ProjectConst.MESSAGE_BTLE_DEVICE_DISCOVERING, msg).sendToTarget();
         }
         isCorrectConnectedModule = false;
+        mRemoteModulName = null;
         break;
 
       case ProjectConst.STATUS_TEST_MODULE:
         isCorrectConnectedModule = false;
+        mRemoteModulName = null;
         break;
 
       case ProjectConst.STATUS_CONNECT_ERROR:
@@ -857,6 +862,7 @@ public class BluetoothLowEnergyService extends Service
         }
         isCorrectConnectedModule = false;
         characteristicTX = characteristicRX = null;
+        mRemoteModulName = null;
     }
     mConnectionState = connectionState;
   }
@@ -945,6 +951,26 @@ public class BluetoothLowEnergyService extends Service
   }
 
   /**
+   * Setzte einen neuen Modulnamen
+   *
+   * @param newName der neue Name
+   */
+  public void setModuleName(String newName)
+  {
+    String kommandoString;
+    //
+    // Kommando zusammenbauen
+    //
+    if( newName.length() > 10 )
+    {
+      newName = newName.substring(0, 9);
+    }
+    kommandoString = String.format(Locale.ENGLISH, "%s%02X:%s%s", ProjectConst.STX, ProjectConst.C_SETNAME, newName, ProjectConst.ETX);
+    Log.d(TAG, "send new module name =" + kommandoString);
+    sendKdoToModule(kommandoString);
+  }
+
+  /**
    * Sende den Kommandostring (incl ETX und STX) zum Modul, wenn Verbunden
    *
    * @param kdo String mit ETC und STX
@@ -1027,11 +1053,34 @@ public class BluetoothLowEnergyService extends Service
                 isCorrectConnectedModule = true;
                 Log.i(RTAG, "connected modul is an correct type");
                 setConnectionState(ProjectConst.STATUS_CONNECTED);
+                //
+                // Da dies vorher noch nicht abgefragt worden sein kann, ist hier die richtige Stelle das nachzuholen
+                //
+                askModulForName();
               }
               else
               {
                 Log.e(RTAG, "connected modul is an incorrect type!");
                 setConnectionState(ProjectConst.STATUS_CONNECT_ERROR, R.string.service_err_incorrect_module_type);
+              }
+            }
+            else if( recMsg.matches(ProjectConst.MY_MODULNAMEPATTERN))
+            {
+              //
+              // der Modulname sollte hier auch noch vorhehalten werden
+              //
+              String[] fields = recMsg.split(":");
+              if( fields != null && fields.length > 1 )
+              {
+                mRemoteModulName = fields[1];
+              }
+              //
+              // An Activity senden, wenn Handler gesetzt ist
+              //
+              if( btEventHandler != null && isCorrectConnectedModule )
+              {
+                BlueThoothMessage msg = new BlueThoothMessage(ProjectConst.MESSAGE_BTLE_DATA, recMsg);
+                btEventHandler.obtainMessage(ProjectConst.MESSAGE_BTLE_DATA, msg).sendToTarget();
               }
             }
             else
@@ -1221,6 +1270,17 @@ public class BluetoothLowEnergyService extends Service
     }
 
     /**
+     * gib Modulneman zurück, wenn im Service schon ermittelt
+     *
+     * @return Modulname
+     */
+    @Override
+    public String getConnectedModulName()
+    {
+      return(BluetoothLowEnergyService.this.mRemoteModulName);
+    }
+
+    /**
      * Frage das Modul nach der aktuellen RGBW Einstellung (Roh)
      */
     @Override
@@ -1258,6 +1318,17 @@ public class BluetoothLowEnergyService extends Service
     public void setModulRGB4Calibrate(short[] rgbw)
     {
       BluetoothLowEnergyService.this.setModulRGB4Calibrate(rgbw);
+    }
+
+    /**
+     * Setze den neuen Modulnamen
+     *
+     * @param newName der Neue Name
+     */
+    @Override
+    public void setModuleName(String newName)
+    {
+      BluetoothLowEnergyService.this.setModuleName(newName);
     }
   }
 }
