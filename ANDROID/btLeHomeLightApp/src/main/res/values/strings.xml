@@ -64,6 +64,7 @@
   <string name="color_wheel_toggle_button_text_off">RGB</string>
 
   <!-- Prefefinierte Farben Fragment -->
+  <string name="predef_headline">Vordefinierte Farben</string>
   <string name="predef_color_name_red">Rot</string>
   <string name="predef_color_name_green">Grün</string>
   <string name="predef_color_name_blue">Blau</string>
