@@ -82,6 +82,17 @@
 
   <!-- Farb-Equalizer Fragment -->
   <string name="equalizer_fragment_name">Equalizer</string>
+  <string name="equalizer_fragment_disconnected">getrennt</string>
+  <string name="equalizer_fragment_connected">verbunden</string>
+  <string name="equalizer_fragment_label_connected_device">Gerät</string>
+  <string name="equalizer_fragment_label_state">Status</string>
+  <string name="equalizer_fragment_label_data">Daten</string>
+  <string name="equalizer_fragment_no_data">- keine -</string>
+  <string name="equalizer_fragment_red_slide">Rot</string>
+  <string name="equalizer_fragment_green_slide">Grün</string>
+  <string name="equalizer_fragment_blue_slide">Blau</string>
+  <string name="equalizer_fragment_white_slide">Weiß</string>
+
 
   <!-- System Einstellungen Keys NICHT LOKALISIEREN! -->
   <string name="pref_sys_cat_direct_control">keySystemDirectControlCat</string>
