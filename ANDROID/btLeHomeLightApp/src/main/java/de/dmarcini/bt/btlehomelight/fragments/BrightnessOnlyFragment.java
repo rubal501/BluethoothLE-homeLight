@@ -1,6 +1,7 @@
 package de.dmarcini.bt.btlehomelight.fragments;
 
 import android.app.DialogFragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,9 +28,10 @@ public class BrightnessOnlyFragment extends LightRootFragment implements ValueBa
 {
   private static final String       TAG             = BrightnessOnlyFragment.class.getSimpleName();
   private ValueBar brightnessSeekBar;
+  private float[] mHSVColor = new float[ 3 ];
   private TextView brightnessHeaderTextView;
   private String   brightnessValueString;
-  private int currColor;
+  //private int currColor;
 
   @Override
   public void onCreate(Bundle savedInstanceState)
@@ -225,7 +227,7 @@ public class BrightnessOnlyFragment extends LightRootFragment implements ValueBa
    * @param msg Nachricht mit eingeschlossenen Daten
    */
   @Override
-  public void msgDataRecived(BlueThoothMessage msg)
+  public void msgDataRecived(final BlueThoothMessage msg)
   {
     final short[] rgbw;
     if( msg.getData() == null || msg.getData().isEmpty() )
@@ -287,9 +289,12 @@ public class BrightnessOnlyFragment extends LightRootFragment implements ValueBa
           {
             public void run()
             {
-              currColor = ((rgbw[ 0 ] << 16) | (rgbw[ 1 ] << 8) | (rgbw[ 2 ]));
-              Log.v(TAG, String.format(Locale.ENGLISH, "set bar color to %08X", currColor ));
-              brightnessSeekBar.setColor(currColor);
+              int currColor = ((rgbw[ 0 ] << 16) | (rgbw[ 1 ] << 8) | (rgbw[ 2 ]));
+              Color.colorToHSV(((rgbw[ 0 ] << 16) | (rgbw[ 1 ] << 8) | (rgbw[ 2 ])), mHSVColor);
+              Log.v(TAG, String.format(Locale.ENGLISH, "set bar color to %08X", currColor));
+              brightnessSeekBar.setValue(mHSVColor[ 2 ]);
+              brightnessSeekBar.setColor(Color.HSVToColor(new float[]{mHSVColor[ 0 ], mHSVColor[ 1 ], 1.0F}));
+              brightnessHeaderTextView.setText(String.format(Locale.ENGLISH, brightnessValueString, Math.round(100 * mHSVColor[ 2 ])));
             }
           });
           return;
@@ -330,16 +335,9 @@ public class BrightnessOnlyFragment extends LightRootFragment implements ValueBa
     {
       Log.v(TAG, String.format(Locale.ENGLISH, "color changed to %08X!", color ));
     }
-    currColor = color;
-    /*
-    short[] rgbw = new short[4];
-    rgbw[0] = (short)((currColor >> 16) & 0xff);
-    rgbw[1] = (short)((currColor >> 8) & 0xff);
-    rgbw[2] = (short)(currColor & 0xff);
-    rgbw[3] = 0;
-    */
-    sendColor( currColor, false );
-    //runningActivity.setModulRawRGBW( rgbw );
+    Color.colorToHSV(color, mHSVColor);
+    brightnessHeaderTextView.setText(String.format(Locale.ENGLISH, brightnessValueString, Math.round(100 * mHSVColor[ 2 ])));
+    sendColor(color, false);
   }
 
   /**

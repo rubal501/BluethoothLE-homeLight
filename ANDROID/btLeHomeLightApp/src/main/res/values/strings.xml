@@ -78,7 +78,7 @@
   <!-- Brightness Fragment -->
   <string name="brightness_fragment_name">Helligkeit</string>
   <string name="brigtness_header">Helligkeit</string>
-  <string name="brigtness_header_vals" format="raw">Helligkeit: %02d </string>
+  <string name="brigtness_header_vals" format="raw">Helligkeit: %02d%%</string>
 
   <!-- Farb-Equalizer Fragment -->
   <string name="equalizer_fragment_name">Equalizer</string>
