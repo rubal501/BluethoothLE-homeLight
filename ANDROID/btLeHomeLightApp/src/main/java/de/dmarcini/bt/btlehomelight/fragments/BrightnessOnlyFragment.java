@@ -26,7 +26,7 @@ import de.dmarcini.bt.btlehomelight.utils.BlueThoothMessage;
  */
 public class BrightnessOnlyFragment extends LightRootFragment implements ValueBar.OnValueChangedListener, View.OnTouchListener
 {
-  private static final String       TAG             = BrightnessOnlyFragment.class.getSimpleName();
+  private static final String TAG = BrightnessOnlyFragment.class.getSimpleName();
   private ValueBar brightnessSeekBar;
   private float[] mHSVColor = new float[ 3 ];
   private TextView brightnessHeaderTextView;
@@ -129,7 +129,6 @@ public class BrightnessOnlyFragment extends LightRootFragment implements ValueBa
       default:
         Log.e(TAG, "unhandled message recived: " + msg.getMsgType());
     }
-
   }
 
   /**
@@ -298,12 +297,8 @@ public class BrightnessOnlyFragment extends LightRootFragment implements ValueBa
             }
           });
           return;
-
-        //
       }
-
     }
-
   }
 
   /**
@@ -333,7 +328,7 @@ public class BrightnessOnlyFragment extends LightRootFragment implements ValueBa
   {
     if( BuildConfig.DEBUG )
     {
-      Log.v(TAG, String.format(Locale.ENGLISH, "color changed to %08X!", color ));
+      Log.v(TAG, String.format(Locale.ENGLISH, "color changed to %08X!", color));
     }
     Color.colorToHSV(color, mHSVColor);
     brightnessHeaderTextView.setText(String.format(Locale.ENGLISH, brightnessValueString, Math.round(100 * mHSVColor[ 2 ])));
@@ -344,14 +339,31 @@ public class BrightnessOnlyFragment extends LightRootFragment implements ValueBa
    * Called when a touch event is dispatched to a view. This allows listeners to
    * get a chance to respond before the target view.
    *
-   * @param touchedView     The view the touch event has been dispatched to.
-   * @param event The MotionEvent object containing full information about
-   *              the event.
+   * @param touchedView The view the touch event has been dispatched to.
+   * @param event       The MotionEvent object containing full information about
+   *                    the event.
    * @return True if the listener has consumed the event, false otherwise.
    */
   @Override
   public boolean onTouch(View touchedView, MotionEvent event)
   {
+    switch( event.getAction() )
+    {
+      //
+      // finger vom Slider genommen -> senden
+      //
+      case MotionEvent.ACTION_UP:
+        //
+        // Mal wieder zum Contoller senden!
+        //
+        int color = Color.HSVToColor(mHSVColor);
+        sendColor(color, false);
+        //
+        // Neue Deadline setzen
+        //
+        timeToSend = System.currentTimeMillis() + ProjectConst.TIMEDIFF_TO_SEND;
+        break;
+    }
     return false;
   }
 }
