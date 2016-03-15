@@ -10,7 +10,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/btLeHomeLightApp" />
-            <option value="$PROJECT_DIR$/btlehomelight" />
             <option value="$PROJECT_DIR$/libary" />
           </set>
         </option>

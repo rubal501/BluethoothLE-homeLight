@@ -1,1 +1,1 @@
-include ':btlehomelight', ':libary', ':btLeHomeLightApp'
+include ':libary', ':btLeHomeLightApp'
