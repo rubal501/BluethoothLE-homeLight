@@ -49,15 +49,13 @@ public class ColorPicker extends View
   private static final String STATE_ANGLE           = "angle";
   private static final String STATE_OLD_COLOR       = "color";
   private static final String STATE_SHOW_OLD_COLOR  = "showColor";
-  private static       int    mCenterHaloPaintAlpha = 0xb0;
-
   /**
    * Colors to construct the color wheel using {@link android.graphics.SweepGradient}.
    */
   private static final int[] COLORS = new int[]{
       0xFFFF0000, 0xFFFF00FF, 0xFF0000FF, 0xFF00FFFF, 0xFF00FF00, 0xFFFFFF00, 0xFFFF0000
   };
-
+  private static int mCenterHaloPaintAlpha = 0xb0;
   /**
    * {@code Paint} instance used to draw the color wheel.
    */
@@ -441,9 +439,7 @@ public class ColorPicker extends View
     mColorWheelRadius = min / 2 - mColorWheelThickness - mColorPointerHaloRadius;
     mColorWheelRectangle.set(-mColorWheelRadius, -mColorWheelRadius, mColorWheelRadius, mColorWheelRadius);
 
-    //mColorCenterRadius = ( int ) (( float ) mPreferredColorCenterRadius * (( float ) mColorWheelRadius / ( float ) mPreferredColorWheelRadius));
     mColorCenterRadius = Math.max((mColorWheelRadius - mColorWheelThickness - 24), mPreferredColorCenterRadius);
-    //mColorCenterHaloRadius = ( int ) (( float ) mPreferredColorCenterHaloRadius * (( float ) mColorWheelRadius / ( float ) mPreferredColorWheelRadius));
     mColorCenterHaloRadius = Math.max((mColorWheelRadius - mColorWheelThickness - 14), mPreferredColorCenterRadius);
     mCenterRectangle.set(-mColorCenterRadius, -mColorCenterRadius, mColorCenterRadius, mColorCenterRadius);
   }
@@ -928,7 +924,7 @@ public class ColorPicker extends View
    */
   public interface OnColorChangedListener
   {
-    public void onColorChanged(int color);
+    void onColorChanged(int color);
   }
 
   /**
@@ -937,6 +933,6 @@ public class ColorPicker extends View
    */
   public interface OnColorSelectedListener
   {
-    public void onColorSelected(int color);
+    void onColorSelected(int color);
   }
 }
