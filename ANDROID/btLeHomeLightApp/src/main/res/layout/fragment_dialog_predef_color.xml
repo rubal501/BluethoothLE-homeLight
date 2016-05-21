@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~                                                                           ~
+  ~      project: ANDROID                                                     ~
+  ~      module: btlehomelight                                                ~
+  ~      class: fragment_dialog_predef_color.xml                              ~
+  ~      date: 2016-01-08                                                     ~
+  ~                                                                           ~
+  ~      Copyright (C) 2016  Dirk Marciniak                                   ~
+  ~                                                                           ~
+  ~      This program is free software: you can redistribute it and/or modify ~
+  ~      it under the terms of the GNU General Public License as published by ~
+  ~      the Free Software Foundation, either version 3 of the License, or    ~
+  ~      (at your option) any later version.                                  ~
+  ~                                                                           ~
+  ~      This program is distributed in the hope that it will be useful,      ~
+  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of       ~
+  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        ~
+  ~      GNU General Public License for more details.                         ~
+  ~                                                                           ~
+  ~      You should have received a copy of the GNU General Public License    ~
+  ~      along with this program.  If not, see <http://www.gnu.org/licenses/  ~
+  ~                                                                           ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+  <TextView
+      android:id="@+id/colorSaveHEaderTextView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:text="@string/color_dialog_headline"
+      android:textAppearance="?android:attr/textAppearanceLarge"
+      android:textColor="@color/colorAccent"/>
+
+  <ImageView
+      android:id="@+id/colorPreviewImageView"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:layout_marginLeft="25dp"
+      android:layout_marginRight="25dp"
+      android:layout_marginTop="8dp"
+      android:background="@color/accent_material_light"
+      android:minHeight="20dp"/>
+
+  <Spinner
+      android:id="@+id/predefColorSpinner"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:layout_marginLeft="25dp"
+      android:layout_marginRight="25dp"
+      android:layout_marginTop="15dp"/>
+</LinearLayout>

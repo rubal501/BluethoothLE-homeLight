@@ -1,0 +1,46 @@
+apply plugin: 'com.android.application'
+
+android {
+  signingConfigs {
+    DirkSig {
+      keyAlias 'android develpoment dirk marciniak'
+      keyPassword 'energie'
+      storeFile file('C:/DATEN/Entwicklung/dirksPrivaterAndroidEntwicklerkey.key')
+      storePassword 'energie'
+    }
+  }
+  compileSdkVersion 23
+  buildToolsVersion "23.0.2"
+  defaultConfig {
+    applicationId 'de.dmarcini.bt.btlehomelight'
+    minSdkVersion 19
+    targetSdkVersion 21
+    versionCode 1
+    versionName '0.2'
+    signingConfig signingConfigs.DirkSig
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+    debug {
+      applicationIdSuffix 'deb'
+      pseudoLocalesEnabled true
+    }
+  }
+  productFlavors {
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
+}
+
+dependencies {
+  compile project(':libary')
+  compile fileTree(include: ['*.jar'], dir: 'libs')
+  testCompile 'junit:junit:4.12'
+  compile 'com.android.support:appcompat-v7:23.1.1'
+  compile 'com.android.support:design:23.1.1'
+}

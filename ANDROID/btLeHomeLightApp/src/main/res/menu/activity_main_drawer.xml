@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <group android:checkableBehavior="single">
+    <item
+        android:id="@+id/navColorCircle"
+        android:icon="@drawable/ic_lightbulb_outline_color_24dp"
+        android:title="@string/nav_color_circle"/>
+    <item
+        android:id="@+id/navColorBrightness"
+        android:icon="@drawable/ic_lightbulb_outline_black_24dp"
+        android:title="@string/nav_color_brightness"/>
+    <item
+        android:id="@+id/navColorEqualizer"
+        android:icon="@drawable/ic_equalizer_black_24dp"
+        android:title="@string/nav_color_equ"/>
+    <item
+        android:id="@+id/navColorPresets"
+        android:icon="@drawable/ic_unarchive_black_24dp"
+        android:title="@string/nav_color_presets"/>
+  </group>
+
+  <item android:title="@string/nav_comm">
+    <menu>
+      <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navCommBT"
+            android:icon="@drawable/ic_bluetooth_black_24dp"
+            android:title="@string/nav_comm_bt"/>
+      </group>
+
+    </menu>
+  </item>
+
+  <item android:title="@string/nav_prop">
+    <menu>
+      <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navPropertys"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/nav_prop_prog"/>
+        <item
+            android:id="@+id/navQuit"
+            android:icon="@drawable/ic_done_all_black_24dp"
+            android:title="@string/nav_quit_prog"/>
+      </group>
+    </menu>
+  </item>
+  -->
+</menu>

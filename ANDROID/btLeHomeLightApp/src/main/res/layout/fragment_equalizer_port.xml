@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~                                                                           ~
+  ~      project: ANDROID                                                     ~
+  ~      module: btlehomelight                                                ~
+  ~      class: fragment_equalizer_port                             ~
+  ~      date: 2016-01-04                                                     ~
+  ~                                                                           ~
+  ~      Copyright (C) 2016  Dirk Marciniak                                   ~
+  ~                                                                           ~
+  ~      This program is free software: you can redistribute it and/or modify ~
+  ~      it under the terms of the GNU General Public License as published by ~
+  ~      the Free Software Foundation, either version 3 of the License, or    ~
+  ~      (at your option) any later version.                                  ~
+  ~                                                                           ~
+  ~      This program is distributed in the hope that it will be useful,      ~
+  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of       ~
+  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        ~
+  ~      GNU General Public License for more details.                         ~
+  ~                                                                           ~
+  ~      You should have received a copy of the GNU General Public License    ~
+  ~      along with this program.  If not, see <http://www.gnu.org/licenses/  ~
+  ~                                                                           ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<LinearLayout
+    android:id="@+id/directControlRootLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:orientation="vertical">
+
+  <LinearLayout
+      android:id="@+id/headerLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:orientation="horizontal">
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/equalizer_fragment_label_connected_device"
+          android:textSize="18sp"/>
+
+      <Space
+          android:layout_width="5dp"
+          android:layout_height="wrap_content"/>
+
+      <TextView
+          android:id="@+id/connectedDevice"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textSize="18sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:orientation="horizontal">
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/equalizer_fragment_label_state"
+          android:textSize="18sp"/>
+
+      <Space
+          android:layout_width="5dp"
+          android:layout_height="wrap_content"/>
+
+      <TextView
+          android:id="@+id/connectionState"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/equalizer_fragment_disconnected"
+          android:textSize="18sp"/>
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/sliderLayout"
+      android:layout_width="match_parent"
+      android:layout_height="fill_parent"
+      android:layout_marginBottom="30dp"
+      android:layout_weight="1.0"
+      android:orientation="horizontal">
+
+    <com.larswerkman.holocolorpicker.ValueBar
+        android:id="@+id/redValueBar"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="0.22"
+        app:bar_orientation_horizontal="false"
+        app:bar_pointer_halo_radius="30dp"
+        app:bar_pointer_radius="25dp"
+        app:bar_thickness="32dp"/>
+
+    <com.larswerkman.holocolorpicker.ValueBar
+        android:id="@+id/greenValueBar"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="0.22"
+        app:bar_orientation_horizontal="false"
+        app:bar_pointer_halo_radius="30dp"
+        app:bar_pointer_radius="25dp"
+        app:bar_thickness="32dp"/>
+
+    <com.larswerkman.holocolorpicker.ValueBar
+        android:id="@+id/blueValueBar"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="0.22"
+        app:bar_orientation_horizontal="false"
+        app:bar_pointer_halo_radius="30dp"
+        app:bar_pointer_radius="25dp"
+        app:bar_thickness="32dp"/>
+
+    <com.larswerkman.holocolorpicker.ValueBar
+        android:id="@+id/whiteValueBar"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="0.22"
+        app:bar_orientation_horizontal="false"
+        app:bar_pointer_halo_radius="30dp"
+        app:bar_pointer_radius="25dp"
+        app:bar_thickness="32dp"/>
+
+  </LinearLayout>
+</LinearLayout>
