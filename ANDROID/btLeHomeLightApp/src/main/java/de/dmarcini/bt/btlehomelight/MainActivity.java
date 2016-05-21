@@ -53,12 +53,42 @@ import de.dmarcini.bt.btlehomelight.utils.HomeLightSysConfig;
 
 public class MainActivity extends AppCompatActivity implements IBtCommand, INoticeDialogListener, NavigationView.OnNavigationItemSelectedListener
 {
-  private static final String                    TAG         = MainActivity.class.getSimpleName();
-  private       LocalBinder        binder      = null;
+  private static final String             TAG         = MainActivity.class.getSimpleName();
+  private              LocalBinder        binder      = null;
+  private              IBtServiceListener msgHandler  = null;
+  //
+  // Ein Messagehandler, der vom Service kommende Messages bearbeitet
+  //
+  @SuppressLint( "HandlerLeak" )
+  private final        Handler            mHandler    = new Handler()
+  {
+    @Override
+    public void handleMessage(Message msg)
+    {
+      if( !(msg.obj instanceof BlueThoothMessage) )
+      {
+        Log.e(TAG, "Handler::handleMessage: Recived Message is NOT type of BlueThoothMessage!");
+        return;
+      }
+      BlueThoothMessage smsg = ( BlueThoothMessage ) msg.obj;
+      if( BuildConfig.DEBUG )
+      {
+        Log.v(TAG, String.format(Locale.ENGLISH, "Message Typ %s recived.", ProjectConst.getMsgName(smsg.getMsgType())));
+      }
+      if( smsg.getData() != null && smsg.getData().length() > 0 && BuildConfig.DEBUG )
+      {
+        Log.d(TAG, "Handler::handleMessage: <" + smsg.getData() + ">");
+      }
+      if( msgHandler != null )
+      {
+        msgHandler.handleMessages(smsg);
+      }
+    }
+  };
   //
   // Lebensdauer des Service wird beim binden / unbinden benutzt
   //
-  private final ServiceConnection mConnection = new ServiceConnection()
+  private final        ServiceConnection  mConnection = new ServiceConnection()
   {
     @Override
     public void onServiceConnected(ComponentName name, IBinder service)
@@ -91,36 +121,6 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, INoti
         binder.unregisterServiceHandler();
       }
       binder = null;
-    }
-  };
-  private       IBtServiceListener msgHandler  = null;
-  //
-  // Ein Messagehandler, der vom Service kommende Messages bearbeitet
-  //
-  @SuppressLint( "HandlerLeak" )
-  private final Handler           mHandler    = new Handler()
-  {
-    @Override
-    public void handleMessage(Message msg)
-    {
-      if( !(msg.obj instanceof BlueThoothMessage) )
-      {
-        Log.e(TAG, "Handler::handleMessage: Recived Message is NOT type of BlueThoothMessage!");
-        return;
-      }
-      BlueThoothMessage smsg = ( BlueThoothMessage ) msg.obj;
-      if( BuildConfig.DEBUG )
-      {
-        Log.v(TAG, String.format(Locale.ENGLISH, "Message Typ %s recived.", ProjectConst.getMsgName(smsg.getMsgType())));
-      }
-      if( smsg.getData() != null && smsg.getData().length() > 0 && BuildConfig.DEBUG )
-      {
-        Log.d(TAG, "Handler::handleMessage: <" + smsg.getData() + ">");
-      }
-      if( msgHandler != null )
-      {
-        msgHandler.handleMessages(smsg);
-      }
     }
   };
 
@@ -525,7 +525,7 @@ public class MainActivity extends AppCompatActivity implements IBtCommand, INoti
   }
 
   /**
-   * Berbinde zu einem BTLE Modul
+   * Verbinde zu einem BTLE Modul
    *
    * @param addr Adresse des Modules
    */
